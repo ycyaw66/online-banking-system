@@ -12,7 +12,9 @@
 
 `resources/db/init.sql` 为 初始化schema 的 sql 命令，`data-init.sql` 为 插入初始数据的命令
 
-源代码主要分成两层，controller 直接处理 api，mapper 作为数据库操作的封装，entity 里为操作的实体，例如 user 等。
+源代码主要分成三层，controller 直接处理 api，mapper 作为数据库操作的封装，entity 里为操作的实体，例如 user 等，
+
+service 是 controller 和 mapper 之间的层，各模块的函数，主要是避免裸的数据库操作以及便于模块间互相调用。
 
 文件夹内有占位的空 java 文件可忽视
 
