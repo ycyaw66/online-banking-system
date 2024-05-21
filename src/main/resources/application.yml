@@ -1,0 +1,16 @@
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        url: jdbc:mysql://
+        password: 123456
+    sql:
+        init:
+            schema-locations: classpath:db/init.sql
+            data-locations: classpath:db/data-init.sql
+
+
+server:
+    address: 127.0.0.1
+    port: 8082
+

@@ -1,0 +1,15 @@
+# 说明
+
+本项目采取 Spring Boot + MyBatis Plus + Lombok 进行开发。
+
+前后端分离，通信均采用 json 格式
+
+为了便于协作，采用 apifox 对 api 进行具体记录，大家可以加入团队 online-banking-system https://app.apifox.com/invite?token=sDvWHbIYAOXNu8HzsfqDp
+
+# 目录说明
+
+`resources/application.yml` 为项目的基本配置，具体内容可见参数名。
+
+`resources/db/init.sql` 为 初始化schema 的 sql 命令，`data-init.sql` 为 插入初始数据的命令
+
+源代码主要分成两层，controller 直接处理 api，mapper 作为数据库操作的封装，entity 里为操作的实体，例如 user 等
