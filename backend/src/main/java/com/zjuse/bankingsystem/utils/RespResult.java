@@ -7,7 +7,7 @@ public class RespResult {
     public Object payload; 
 
     public RespResult(int code, String errString, Object payload) {
-        this.code = code; 
+        this.code = code;
         this.err = errString;
         this.payload = payload;
     }
