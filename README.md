@@ -1,6 +1,6 @@
 # 说明
 
-本项目采取 Spring Boot + MyBatis Plus + Lombok 进行开发。
+本项目后端采取 Spring Boot + MyBatis Plus + Lombok 进行开发，前端使用 vue3
 
 前后端分离，通信均采用 json 格式
 
