@@ -12,4 +12,10 @@
 
 `resources/db/init.sql` 为 初始化schema 的 sql 命令，`data-init.sql` 为 插入初始数据的命令
 
-源代码主要分成两层，controller 直接处理 api，mapper 作为数据库操作的封装，entity 里为操作的实体，例如 user 等
+源代码主要分成两层，controller 直接处理 api，mapper 作为数据库操作的封装，entity 里为操作的实体，例如 user 等。
+
+文件夹内有占位的空 java 文件可忽视
+
+# 补充
+
+后端的返回格式统一使用 `utils/RespResult` 的格式，payload 中为返回值，err 为错误信息，code 为错误代码
