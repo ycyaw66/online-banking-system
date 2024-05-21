@@ -1,0 +1,477 @@
+<template>
+  <div>
+    <div class="common-layout">
+      <el-container class="layout-container-demo" style="height: 700px">
+        <!--标题区域-->
+        <el-header
+          style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+          <div style="display: inline-block;">
+            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;" />
+          </div>
+          线上银行系统--信用卡系统
+        </el-header>
+        <el-container>
+          <!--侧边栏区域-->
+          <el-aside width="200px" style="height: 87vh; display: flex; flex-direction: column;">
+            <el-scrollbar style="flex: 1">
+              <el-menu :default-openeds="['1', '3']">
+                <el-sub-menu index="1">
+                  <template #title>
+                    <el-icon>
+                      <UserFilled />
+                    </el-icon>
+                    用户功能
+                  </template>
+                  <el-menu-item index="1-1">
+                    <router-link to="/creditCard/customer/info">
+                      <el-icon>
+                        <HomeFilled />
+                      </el-icon>
+                      个人资料
+                    </router-link>
+                  </el-menu-item>
+                  <el-menu-item index="1-2">
+                    <router-link to="/creditCard/customer/card">
+                      <el-icon>
+                        <WalletFilled />
+                      </el-icon>
+                      信用卡相关
+                    </router-link>
+                  </el-menu-item>
+                  <el-menu-item index="1-3">
+                    <router-link to="/creditCard/customer/response">
+                      <el-icon>
+                        <Promotion />
+                      </el-icon>
+                      请求结果查询
+                    </router-link>
+                  </el-menu-item>
+                  <el-menu-item index="1-4">
+                    <router-link to="/creditCard/customer/pay">
+                      <el-icon>
+                        <Shop />
+                      </el-icon>
+                      模拟支付
+                    </router-link>
+                  </el-menu-item>
+                  <el-menu-item index="1-5">
+                    <router-link to="/creditCard/customer/simulation">
+                      <el-icon>
+                        <List />
+                      </el-icon>
+                      流水查询
+                    </router-link>
+                  </el-menu-item>
+                </el-sub-menu>
+              </el-menu>
+            </el-scrollbar>
+            <el-button type="danger" @click="exit" style="display: block; margin: auto;">
+              退出登录
+            </el-button>
+          </el-aside>
+          <!--主展示区域-->
+          <el-main>
+
+            <div style="margin-top: 20px; margin-left: 20px;">
+
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-left: 20px;">
+                <div style="font-weight: bold; font-size: 1.5em;">用户信用卡信息</div>
+                <el-button type="primary"
+                  @click="new_card.limit = '0', new_card.first_password = '', new_card.second_password = '', add_new_card_visible = true">
+                  注册新的信用卡
+                </el-button>
+              </div>
+
+              <!-- 信用卡卡片显示区 -->
+              <div style="display: flex;flex-wrap: wrap; justify-content: start;">
+
+                <!-- 信用卡卡片 -->
+                <div class="cardBox" v-for="card in credit_cards" :key="card.id">
+                  <div>
+                    <!-- 卡片内容 -->
+                    <div style="margin-left: 10px; text-align: start; font-size: 16px;">
+                      <p>信用卡 ID: {{ card.id }}</p>
+                      <p>信用卡总额度: {{ card.card_limit }}</p>
+                      <p>信用卡已用额度: {{ card.loan }}</p>
+                      <p>信用卡可用额度: {{ card.card_limit - card.loan }}</p>
+                      <p>是否挂失: {{ card.is_lost === '1' ? '已挂失' : '未挂失' }}</p>
+                    </div>
+
+                    <el-divider />
+
+                    <!-- 卡片操作 -->
+                    <div style="margin-top: 10px;" v-if="card.is_lost === '0'">
+                      <el-button type="primary"
+                        @click="modify_password_card_id = card.id, modify_password_old_password = card.password, modify_password.old_password = '', modify_password.new_password = '', modify_password.new_password_again = '', modify_password_visible = true">
+                        修改密码
+                      </el-button>
+                      <el-button type="primary"
+                        @click="modify_limit_card_id = card.id, modify_limit_password = card.password, modify_limit.password = '', modify_limit.new_limit = '0', modify_card_limit_visible = true">
+                        修改额度
+                      </el-button>
+                      <el-button type="primary"
+                        @click="return_money.card_id = card.id, return_money_password = card.password, return_money.amount = '', return_money.loan = card.loan, return_money.password = '', return_money_visible = true">
+                        还款
+                      </el-button>
+                      <br><br>
+                      <el-button type="warning"
+                        @click="card_lost_visible = true, lost_card_id = card.id, lost_card_password = card.password, this.lost_card.password = ''">
+                        挂失信用卡
+                      </el-button>
+                      <el-button type="danger"
+                        @click="cancel_card_id = card.id, cancel_card_password = card.password, cancel_card_loan = card.loan, this.cancel_card.password = '', card_cancel_visible = true">
+                        注销信用卡
+                      </el-button>
+                    </div>
+                    <div style="margin-top: 10px; color: red; font-weight: bold;" v-else>
+                      <p>您不能对挂失的信用卡进行操作</p>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!--表单区域-->
+                <el-dialog title="新建信用卡" v-model="add_new_card_visible" style="width: 25vw;">
+                  <el-form :model="new_card">
+                    <el-form-item label="申请额度" :label-width="formLabelWidth">
+                      <el-input v-model="new_card.limit" autocomplete="off" style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请输入密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="new_card.first_password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="new_card.second_password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <el-button @click="add_new_card_visible = false">取 消</el-button>
+                    <el-button type="primary" @click="addNewCard">确 定</el-button>
+                  </template>
+                </el-dialog>
+
+                <el-dialog title="修改密码" v-model="modify_password_visible" style="width: 25vw;">
+                  <el-form :model="modify_password">
+                    <el-form-item label="请输入原密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="modify_password.old_password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请输入新密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <el-button @click="modify_password_visible = false">取 消</el-button>
+                    <el-button type="primary"
+                      @click="modifyPassword(modify_password_card_id, modify_password_old_password)">确 定
+                    </el-button>
+                  </template>
+                </el-dialog>
+
+                <el-dialog title="修改密码" v-model="modify_card_limit_visible" style="width: 25vw;">
+                  <el-form :model="modify_limit">
+                    <el-form-item label="请输入申请额度" :label-width="formLabelWidth">
+                      <el-input v-model="modify_limit.new_limit" autocomplete="off" style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请输入密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="modify_limit.password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <el-button @click="modify_card_limit_visible = false">取 消</el-button>
+                    <el-button type="primary" @click="modifyLimit(modify_limit_card_id, modify_limit_password)">确 定
+                    </el-button>
+                  </template>
+                </el-dialog>
+
+                <el-dialog title="信用卡挂失" v-model="card_lost_visible" style="width: 25vw;">
+                  <el-form :model="lost_card">
+                    <el-form-item label="请输入信用卡密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="lost_card.password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <el-button @click="card_lost_visible = false">取 消</el-button>
+                    <el-button type="primary" @click="reportLost(lost_card_id, lost_card_password)">确 定</el-button>
+                  </template>
+                </el-dialog>
+
+                <el-dialog title="信用卡注销" v-model="card_cancel_visible" style="width: 25vw;">
+                  <el-form :model="cancel_card">
+                    <el-form-item label="请输入信用卡密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="cancel_card.password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <el-button @click="card_cancel_visible = false">取 消</el-button>
+                    <el-button type="primary"
+                      @click="cancelCard(cancel_card_id, cancel_card_password, cancel_card_loan)">
+                      确 定
+                    </el-button>
+                  </template>
+                </el-dialog>
+
+                <el-dialog title="还款" v-model="return_money_visible" style="width: 25vw;">
+                  <el-form :model="return_money">
+                    <el-form-item label="请输入还款金额" :label-width="formLabelWidth">
+                      <el-input v-model="return_money.amount" autocomplete="off" style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                    <el-form-item label="请输入密码" :label-width="formLabelWidth">
+                      <el-input type="password" v-model="return_money.password" autocomplete="off"
+                        style="width: 12.5vw;"></el-input>
+                    </el-form-item>
+                  </el-form>
+                  <template #footer>
+                    <el-button @click="return_money_visible = false">取 消</el-button>
+                    <el-button type="primary" @click="returnMoney(return_money_password)">确 定</el-button>
+                  </template>
+                </el-dialog>
+
+              </div>
+            </div>
+
+          </el-main>
+
+        </el-container>
+      </el-container>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  data() {
+    return {
+      formLabelWidth: '150px',
+      credit_cards: [{
+        id: '1',
+        ID_number: '3220101234',
+        password: '123456',
+        card_limit: '100',
+        loan: '10',
+        is_lost: '0'
+      }, {
+        id: '2',
+        ID_number: '3220105678',
+        password: "123456",
+        card_limit: '200',
+        loan: '20',
+        is_lost: '1'
+      }, {
+        id: '3',
+        ID_number: '3220109123',
+        password: '123456',
+        card_limit: '300',
+        loan: '30',
+        is_lost: '0'
+      }],
+      new_card: {
+        limit: '',
+        first_password: '',
+        second_password: '',
+      },
+      add_new_card_visible: false,
+      modify_password_visible: false,
+      modify_card_limit_visible: false,
+      card_lost_visible: false,
+      card_cancel_visible: false,
+      return_money_visible: false,
+      modify_password: {
+        old_password: '',
+        new_password: '',
+        new_password_again: '',
+      },
+      modify_limit: {
+        new_limit: '',
+        password: '',
+      },
+      lost_card: {
+        password: '',
+      },
+      cancel_card: {
+        password: ''
+      },
+      return_money: {
+        card_id: '',
+        password: '',
+        amount: '',
+        loan: '',
+      },
+      modify_password_old_password: '',
+      modify_password_card_id: '',
+      modify_limit_password: '',
+      modify_limit_card_id: '',
+      lost_card_password: '',
+      lost_card_id: '',
+      cancel_card_password: '',
+      cancel_card_id: '',
+      cancel_card_loan: '',
+      return_money_password: '',
+    }
+  },
+  methods: {
+    exit() {
+      this.$router.push('/creditCard/customer/login');
+    },
+    addNewCard() {
+      // 检查信用卡额度是否为空
+      if (isNaN(this.new_card.limit) || this.new_card.limit === '') {
+        // 如果不是数字，就弹出警告并返回，不继续执行函数
+        this.$message.error('请输入数字作为信用卡额度！');
+        return;
+      }
+      // 检查密码是否为空
+      if (this.new_card.first_password === '' || this.new_card.second_password === '') {
+        this.$message.error('密码不能为空');
+        return;
+      }
+      // 检查两次密码输入是否一致
+      if (this.new_card.first_password !== this.new_card.second_password) {
+        // 如果不一致，就弹出警告并返回，不继续执行函数
+        this.$message.error('两次输入的密码不一致，请重新输入！');
+        return;
+      }
+
+      // 如果密码一致，就关闭模态框并弹出成功提示
+      this.add_new_card_visible = false;
+      this.$message.success('添加信用卡额度为' + this.new_card.limit)
+
+      // TODO: 其他添加新卡的操作，比如更新 credit_cards 数据、发送请求到后台等
+    },
+    modifyPassword(card_id, password) {
+      // 检查新密码是否为空
+      if (this.modify_password.new_password === '') {
+        this.$message.error('新密码不能为空');
+        return;
+      }
+      if (this.modify_password.old_password !== password) {
+        // 如果不一致，就弹出警告并返回，不继续执行函数
+        this.$message.error('原密码错误!');
+        return;
+      }
+      if (this.modify_password.new_password !== this.modify_password.new_password_again) {
+        // 如果不一致，就弹出警告并返回，不继续执行函数
+        this.$message.error('两次输入的新密码不一致，请重新输入！');
+        return;
+      }
+      this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
+      this.modify_password_visible = false;
+      // TODO
+
+    },
+    modifyLimit(card_id, password) {
+      if (isNaN(this.modify_limit.new_limit) || this.modify_limit.new_limit === '') {
+        // 如果不是数字，就弹出警告并返回，不继续执行函数
+        this.$message.error('请输入数字作为信用卡额度！');
+        return;
+      }
+      if (this.modify_limit.password !== password) {
+        // 如果不一致，就弹出警告并返回，不继续执行函数
+        this.$message.error('信用卡密码错误!');
+        return;
+      }
+      this.$message.success('修改信用卡' + card_id + '的额度至' + this.modify_limit.new_limit + '元');
+      this.modify_card_limit_visible = false;
+      //TODO
+    },
+    reportLost(card_id, password) {
+      if (this.lost_card.password !== password) {
+        // 如果不一致，就弹出警告并返回，不继续执行函数
+        this.$message.error('信用卡密码错误!');
+        return;
+      }
+      this.$message.success('挂失信用卡id为' + card_id)
+      this.card_lost_visible = false;
+      //TODO
+    },
+    cancelCard(card_id, password, loan) {
+      if (loan !== '0') {
+        this.$message.error('信用卡还存在欠额,无法注销!');
+        return;
+      }
+      if (this.cancel_card.password !== password) {
+        // 如果不一致，就弹出警告并返回，不继续执行函数
+        this.$message.error('信用卡密码错误!');
+        return;
+      }
+      this.$message.success('注销信用卡id为' + card_id)
+      this.card_cancel_visible = false;
+      //TODO
+    },
+    returnMoney(password) {
+      // 检查密码是否为空
+      if (this.return_money.password === '') {
+        this.$message.error('密码不能为空');
+        return;
+      }
+
+      // 检查密码是否正确
+      if (this.return_money.password !== password) {
+        this.$message.error('密码错误');
+        return;
+      }
+
+      // 检查还款金额是否为空
+      if (this.return_money.amount === '') {
+        this.$message.error('还款金额不能为空');
+        return;
+      }
+
+      // 判断还款金额是否为数字
+      if (isNaN(this.return_money.amount)) {
+        this.$message.error('还款金额必须为数字');
+        return;
+      }
+
+      // 判断输入的还款金额是否大于欠额（loan）
+      if (Number(this.return_money.amount) > Number(this.return_money.loan)) {
+        this.$message.error('还款金额不能大于信用卡欠额');
+        return;
+      }
+
+      this.$message.success('还款信用卡id为' + this.return_money.card_id + '成功，还款金额为' + this.return_money.amount);
+      this.return_money_visible = false;
+      // 如果所有验证都通过，执行后续还款操作
+      // TODO
+    }
+  },
+  mounted() {
+  }
+}
+</script>
+
+<style>
+.el-menu-item>a {
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.el-menu-item>a.is-active {
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.cardBox {
+  height: 330px;
+  width: 280px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+  margin-top: 40px;
+  margin-left: 27.5px;
+  margin-right: 10px;
+  padding: 7.5px;
+  padding-right: 10px;
+  padding-top: 15px;
+}
+</style>
