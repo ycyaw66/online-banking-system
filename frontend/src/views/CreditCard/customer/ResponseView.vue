@@ -77,10 +77,10 @@
             <div style="display: flex; justify-content: center;">
               <el-table :data="request_responses" stripe style="width: 1100px;">
                 <el-table-column prop="id" label="请求编号" width="200px"/>
-                <el-table-column prop="credit_card_id" label="信用卡id" width="200px">
+                <el-table-column prop="creditCardId" label="信用卡id" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.credit_card_id === null || row.credit_card_id === ''">暂未创建</span>
-                    <span v-else>{{ row.credit_card_id }}</span>
+                    <span v-if="row.creditCardId === null || row.creditCardId === ''">暂未创建</span>
+                    <span v-else>{{ row.creditCardId }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
@@ -92,7 +92,7 @@
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
                     <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{ row.amount }}</span>
-                    <span v-else-if="row.type === '2'">更新信用卡{{ row.credit_card_id }}的额度为{{ row.amount }}</span>
+                    <span v-else-if="row.type === '2'">更新信用卡{{ row.creditCardId }}的额度为{{ row.amount }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求结果" width="200px">
@@ -125,24 +125,24 @@ export default {
     return {
       request_responses: [{
         id: '1',
-        id_number: '',
-        credit_card_id: '',
+        idNumber: '',
+        creditCardId: '',
         amount: '200',
         type: '1',
         status: '1',
         password: ''
       }, {
         id: '2',
-        id_number: '',
-        credit_card_id: '1',
+        idNumber: '',
+        creditCardId: '1',
         amount: '100',
         type: '2',
         status: '2',
         password: ''
       }, {
         id: '3',
-        id_number: '',
-        credit_card_id: '1',
+        idNumber: '',
+        creditCardId: '1',
         amount: '300',
         type: '2',
         status: '3',
