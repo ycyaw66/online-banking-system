@@ -324,6 +324,7 @@ export default {
   },
   methods: {
     exit() {
+      this.$store.state.user.ID_number = '';
       this.$router.push('/creditCard/customer/login');
     },
     addNewCard() {
@@ -347,9 +348,22 @@ export default {
 
       // 如果密码一致，就关闭模态框并弹出成功提示
       this.add_new_card_visible = false;
-      this.$message.success('添加信用卡额度为' + this.new_card.limit)
+      //this.$message.success('添加信用卡额度为' + this.new_card.limit)
 
-      // TODO: 其他添加新卡的操作，比如更新 credit_cards 数据、发送请求到后台等
+      axios.post("/creditCard/customer/card/register",null, {
+        params:{
+          id_number: this.$store.state.user.ID_number,
+          card_limit: this.new_card.limit,
+          password: this.new_card.first_password
+        }
+          }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error("申请失败")
+        } else {
+          this.$message.success("申请成功")
+        }
+      });
+      this.queryCards();
     },
     modifyPassword(card_id, password) {
       // 检查新密码是否为空
@@ -367,10 +381,21 @@ export default {
         this.$message.error('两次输入的新密码不一致，请重新输入！');
         return;
       }
-      this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
+      // this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
       this.modify_password_visible = false;
-      // TODO
-
+      axios.post("/creditCard/customer/card/modify",null, {
+        params:{
+          card_id: card_id,
+          password: this.modify_password.new_password
+        }
+      }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error("修改失败")
+        } else {
+          this.$message.success("修改成功")
+        }
+      });
+      this.queryCards();
     },
     modifyLimit(card_id, password) {
       if (isNaN(this.modify_limit.new_limit) || this.modify_limit.new_limit === '') {

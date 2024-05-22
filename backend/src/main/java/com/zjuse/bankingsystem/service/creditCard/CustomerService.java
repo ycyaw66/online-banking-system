@@ -5,13 +5,25 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+
 @Service
 public class CustomerService {
 
     @Autowired
     private CustomerMapper customerMapper;
 
-    public ApiResult getCardsByIdNumber(String idNumber){
-        return new ApiResult(true,null,customerMapper.queryCards(idNumber));
+    public ApiResult getCardsByIdNumber(String idNumber) {
+        return new ApiResult(true, null, customerMapper.queryCards(idNumber));
+    }
+
+    public ApiResult addNewCreditCard(String idNumber, Double cardLimit, String password) {
+        customerMapper.addNewCreditCard(idNumber, cardLimit, password);
+        return new ApiResult(true, null, null);
+    }
+
+    public ApiResult modifyCreditCardPassword(BigInteger cardId, String password) {
+        customerMapper.modifyCreditCardPassword(cardId, password);
+        return new ApiResult(true, null, null);
     }
 }
