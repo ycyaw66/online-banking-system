@@ -26,7 +26,9 @@ public class userLoginController {
     
     @PostMapping("/register")
     public RespResult register(@RequestBody User user) {
-        
-        return RespResult.success();
+        boolean ok = userService.registerNewUser(user);
+        return ok ? 
+            RespResult.success()
+            : RespResult.fail("注册不成功");
     }
 }

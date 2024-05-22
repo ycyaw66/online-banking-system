@@ -12,7 +12,12 @@ public class UserService {
     private UserMapper userMapper; 
 
     public boolean registerNewUser(User user) {
-        userMapper.insert(user);
-        return true;
+        try {
+            userMapper.insert(user);
+            return true; 
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            return false; 
+        }
     }
 }

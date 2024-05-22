@@ -8,6 +8,7 @@ spring:
         init:
             schema-locations: classpath:db/init.sql
             data-locations: classpath:db/data-init.sql
+            mode: always
 
 
 server:
