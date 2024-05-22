@@ -36,7 +36,7 @@ public class BlacklistService {
     public ApiResult isInblacklist(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper(); 
-            wrapper.eq("userId", userId);
+            wrapper.eq("user_id", userId);
             Boolean isIn = blacklistMapper.selectCount(wrapper) > 0;
 
 
@@ -45,6 +45,7 @@ public class BlacklistService {
             return apiResult;
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
     }
@@ -63,11 +64,12 @@ public class BlacklistService {
     public ApiResult removeBlacklist(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper(); 
-            wrapper.eq("userId", userId);
+            wrapper.eq("user_id", userId);
             blacklistMapper.delete(wrapper);
             return new ApiResult(true, "success");
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
     }

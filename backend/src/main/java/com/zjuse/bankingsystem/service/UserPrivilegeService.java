@@ -17,7 +17,7 @@ public class UserPrivilegeService {
     public ApiResult getUserPrivilege(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
-            wrapper.eq("userId", userId);
+            wrapper.eq("user_id", userId);
             UserPrivilege userPrivilege = userprivilegeMapper.selectOne(wrapper);
             if (userPrivilege == null) {
                 return new ApiResult(false, "user not find");
@@ -27,18 +27,23 @@ public class UserPrivilegeService {
             return apiResult;
         }
         catch (Exception e) {
+            
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
     }
     public ApiResult modifyUserPrivilege(UserPrivilege userPrivilege) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
-            wrapper.eq("userId", userPrivilege.getUserId());
-            
+            wrapper.eq("user_id", userPrivilege.getUserId());
+            if (userprivilegeMapper.selectCount(wrapper) == 0) {
+                return new ApiResult(false, "user not find");
+            }
             userprivilegeMapper.update(userPrivilege, wrapper);
             return new ApiResult(true, "success");
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
 
@@ -50,6 +55,8 @@ public class UserPrivilegeService {
             return new ApiResult(true, "success");
         }
         catch (Exception e) {
+
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
 

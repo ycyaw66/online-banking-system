@@ -44,6 +44,7 @@ public class UserAndCardService {
         try {
             ApiResult apiResult =  userService.getUserId(id_number);
             if (apiResult.ok == false) {
+                System.out.println(apiResult.message);
                 return apiResult;
             }
             Long userId = (Long) apiResult.payload;
@@ -67,6 +68,7 @@ public class UserAndCardService {
             return new ApiResult(true, "success");
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
     }
@@ -74,7 +76,7 @@ public class UserAndCardService {
     public ApiResult getAllCard(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
-            wrapper.eq("userId", userId);
+            wrapper.eq("user_id", userId);
             List<CardOfPerson> list = cardOfPersonMapper.selectList(wrapper);
             if (list == null) {
                 return new ApiResult(false, "database error");
@@ -141,8 +143,8 @@ public class UserAndCardService {
         try {
 
             QueryWrapper wrapper = new QueryWrapper<>();
-            wrapper.eq("userId", userId);
-            wrapper.eq("cardId",cardId);
+            wrapper.eq("user_id", userId);
+            wrapper.eq("card_id",cardId);
             if (cardOfPersonMapper.selectCount(wrapper) == 0) {
                 return new ApiResult(false, "card not belong to user");
             }
