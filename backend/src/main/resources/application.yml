@@ -9,7 +9,6 @@ spring:
 #            schema-locations: classpath:db/init.sql
 #            data-locations: classpath:db/data-init.sql
 
-
 server:
     address: 127.0.0.1
     port: 8082
