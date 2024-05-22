@@ -256,21 +256,21 @@ export default {
       formLabelWidth: '150px',
       credit_cards: [{
         id: '1',
-        ID_number: '3220101234',
+        id_number: '3220101234',
         password: '123456',
         card_limit: '100',
         loan: '10',
         is_lost: '0'
       }, {
         id: '2',
-        ID_number: '3220105678',
+        id_number: '3220105678',
         password: "123456",
         card_limit: '200',
         loan: '20',
         is_lost: '1'
       }, {
         id: '3',
-        ID_number: '3220109123',
+        id_number: '3220109123',
         password: '123456',
         card_limit: '300',
         loan: '30',

@@ -44,19 +44,9 @@ const routes = [
         component: () => import('../views/CreditCard/customer/ResponseView.vue')
     },
     {
-        path:'/creditCard/admin/info',
-        name:'adminInfo',
-        component:()=>import('../views/CreditCard/admin/AdminInfoView.vue')
-    },
-    {
         path:'/creditCard/admin/inspector',
         name:'adminManageInspector',
         component:()=>import('../views/CreditCard/admin/ManageInspectorView.vue')
-    },
-    {
-        path:'/creditCard/inspector/info',
-        name:'inspectorInfo',
-        component:()=>import('../views/CreditCard/inspector/InspectorInfoView.vue')
     },
     {
         path:'/creditCard/inspector/request',

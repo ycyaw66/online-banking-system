@@ -26,30 +26,29 @@
             </el-scrollbar>
           </el-aside>
           <!--主展示区域-->
-          <el-main>
-            <!--            <div style="margin-top: 20px; margin-left: 40px;">-->
-            <!--              <el-button type="primary"-->
-            <!--                         @click="registerCustomer">-->
-            <!--                新用户注册-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-            <!--            <div style="margin-top: 20px; margin-left: 40px;">-->
-            <!--              <el-button type="primary" @click="loginCustomer">-->
-            <!--                登录用户-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-            <div style="margin-top: 20px; margin-left: 40px;">
-              <el-button type="primary"
-                         @click="loginInspector">
-                登录审查员
-              </el-button>
+          <el-main style="background-color: #f1f1f1; display: flex; justify-content: center; align-items: center;">
+
+            <div class="flex gap-4 mb-4"
+                 style="background-color: white; width: 60%; max-width: 800px; min-height: 40%; border: 3px solid lightblue; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+              <span style="font-size: 20px;">审查员登录</span>
+              <br>
+              <div>
+                <span>账号：</span>
+                <el-input v-model="inspector.name" style="width: 250px" placeholder="请输入审查员员账号名"/>
+              </div>
+              <br>
+              <div>
+                <span>密码：</span>
+                <el-input v-model="inspector.password" style="width: 250px" placeholder="请输入密码"/>
+              </div>
+              <br>
+              <div class="mb-4" style="text-align: center;">
+                <el-button type="primary" round @click="loginInspector">登录</el-button>
+              </div>
+
+              <br>
             </div>
-            <!--            <div style="margin-top: 20px; margin-left: 40px;">-->
-            <!--              <el-button type="primary"-->
-            <!--                         @click="loginAdmin">-->
-            <!--                登录系统管理员-->
-            <!--              </el-button>-->
-            <!--            </div>-->
+
           </el-main>
 
         </el-container>
@@ -62,21 +61,17 @@
 
 export default {
   data() {
-    return {}
+    return {
+      inspector: {
+        name: '',
+        password: ''
+      }
+    }
   },
   methods: {
-    // loginCustomer() {
-    //   this.$router.push('/creditCard/customer/info');
-    // },
     loginInspector() {
-      this.$router.push('/creditCard/inspector/info');
+      this.$router.push('/creditCard/inspector/request');
     },
-    //   loginAdmin(){
-    //     this.$router.push('/creditCard/admin/info');
-    //   },
-    //   registerCustomer(){
-    //     alert('新用户注册')
-    //   },
   },
   mounted() {
   }

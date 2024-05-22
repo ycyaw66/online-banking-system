@@ -70,10 +70,10 @@
             </el-button>
           </el-aside>
           <!--主展示区域-->
-          <el-main style="background-color: #f1f1f1;">
+          <el-main style="background-color: #f1f1f1; display: flex; justify-content: center; align-items: center;">
 
             <div class="flex gap-4 mb-4"
-              style="background-color: white; width: 50%; margin-left: 30px; margin-top: 30px; text-align: center; border: 3px solid lightblue; border-radius: 10px;">
+              style="background-color: white; width: 60%; max-width: 800px; min-height: 40%; border: 3px solid lightblue; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
               <br>
               <div>
                 <span>信用卡编号：&nbsp;&nbsp;&nbsp;</span>

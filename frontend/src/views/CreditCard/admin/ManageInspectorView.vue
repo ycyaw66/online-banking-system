@@ -3,10 +3,12 @@
     <div class="common-layout">
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
-        <el-header style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+        <el-header
+            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
-            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;" />
-          </div>线上银行系统--信用卡系统
+            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
+          </div>
+          线上银行系统--信用卡系统
         </el-header>
         <el-container>
           <!--侧边栏区域-->
@@ -20,18 +22,18 @@
                     </el-icon>
                     系统管理员功能
                   </template>
-                  <el-menu-item index="1-1">
-                    <router-link to="/creditCard/admin/info">
-                      <el-icon>
-                        <HomeFilled/>
-                      </el-icon>
-                      系统管理员信息
-                    </router-link>
-                  </el-menu-item>
+                  <!--                  <el-menu-item index="1-1">-->
+                  <!--                    <router-link to="/creditCard/admin/info">-->
+                  <!--                      <el-icon>-->
+                  <!--                        <HomeFilled/>-->
+                  <!--                      </el-icon>-->
+                  <!--                      系统管理员信息-->
+                  <!--                    </router-link>-->
+                  <!--                  </el-menu-item>-->
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/admin/inspector">
                       <el-icon>
-                        <Avatar />
+                        <Avatar/>
                       </el-icon>
                       管理审查员
                     </router-link>
@@ -50,13 +52,15 @@
             <br>
             <br>
             <div style="display: flex; justify-content: center;">
-              <el-table :data="inspectors" stripe style="width: 1100px;">
+              <el-table :data="inspectors" stripe style="width: 1200px;">
                 <el-table-column prop="id" label="审查员编号" width="200px"/>
                 <el-table-column prop="name" label="审查员姓名" width="200px"/>
                 <el-table-column label="密码" width="200px">
-                <template v-slot="{ row }">
-                  <el-button type="text" @click="row.passwordVisible = !row.passwordVisible">{{ row.passwordVisible ? row.password : '**********'}}</el-button>
-                </template>
+                  <template v-slot="{ row }">
+                    <el-button type="text" @click="row.passwordVisible = !row.passwordVisible">
+                      {{ row.passwordVisible ? row.password : '**********' }}
+                    </el-button>
+                  </template>
                 </el-table-column>
                 <el-table-column label="权限级别" width="200px">
                   <template v-slot="{ row }">
@@ -64,27 +68,41 @@
                     <span v-else-if="row.permission === '2'">创建信用卡及修改额度</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="260">
+                <el-table-column label="操作" width="400px">
                   <template v-slot="{ row }">
-                    <el-button type="primary" size="mini" @click="modify_password_visible=true, modify_password.new_password='', modify_password.new_password_again='', modify_password.id=row.id">修改密码</el-button>
-                    <el-button type="primary" size="mini" @click="modify_level_visible=true, modify_level.id=row.id, modify_level.new_level=row.permission">修改权限级别</el-button>
+                    <el-button type="primary" size="mini"
+                               @click="modify_password_visible=true, modify_password.new_password='', modify_password.new_password_again='', modify_password.id=row.id">
+                      修改密码
+                    </el-button>
+                    <el-button type="primary" size="mini"
+                               @click="modify_level_visible=true, modify_level.id=row.id, modify_level.new_level=row.permission">
+                      修改权限级别
+                    </el-button>
+                    <el-button type="primary" size="danger"
+                               @click="delete_inspector_id=row.id, delete_inspector_visible=true ">删除
+                    </el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
             <br><br>
             <div style="display: flex; justify-content: center; align-items: center;">
-              <el-button type="primary" @click="add_inspector_visible = true, new_inspector.name='', new_inspector.password='', new_inspector.password_again='', new_inspector.level=''">新建审查员</el-button>
+              <el-button type="primary"
+                         @click="add_inspector_visible = true, new_inspector.name='', new_inspector.password='', new_inspector.password_again='', new_inspector.level=''">
+                新建审查员
+              </el-button>
             </div>
 
             <!--接下来是表单区域-->
             <el-dialog title="密码修改" v-model="modify_password_visible" style="width: 25vw;">
               <el-form :model="modify_password">
                 <el-form-item label="请输入新密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="modify_password.new_password" autocomplete="off" style="width: 12.5vw;"></el-input>
+                  <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
+                            style="width: 12.5vw;"></el-input>
                 </el-form-item>
                 <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off" style="width: 12.5vw;"></el-input>
+                  <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
+                            style="width: 12.5vw;"></el-input>
                 </el-form-item>
               </el-form>
               <template #footer>
@@ -120,15 +138,25 @@
                   </el-select>
                 </el-form-item>
                 <el-form-item label="请输入密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="new_inspector.password" autocomplete="off" style="width: 12.5vw;"></el-input>
+                  <el-input type="password" v-model="new_inspector.password" autocomplete="off"
+                            style="width: 12.5vw;"></el-input>
                 </el-form-item>
                 <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="new_inspector.password_again" autocomplete="off" style="width: 12.5vw;"></el-input>
+                  <el-input type="password" v-model="new_inspector.password_again" autocomplete="off"
+                            style="width: 12.5vw;"></el-input>
                 </el-form-item>
               </el-form>
               <template #footer>
                 <el-button @click="add_inspector_visible = false">取 消</el-button>
                 <el-button type="primary" @click="addInspector">确 定</el-button>
+              </template>
+            </el-dialog>
+
+            <el-dialog title="删除审查员" v-model="delete_inspector_visible" style="width: 25vw;">
+              <span>确定删除编号为&nbsp;<span style="font-weight: bold;">{{ delete_inspector_id }}</span>&nbsp;的审查员吗？</span>
+              <template #footer>
+                <el-button @click="delete_inspector_visible = false">取 消</el-button>
+                <el-button type="danger" @click="deleteInspector">确 定</el-button>
               </template>
             </el-dialog>
 
@@ -146,47 +174,49 @@ export default {
   data() {
     return {
       formLabelWidth: '150px',
-      inspectors:[{
-        id:'1',
-        name:'name1',
-        password:'password1',
-        permission:'1',
-      },{
-        id:'2',
-        name:'name2',
-        password:'password2',
-        permission:'1',
-      },{
-        id:'3',
-        name:'name3',
-        password:'password3',
-        permission:'2',
+      inspectors: [{
+        id: '1',
+        name: 'name1',
+        password: 'password1',
+        permission: '1',
+      }, {
+        id: '2',
+        name: 'name2',
+        password: 'password2',
+        permission: '1',
+      }, {
+        id: '3',
+        name: 'name3',
+        password: 'password3',
+        permission: '2',
       }],
-      modify_password_visible:false,
-      modify_password:{
-        id:'',
-        new_password:'',
-        new_password_again:'',
+      modify_password_visible: false,
+      modify_password: {
+        id: '',
+        new_password: '',
+        new_password_again: '',
       },
-      modify_level_visible:false,
-      modify_level:{
-        id:'',
-        new_level:'',
+      modify_level_visible: false,
+      modify_level: {
+        id: '',
+        new_level: '',
       },
-      add_inspector_visible:false,
-      new_inspector:{
-        name:'',
-        level:'',
-        password:'',
-        password_again:'',
-      }
+      add_inspector_visible: false,
+      new_inspector: {
+        name: '',
+        level: '',
+        password: '',
+        password_again: '',
+      },
+      delete_inspector_id: '',
+      delete_inspector_visible: false,
     }
   },
   methods: {
     exit() {
       this.$router.push('/creditCard/admin/login');
     },
-    modifyPassword(){
+    modifyPassword() {
       // 验证两次输入的密码是否一致
       if (this.modify_password.new_password !== this.modify_password.new_password_again) {
         this.$message.error('两次输入的密码不一致');
@@ -197,16 +227,16 @@ export default {
         this.$message.error('新密码不能为空');
         return;
       }
-      this.$message.success('修改id为'+this.modify_password.id+'的审查员密码成功，新密码为'+this.modify_password.new_password);
-      this.modify_password_visible=false;
+      this.$message.success('修改id为' + this.modify_password.id + '的审查员密码成功，新密码为' + this.modify_password.new_password);
+      this.modify_password_visible = false;
       //TODO
     },
-    modifyLevel(){
-      this.$message.success('修改id为'+this.modify_level.id+'的审查员权限等级至'+this.modify_level.new_level);
-      this.modify_level_visible=false;
+    modifyLevel() {
+      this.$message.success('修改id为' + this.modify_level.id + '的审查员权限等级至' + this.modify_level.new_level);
+      this.modify_level_visible = false;
       //TODO
     },
-    addInspector(){
+    addInspector() {
       // 判断账号名是否为空
       if (this.new_inspector.name === '') {
         this.$message.error('账号名不能为空');
@@ -226,9 +256,18 @@ export default {
         this.$message.error('两次输入的密码不一致');
         return;
       }
-      this.$message.success('创建成功，账号名为'+this.new_inspector.name+'；密码为：'+this.new_inspector.password+'；权限等级为:'+this.new_inspector.level)
-      this.add_inspector_visible=false;
+      this.$message.success('创建成功，账号名为' + this.new_inspector.name + '；密码为：' + this.new_inspector.password + '；权限等级为:' + this.new_inspector.level)
+      this.add_inspector_visible = false;
       //TODO: 创建新的审查员
+    },
+    deleteInspector() {
+      this.$message.error('删除编号为' + this.delete_inspector_id + '的审查员');
+      //TODO
+      this.queryInspector();
+      this.delete_inspector_visible = false;
+    },
+    queryInspector() {
+      //TODO
     }
   },
   mounted() {

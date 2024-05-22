@@ -20,14 +20,14 @@
                     </el-icon>
                     审查员功能
                   </template>
-                  <el-menu-item index="1-1">
-                    <router-link to="/creditCard/inspector/info">
-                      <el-icon>
-                        <HomeFilled/>
-                      </el-icon>
-                      审查员信息
-                    </router-link>
-                  </el-menu-item>
+<!--                  <el-menu-item index="1-1">-->
+<!--                    <router-link to="/creditCard/inspector/info">-->
+<!--                      <el-icon>-->
+<!--                        <HomeFilled/>-->
+<!--                      </el-icon>-->
+<!--                      审查员信息-->
+<!--                    </router-link>-->
+<!--                  </el-menu-item>-->
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/inspector/request">
                       <el-icon>
@@ -66,8 +66,8 @@
                 </el-table-column>
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{row.amount}}</span>
-                    <span v-else-if="row.type === '2'">更新信用卡{{ row.credit_card_id }}的额度为{{ row.amount }}</span>
+                    <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{row.amount}}元</span>
+                    <span v-else-if="row.type === '2'">更新信用卡{{ row.credit_card_id }}的额度为{{ row.amount }}元</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="处理结果" width="200px">
@@ -95,25 +95,28 @@ export default {
     return {
       request: [{
         id: '1',
-        identification: '123456',
+        id_number:'123456',
         credit_card_id: '',
-        amount: '',
+        amount: '100.00',
         type: '1',
         status: '1',
+        password:''
       }, {
         id: '2',
-        identification: '234567',
+        id_number: '234567',
         credit_card_id: '1',
-        amount: '100',
+        amount: '200.00',
         type: '2',
         status: '2',
+        password: ''
       }, {
         id: '3',
-        identification: '345678',
+        id_number: '345678',
         credit_card_id: '1',
-        amount: '300',
+        amount: '300.00',
         type: '2',
         status: '3',
+        password: ''
       }]
     }
   },
@@ -126,6 +129,9 @@ export default {
     },
     reject(id){
       this.$message.error('拒绝了id为'+id+'的请求');
+    },
+    queryRequest(){
+      //TODO
     }
   },
   mounted() {

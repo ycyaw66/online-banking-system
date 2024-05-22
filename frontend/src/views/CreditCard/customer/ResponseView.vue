@@ -4,9 +4,9 @@
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
         <el-header
-          style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
-            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;" />
+            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
           </div>
           线上银行系统--信用卡系统
         </el-header>
@@ -18,14 +18,14 @@
                 <el-sub-menu index="1">
                   <template #title>
                     <el-icon>
-                      <UserFilled />
+                      <UserFilled/>
                     </el-icon>
                     用户功能
                   </template>
                   <el-menu-item index="1-1">
                     <router-link to="/creditCard/customer/info">
                       <el-icon>
-                        <HomeFilled />
+                        <HomeFilled/>
                       </el-icon>
                       个人资料
                     </router-link>
@@ -33,7 +33,7 @@
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/customer/card">
                       <el-icon>
-                        <WalletFilled />
+                        <WalletFilled/>
                       </el-icon>
                       信用卡相关
                     </router-link>
@@ -41,7 +41,7 @@
                   <el-menu-item index="1-3">
                     <router-link to="/creditCard/customer/response">
                       <el-icon>
-                        <Promotion />
+                        <Promotion/>
                       </el-icon>
                       请求结果查询
                     </router-link>
@@ -49,7 +49,7 @@
                   <el-menu-item index="1-4">
                     <router-link to="/creditCard/customer/pay">
                       <el-icon>
-                        <Shop />
+                        <Shop/>
                       </el-icon>
                       模拟支付
                     </router-link>
@@ -57,7 +57,7 @@
                   <el-menu-item index="1-5">
                     <router-link to="/creditCard/customer/simulation">
                       <el-icon>
-                        <List />
+                        <List/>
                       </el-icon>
                       流水查询
                     </router-link>
@@ -76,7 +76,7 @@
             <br>
             <div style="display: flex; justify-content: center;">
               <el-table :data="request_responses" stripe style="width: 1100px;">
-                <el-table-column prop="id" label="请求编号" width="200px" />
+                <el-table-column prop="id" label="请求编号" width="200px"/>
                 <el-table-column prop="credit_card_id" label="信用卡id" width="200px">
                   <template v-slot="{ row = {} }">
                     <span v-if="row.credit_card_id === null || row.credit_card_id === ''">暂未创建</span>
@@ -98,13 +98,13 @@
                 <el-table-column label="请求结果" width="200px">
                   <template v-slot="{ row = {} }">
                     <span v-if="row.status === '1'">待审核<el-icon>
-                        <QuestionFilled />
+                        <QuestionFilled/>
                       </el-icon></span>
                     <span v-else-if="row.status === '2'" style="color: limegreen;">通过<el-icon>
-                        <SuccessFilled />
+                        <SuccessFilled/>
                       </el-icon></span>
                     <span v-else-if="row.status === '3'" style="color: red;">驳回<el-icon>
-                        <CircleCloseFilled />
+                        <CircleCloseFilled/>
                       </el-icon></span>
                   </template>
                 </el-table-column>
@@ -125,25 +125,28 @@ export default {
     return {
       request_responses: [{
         id: '1',
-        identification: '',
+        id_number: '',
         credit_card_id: '',
         amount: '200',
         type: '1',
         status: '1',
+        password: ''
       }, {
         id: '2',
-        identification: '',
+        id_number: '',
         credit_card_id: '1',
         amount: '100',
         type: '2',
         status: '2',
+        password: ''
       }, {
         id: '3',
-        identification: '',
+        id_number: '',
         credit_card_id: '1',
         amount: '300',
         type: '2',
         status: '3',
+        password: ''
       }]
     }
   },
@@ -158,12 +161,12 @@ export default {
 </script>
 
 <style>
-.el-menu-item>a {
+.el-menu-item > a {
   color: inherit;
   text-decoration: none !important;
 }
 
-.el-menu-item>a.is-active {
+.el-menu-item > a.is-active {
   color: inherit;
   text-decoration: none !important;
 }

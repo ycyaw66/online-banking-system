@@ -87,11 +87,11 @@
             <br><br>
 
             <div style="display: flex; justify-content: center;">
-              <el-table :data="trading" stripe style="width: 800px;">
+              <el-table :data="bills" stripe style="width: 800px;">
                 <el-table-column prop="id" label="交易订单编号" width="200px" />
-                <el-table-column prop="card_id" label="信用卡id" width="200px" />
-                <el-table-column prop="date" label="交易日期" width="200px" />
-                <el-table-column prop="account" label="交易金额：单位(元)" width="200px" />
+                <el-table-column prop="credit_card_id" label="信用卡id" width="200px" />
+                <el-table-column prop="amount" label="交易金额：单位(元)" width="200px" />
+                <el-table-column prop="bill_date" label="交易日期" width="200px" />
               </el-table>
             </div>
 
@@ -110,11 +110,12 @@ export default {
     return {
       start_date: '',
       end_date: '',
-      trading: [{
+      bills: [{
         id: '流水id',
-        card_id: '信用卡id',
-        date: '交易日期',
-        account: '交易金额',
+        id_number:'',
+        credit_card_id: '信用卡id',
+        amount: '交易金额',
+        bill_date: '交易日期'
       }],
     }
   },
