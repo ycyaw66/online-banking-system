@@ -11,7 +11,6 @@ import com.zjuse.bankingsystem.mapper.UserPrivilegeMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 @Service
-@MapperScan("com.zjuse.bankingsystem.mapper")
 public class UserPrivilegeService {
     @Autowired
     UserPrivilegeMapper userprivilegeMapper;

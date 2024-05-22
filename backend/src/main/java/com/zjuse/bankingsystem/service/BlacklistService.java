@@ -16,7 +16,6 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 
 
 @Service
-@MapperScan("com.zjuse.bankingsystem.mapper")
 public class BlacklistService {
 
     @Autowired

@@ -22,8 +22,6 @@ import com.zjuse.bankingsystem.entity.*;;
 
 
 @Service
-@MapperScan("com.zjuse.bankingsystem.mapper")
-@MapperScan("com.zjuse.bankingsystem.mapper")
 public class UserAndCardService {
     @Autowired
     UserPrivilegeMapper userprivilegeMapper;

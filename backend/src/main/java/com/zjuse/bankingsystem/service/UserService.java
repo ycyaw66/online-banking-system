@@ -7,7 +7,6 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 
 
 @Service
-@MapperScan("com.zjuse.bankingsystem.mapper")
 public class UserService {
     public ApiResult getUserId(String id_number) {
         return new ApiResult(false, "not implemented");

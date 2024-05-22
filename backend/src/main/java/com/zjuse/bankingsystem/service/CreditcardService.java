@@ -10,7 +10,6 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 
 
 @Service
-@MapperScan("com.zjuse.bankingsystem.mapper")
 public class CreditcardService {
     public ApiResult increaceBalance(Long cardId, BigDecimal amount) {
         return new ApiResult(false, "not implemented");
