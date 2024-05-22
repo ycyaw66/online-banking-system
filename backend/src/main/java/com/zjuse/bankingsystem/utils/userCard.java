@@ -5,11 +5,11 @@ import com.zjuse.bankingsystem.utils.*;
  */
 public interface userCard {
 
-    public RespResult bindUserAndCard(Long cardId, String identityNumber);
+    public RespResult bindUserAndCard(Long cardId, String id_number);
 
     public RespResult getAllCard(Long userId);
 
-    public RespResult getAllCard(String identityNumber);
+    public RespResult getAllCard(String id_number);
 
     public RespResult consume(Long cardId, Double amount, String password);   
 

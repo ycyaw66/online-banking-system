@@ -1,6 +1,8 @@
 package com.zjuse.bankingsystem.service;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.protobuf.Api;
@@ -8,6 +10,8 @@ import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.UserPrivilegeMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
+@Service
+@MapperScan("com.zjuse.bankingsystem.mapper")
 public class UserPrivilegeService {
     @Autowired
     UserPrivilegeMapper userprivilegeMapper;
@@ -27,7 +31,7 @@ public class UserPrivilegeService {
             return new ApiResult(false, e.getMessage());
         }
     }
-    public ApiResult ModifyUserPrivilege(UserPrivilege userPrivilege) {
+    public ApiResult modifyUserPrivilege(UserPrivilege userPrivilege) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("userId", userPrivilege.getUserId());
@@ -40,4 +44,16 @@ public class UserPrivilegeService {
         }
 
     }
+
+    public ApiResult insertUserPrivilege(UserPrivilege userPrivilege) {
+        try {
+            userprivilegeMapper.insert(userPrivilege);
+            return new ApiResult(true, "success");
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+
+    }
+
 }

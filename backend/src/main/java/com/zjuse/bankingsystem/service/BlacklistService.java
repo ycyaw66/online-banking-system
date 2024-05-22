@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.management.Query;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 
 
 @Service
+@MapperScan("com.zjuse.bankingsystem.mapper")
 public class BlacklistService {
 
     @Autowired

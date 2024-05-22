@@ -6,17 +6,17 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Data
-@TableName("user")
-@NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
+@TableName("user")
 public class User {
-    @TableId(value = "id", type = IdType.AUTO)
-    Long id;
-    String name;
-    String identityNumber;
-    Integer age;
-    String email;
+    @TableId(type = IdType.AUTO)
+    private Long id; 
+    private String username; 
+    private String password;
+    private String id_number;
+    private String email; 
 }

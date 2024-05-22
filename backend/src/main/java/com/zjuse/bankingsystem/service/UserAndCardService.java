@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import javax.management.Query;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import com.zjuse.bankingsystem.entity.*;;
 
 
 @Service
+@MapperScan("com.zjuse.bankingsystem.mapper")
+@MapperScan("com.zjuse.bankingsystem.mapper")
 public class UserAndCardService {
     @Autowired
     UserPrivilegeMapper userprivilegeMapper;
@@ -39,9 +42,9 @@ public class UserAndCardService {
     DebitcardService debitcardService;
     @Autowired
     BlacklistService blacklistService;
-    public ApiResult bindUserAndCard(Long cardId, String identityNumber) {
+    public ApiResult bindUserAndCard(Long cardId, String id_number) {
         try {
-            ApiResult apiResult =  userService.getUserId(identityNumber);
+            ApiResult apiResult =  userService.getUserId(id_number);
             if (apiResult.ok == false) {
                 return apiResult;
             }
@@ -93,9 +96,9 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult getAllCard(String identityNumber) {
+    public ApiResult getAllCard(String id_number) {
         try {
-            ApiResult apiResult =  userService.getUserId(identityNumber);
+            ApiResult apiResult =  userService.getUserId(id_number);
             if (apiResult.ok == false) {
                 return apiResult;
             }
