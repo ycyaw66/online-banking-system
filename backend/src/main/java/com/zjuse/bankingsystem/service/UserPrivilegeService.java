@@ -1,5 +1,7 @@
 package com.zjuse.bankingsystem.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
@@ -7,8 +9,9 @@ import com.zjuse.bankingsystem.mapper.UserPrivilegeMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 public class UserPrivilegeService {
-    static UserPrivilegeMapper userprivilegeMapper;
-    static ApiResult getUserPrivilege(Long userId) {
+    @Autowired
+    UserPrivilegeMapper userprivilegeMapper;
+    public ApiResult getUserPrivilege(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("userId", userId);
@@ -24,7 +27,7 @@ public class UserPrivilegeService {
             return new ApiResult(false, e.getMessage());
         }
     }
-    static ApiResult ModifyUserPrivilege(UserPrivilege userPrivilege) {
+    public ApiResult ModifyUserPrivilege(UserPrivilege userPrivilege) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("userId", userPrivilege.getUserId());

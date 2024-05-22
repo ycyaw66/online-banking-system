@@ -4,15 +4,23 @@ import java.util.List;
 
 import javax.management.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.Blacklist;
 import com.zjuse.bankingsystem.mapper.BlacklistMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
+
+@Service
 public class BlacklistService {
-    static BlacklistMapper blacklistMapper;
-    static ApiResult getBlacklist() {
+
+    @Autowired
+    BlacklistMapper blacklistMapper;
+
+    public ApiResult getBlacklist() {
         try {
             QueryWrapper wrapper = new QueryWrapper(); 
             List<Blacklist> blacklist = blacklistMapper.selectList(wrapper);
@@ -24,7 +32,7 @@ public class BlacklistService {
             return new ApiResult(false, e.getMessage());
         }
     }
-    static ApiResult isInblacklist(Long userId) {
+    public ApiResult isInblacklist(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper(); 
             wrapper.eq("userId", userId);
@@ -39,7 +47,7 @@ public class BlacklistService {
             return new ApiResult(false, e.getMessage());
         }
     }
-    static ApiResult addBlacklist(Long userId, String reason) {
+    public ApiResult addBlacklist(Long userId, String reason) {
         try {
             Blacklist blacklist = new Blacklist();
             blacklist.setUserId(userId);
@@ -51,7 +59,7 @@ public class BlacklistService {
             return new ApiResult(false, e.getMessage());
         }
     }
-    static ApiResult removeBlacklist(Long userId) {
+    public ApiResult removeBlacklist(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper(); 
             wrapper.eq("userId", userId);

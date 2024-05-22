@@ -2,20 +2,24 @@ package com.zjuse.bankingsystem.service;
 
 import java.math.BigDecimal;
 
+import org.springframework.stereotype.Service;
+
 import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
+
+@Service
 public class CreditcardService {
-    static ApiResult increaceBalance(Long cardId, BigDecimal amount) {
+    public ApiResult increaceBalance(Long cardId, BigDecimal amount) {
         return new ApiResult(false, "not implemented");
     }
-    static ApiResult decreaceBalance(Long cardId, BigDecimal amount,  String password) {
+    public ApiResult decreaceBalance(Long cardId, BigDecimal amount,  String password) {
         return new ApiResult(false, "not implemented");
     }
-    static ApiResult loss(Long cradId, String password) {
+    public ApiResult loss(Long cradId, String password) {
         return new ApiResult(false, "not implemented");
     }
-    static ApiResult getHistory(Long cardId) {
+    public ApiResult getHistory(Long cardId) {
         return new ApiResult(false, "not implemented");
     }
 }
