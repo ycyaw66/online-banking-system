@@ -15,15 +15,15 @@ public class UserServiceTest {
     private UserService userService; 
 
     @Test
-    public void testUserRegister() {
+    public void testUserRegisterService() {
         User newUser = new User(
             null, 
+            "fbz",
             "123456", 
             "330127111111111111", 
             "123@qq.com", 
             "15115511551"
         );
-        System.out.println(newUser);
         userService.registerNewUser(newUser);
         
     }

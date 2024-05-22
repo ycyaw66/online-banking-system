@@ -12,9 +12,7 @@ public class UserService {
     private UserMapper userMapper; 
 
     public boolean registerNewUser(User user) {
-        System.out.println(user);
         userMapper.insert(user);
-        System.out.println(user);
         return true;
     }
 }
