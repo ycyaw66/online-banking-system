@@ -44,7 +44,6 @@ public class UserAndCardService {
         try {
             ApiResult apiResult =  userService.getUserId(id_number);
             if (apiResult.ok == false) {
-                System.out.println(apiResult.message);
                 return apiResult;
             }
             Long userId = (Long) apiResult.payload;
@@ -53,7 +52,6 @@ public class UserAndCardService {
             if (apiResult.ok == false) {
                 return apiResult;
             }
-
             Boolean isInBlacklist = (boolean) apiResult.payload;
             if (isInBlacklist) {
                 return new ApiResult(false, "user is in blacklist");
