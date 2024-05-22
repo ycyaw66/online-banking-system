@@ -36,7 +36,7 @@
             <el-dialog title="用户登录" v-model="customerLoginVisible" style="width: 25vw;">
               <el-form :model="customer">
                 <el-form-item label="请输入用户身份证号码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="customer.ID_card" autocomplete="off"
+                  <el-input v-model="customer.ID_card" autocomplete="off"
                             style="width: 12.5vw;"></el-input>
                 </el-form-item>
               </el-form>

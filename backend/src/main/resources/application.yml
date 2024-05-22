@@ -2,12 +2,12 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
-        url: jdbc:mysql://localhost:3306/test
-        password: "fbz123456"
-    sql:
-        init:
-            schema-locations: classpath:db/init.sql
-            data-locations: classpath:db/data-init.sql
+        url: jdbc:mysql://localhost:3306/bank?serverTimezone=UTC
+        password: "zhao1290"
+#    sql:
+#        init:
+#            schema-locations: classpath:db/init.sql
+#            data-locations: classpath:db/data-init.sql
 
 
 server:
