@@ -114,4 +114,18 @@ public class CreditCardController {
         ApiResult apiResult = creditCardService.queryRequestsByInspector(permission);
         return RespResult.success(apiResult.payload);
     }
+
+    @GetMapping("/creditCard/inspector/request/accept")
+    public RespResult acceptRequest(@RequestParam Integer id){
+        ApiResult apiResult = creditCardService.acceptRequest(id);
+        return RespResult.success(apiResult.payload);
+    }
+
+    @GetMapping("/creditCard/inspector/request/reject")
+    public RespResult rejectRequest(@RequestParam Integer id){
+        ApiResult apiResult = creditCardService.rejectRequest(id);
+        return RespResult.success(apiResult.payload);
+    }
+
+
 }

@@ -110,4 +110,28 @@ public class CreditCardService {
             return new ApiResult(true,creditCardApplications);
         }
     }
+
+    public ApiResult acceptRequest(Integer id){
+        CreditCardApplication creditCardApplication = creditCardMapper.selectSingleRequest(id);
+        Integer type = creditCardApplication.getType();
+        if(type.equals(1)){
+            CreditCard creditCard=new CreditCard();
+            creditCard.setCardLimit(creditCardApplication.getAmount());
+            creditCard.setPassword(creditCardApplication.getPassword());
+            creditCard.setIdNumber(creditCardApplication.getIdNumber());
+            creditCard.setLoan(BigInteger.valueOf(0));
+            creditCardMapper.insertCreditCard(creditCard);
+            creditCardMapper.acceptRequest(id);
+            return new ApiResult(true,null);
+        }else{
+            creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
+            creditCardMapper.acceptRequest(id);
+            return new ApiResult(true,null);
+        }
+    }
+
+    public ApiResult rejectRequest(Integer id){
+        creditCardMapper.rejectRequest(id);
+        return new ApiResult(true,null);
+    }
 }

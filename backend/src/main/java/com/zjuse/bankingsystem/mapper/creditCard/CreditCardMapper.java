@@ -68,4 +68,16 @@ public interface CreditCardMapper {
 
     @Select("select * from credit_card_application where status = 1 and type = 1")
     public List<CreditCardApplication> queryPartRequestByInspector();
+
+    @Select("select * from credit_card_application where id = #{id}")
+    public CreditCardApplication selectSingleRequest(Integer id);
+
+    @Update("update credit_card set card_limit = #{card_limit} where id = #{id}")
+    public void updateCardLimit(BigInteger card_limit, BigInteger id);
+
+    @Update("update credit_card_application set status = 2 where id = #{id}")
+    public void acceptRequest(Integer id);
+
+    @Update("update credit_card_application set status = 3 where id = #{id}")
+    public void rejectRequest(Integer id);
 }

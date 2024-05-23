@@ -69,7 +69,7 @@
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
                     <span v-if="row.type === 1">创建一张新的信用卡,额度为{{ row.amount / 100 }}元</span>
-                    <span v-else-if="row.type === 2">更新信用卡的额度为{{row.amount / 100 }}元</span>
+                    <span v-else-if="row.type === 2">更新信用卡的额度为{{ row.amount / 100 }}元</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="处理结果" width="200px">
@@ -129,10 +129,28 @@ export default {
       this.$router.push('/creditCard/inspector/login');
     },
     accept(id) {
-      this.$message.success('通过id为' + id + '的请求');
+      axios.get("/creditCard/inspector/request/accept", {params: {id: id}})
+          .then(response => {
+            if (response.data.code === 1) {
+              this.$message.error('允许请求失败');
+            } else {
+              this.$message.success('允许请求成功');
+            }
+          });
+      this.queryRequest();
+      //this.$message.success('通过id为' + id + '的请求');
     },
     reject(id) {
-      this.$message.error('拒绝了id为' + id + '的请求');
+      //this.$message.error('拒绝了id为' + id + '的请求');
+      axios.get("/creditCard/inspector/request/reject", {params: {id: id}})
+          .then(response => {
+            if (response.data.code === 1) {
+              this.$message.error('驳回请求失败');
+            } else {
+              this.$message.success('驳回请求成功');
+            }
+          });
+      this.queryRequest();
     },
     queryRequest() {
       axios.get("/creditCard/inspector/request", {params: {permission: this.$store.state.creditCardInspector.permission}})
