@@ -26,4 +26,14 @@ public class CustomerService {
         customerMapper.modifyCreditCardPassword(cardId, password);
         return new ApiResult(true, null, null);
     }
+
+    public ApiResult addModifyLimitRequest(String idNumber, BigInteger cardId, BigInteger limit) {
+        customerMapper.addModifyLimitRequest(idNumber, cardId, limit);
+        return new ApiResult(true, null, null);
+    }
+
+    public ApiResult returnMoney(BigInteger cardId, BigInteger amount){
+        customerMapper.returnMoney(cardId,amount);
+        return new ApiResult(true,null,null);
+    }
 }

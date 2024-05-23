@@ -429,9 +429,22 @@ export default {
         this.$message.error('信用卡密码错误!');
         return;
       }
-      this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
+      //this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
       this.modify_card_limit_visible = false;
-      //TODO
+      axios.post("/creditCard/customer/card/update",null,{
+        params:{
+          id_number: this.$store.state.user.ID_number,
+          id: card_id,
+          limit: limit
+        }
+      }).then(response => {
+        if(response.data.code === 1){
+          this.$message.error('申请失败');
+        }else{
+          this.$message.success('申请成功')
+        }
+      });
+      this.queryCards();
     },
     reportLost(card_id, password) {
       if (this.lost_card.password !== password) {
@@ -488,10 +501,29 @@ export default {
         return;
       }
 
-      this.$message.success('还款信用卡id为' + this.return_money.card_id + '成功，还款金额为' + this.return_money.amount);
+      var amount = this.return_money.amount * 100;
+      var isInt = amount % 1 === 0;
+      if(!isInt){
+        this.$message.error('还款金额的小数部分最多两位');
+        return;
+      }
+
+      //this.$message.success('还款信用卡id为' + this.return_money.card_id + '成功，还款金额为' + this.return_money.amount);
       this.return_money_visible = false;
       // 如果所有验证都通过，执行后续还款操作
-      // TODO
+      axios.post("/creditCard/customer/card/return",null,{
+        params:{
+          card_id: this.return_money.card_id,
+          amount: amount
+        }
+      }).then(response => {
+        if(response.data.code === 1){
+          this.$message.error('还款失败')
+        }else{
+          this.$message.success('还款成功')
+        }
+      });
+      this.queryCards();
     },
     queryCards() {
       this.credit_cards = [];

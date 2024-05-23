@@ -19,4 +19,10 @@ public interface CustomerMapper {
 
     @Update("update credit_card set password = #{password} where id = #{card_id}")
     public void modifyCreditCardPassword(BigInteger card_id, String password);
+
+    @Update("insert into credit_card_application (id_number, credit_card_id, amount ,type, status, password) values ( #{id_number}, #{card_id}, #{limit}, 2, 1, null)")
+    public void addModifyLimitRequest(String id_number, BigInteger card_id, BigInteger limit);
+
+    @Update("update credit_card set loan = loan - #{amount} where id = #{card_id}")
+    public void returnMoney(BigInteger card_id, BigInteger amount);
 }
