@@ -91,13 +91,12 @@ public class UserAndCardService {
             if (list == null) {
                 return new ApiResult(false, "database error");
             }
-            List<Long> cardList = new Vector<Long>();
+            List<Card> cardList = new Vector<Card>();
             for (var item : list) {
-                cardList.add(item.getCardId());
+                CardType cardType = getCardType(item.getCardId());
+                cardList.add(new Card(item.getCardId(), cardType));
             }
-
-            ApiResult apiResult = new ApiResult(true, "success");
-            apiResult.payload = cardList;
+            ApiResult apiResult = new ApiResult(true, "success", cardList);
             return apiResult;
         }
         catch (Exception e) {

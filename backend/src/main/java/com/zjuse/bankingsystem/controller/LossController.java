@@ -8,6 +8,7 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
 import io.micrometer.common.lang.NonNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,48 +22,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("transfer")
-public class transferController {
+@RequestMapping("loss")
+public class LossController {
 
     @Data
+    @AllArgsConstructor
     class Receiver {
-        
-        @JsonProperty("target_card")
-        @NonNull
-        Long targetCard;
-
         @JsonProperty("card_id")
         @NonNull
         Long cardId;
-
         @NonNull
-        String password; 
-
-        @NonNull
-        String amount;
-
-        @NonNull
-        String remark;
+        String password;
     };
 
     @Autowired
     UserAndCardService userAndCardService;
 
     @PostMapping("")
-    public RespResult transfer(@RequestBody Receiver receiver) {
-        try {
-            BigDecimal bigDecimal = new BigDecimal(receiver.amount);
-            
-            ApiResult apiResult = userAndCardService.transfor(receiver.getCardId(), receiver.getTargetCard(), bigDecimal, receiver.getPassword(), receiver.getRemark());
-            if (apiResult.ok) {
-                return RespResult.success(null);
-            } 
-            else {
-                return RespResult.fail(apiResult.message);
-            }
-        }
-        catch (Exception e) {
-            return RespResult.fail(e.getMessage());
+    public RespResult loss(@RequestBody Receiver receiver) {
+        ApiResult apiResult = userAndCardService.loss(receiver.getCardId(), receiver.getPassword());
+        if (apiResult.ok) {
+            return RespResult.success(null);
+        } 
+        else {
+            return RespResult.fail(apiResult.message);
         }
     }
 }

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("usercard")
-public class userCardController {
+public class UserCardController {
 
     @Data
     @AllArgsConstructor
