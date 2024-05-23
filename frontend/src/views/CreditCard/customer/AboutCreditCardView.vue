@@ -370,8 +370,9 @@ export default {
         } else {
           this.$message.success("申请成功")
         }
+        this.queryCards();
       });
-      this.queryCards();
+
     },
     modifyPassword(card_id, password) {
       // 检查新密码是否为空
@@ -402,8 +403,8 @@ export default {
         } else {
           this.$message.success("修改成功")
         }
+        this.queryCards();
       });
-      this.queryCards();
     },
     modifyLimit(card_id, password, loan) {
       if (isNaN(this.modify_limit.new_limit) || this.modify_limit.new_limit === '') {
@@ -443,8 +444,9 @@ export default {
         } else {
           this.$message.success('申请成功')
         }
+        this.queryCards();
       });
-      this.queryCards();
+
     },
     reportLost(card_id, password) {
       if (this.lost_card.password !== password) {
@@ -462,8 +464,8 @@ export default {
             } else {
               this.$message.success('挂失成功')
             }
+            this.queryCards();
           });
-      this.queryCards();
     },
     cancelCard(card_id, password, loan) {
       if (loan !== 0) {
@@ -485,8 +487,8 @@ export default {
             } else {
               this.$message.success('注销成功')
             }
+            this.queryCards();
           });
-      this.queryCards();
     },
     returnMoney(password) {
       // 检查密码是否为空
@@ -540,8 +542,8 @@ export default {
         } else {
           this.$message.success('还款成功')
         }
+        this.queryCards();
       });
-      this.queryCards();
     },
     queryCards() {
       this.credit_cards = [];

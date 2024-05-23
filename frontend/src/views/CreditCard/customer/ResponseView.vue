@@ -85,27 +85,27 @@
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === '1'">创建信用卡</span>
-                    <span v-else-if="row.type === '2'">更新信用卡额度</span>
+                    <span v-if="row.type === 1">创建信用卡</span>
+                    <span v-else-if="row.type === 2">更新信用卡额度</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{ row.amount / 100 }}</span>
-                    <span v-else-if="row.type === '2'">更新信用卡{{ row.creditCardId }}的额度为{{
+                    <span v-if="row.type === 1">创建一张新的信用卡,额度为{{ row.amount / 100 }}</span>
+                    <span v-else-if="row.type === 2">更新信用卡的额度为{{
                         row.amount / 100
                       }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求结果" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.status === '1'">待审核<el-icon>
+                    <span v-if="row.status === 1">待审核<el-icon>
                         <QuestionFilled/>
                       </el-icon></span>
-                    <span v-else-if="row.status === '2'" style="color: limegreen;">通过<el-icon>
+                    <span v-else-if="row.status === 2" style="color: limegreen;">通过<el-icon>
                         <SuccessFilled/>
                       </el-icon></span>
-                    <span v-else-if="row.status === '3'" style="color: red;">驳回<el-icon>
+                    <span v-else-if="row.status === 3" style="color: red;">驳回<el-icon>
                         <CircleCloseFilled/>
                       </el-icon></span>
                   </template>
@@ -158,15 +158,15 @@ export default {
     exit() {
       this.$router.push('/creditCard/customer/login');
     },
-    queryResponses(){
-      axios.get('/creditCard/customer/queryRequests',{param:{idNumber:this.$store.state.user.ID_number}})
-      .then(response => {
-        this.request_responses = []
-        let responses = response.data.payload
-        responses.forEach(element => {
-          this.request_responses.push(element)
-        });
-      })
+    queryResponses() {
+      axios.get("/creditCard/customer/queryRequests", {params: {idNumber: this.$store.state.user.ID_number}})
+          .then(response => {
+            this.request_responses = []
+            let responses = response.data.payload
+            responses.forEach(element => {
+              this.request_responses.push(element)
+            })
+          })
     }
   },
   mounted() {

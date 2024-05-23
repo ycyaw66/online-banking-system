@@ -5,12 +5,14 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 @RestController
 public class CreditCardController {
@@ -100,36 +102,63 @@ public class CreditCardController {
     }
 
     @PostMapping("/creditCard/inspector/login")
-    public RespResult loginInspector(@RequestParam String name, @RequestParam String password){
+    public RespResult loginInspector(@RequestParam String name, @RequestParam String password) {
         ApiResult apiResult = creditCardService.loginInspector(name, password);
-        if(apiResult.ok){
+        if (apiResult.ok) {
             return RespResult.success(apiResult.payload);
-        }else{
+        } else {
             return RespResult.fail("登录失败");
         }
     }
 
     @GetMapping("/creditCard/inspector/request")
-    public RespResult queryRequestsByInspector(@RequestParam Integer permission){
+    public RespResult queryRequestsByInspector(@RequestParam Integer permission) {
         ApiResult apiResult = creditCardService.queryRequestsByInspector(permission);
         return RespResult.success(apiResult.payload);
     }
 
     @GetMapping("/creditCard/inspector/request/accept")
-    public RespResult acceptRequest(@RequestParam Integer id){
+    public RespResult acceptRequest(@RequestParam Integer id) {
         ApiResult apiResult = creditCardService.acceptRequest(id);
         return RespResult.success(apiResult.payload);
     }
 
     @GetMapping("/creditCard/inspector/request/reject")
-    public RespResult rejectRequest(@RequestParam Integer id){
+    public RespResult rejectRequest(@RequestParam Integer id) {
         ApiResult apiResult = creditCardService.rejectRequest(id);
         return RespResult.success(apiResult.payload);
     }
 
     @GetMapping("/creditCard/customer/queryRequests")
-    public  RespResult queryRequestsByCustomer(@RequestParam String idNumber){
+    public RespResult queryRequestsByCustomer(@RequestParam String idNumber) {
         ApiResult apiResult = creditCardService.queryRequestsByCustomer(idNumber);
         return RespResult.success((apiResult.payload));
     }
+
+    @PostMapping("/creditCard/customer/pay/add")
+    public RespResult bankPay(@RequestParam BigInteger card_id, @RequestParam String id_number, @RequestParam BigInteger account, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.bankPay(card_id, id_number, password, account, date);
+        if (apiResult.ok) {
+            return RespResult.success(apiResult.payload);
+        } else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
+
+    @PostMapping("/creditCard/customer/simulation/query")
+    public RespResult queryBills(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start_date, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, @RequestParam String id_number) {
+        System.out.println("start_date = " + start_date + " and end_date = " + end_date + " and id_number = " + id_number);
+        ApiResult apiResult = new ApiResult(true, null);
+        try {
+            apiResult = creditCardService.queryBills(start_date, end_date, id_number);
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return RespResult.success(apiResult.payload);
+//        System.out.println("aaa");
+//        System.out.println(apiResult.payload);
+
+    }
+
 }

@@ -109,6 +109,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -139,8 +141,20 @@ export default {
         return;
       }
 
-      alert(this.start_date + ' ' + this.end_date);
-      // TODO
+      //alert(this.start_date + ' ' + this.end_date);
+      axios.post("/creditCard/customer/simulation/query",null,{
+        params:{
+          start_date: this.start_date,
+          end_date: this.end_date,
+          id_number: this.$store.state.user.ID_number
+        }
+      }).then(response =>{
+        let bills = response.data.payload;
+        console.log(bills);
+        bills.forEach(bill => {
+          this.bills.push(bill);
+        })
+      })
     },
   },
   mounted() {

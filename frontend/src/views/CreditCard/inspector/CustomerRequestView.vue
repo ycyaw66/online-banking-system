@@ -136,8 +136,8 @@ export default {
             } else {
               this.$message.success('允许请求成功');
             }
+            this.queryRequest();
           });
-      this.queryRequest();
       //this.$message.success('通过id为' + id + '的请求');
     },
     reject(id) {
@@ -149,8 +149,8 @@ export default {
             } else {
               this.$message.success('驳回请求成功');
             }
+            this.queryRequest();
           });
-      this.queryRequest();
     },
     queryRequest() {
       axios.get("/creditCard/inspector/request", {params: {permission: this.$store.state.creditCardInspector.permission}})
