@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +19,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.zjuse.bankingsystem.entity.Blacklist;
 import com.zjuse.bankingsystem.entity.CardOfPerson;
+import com.zjuse.bankingsystem.entity.History;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.BlacklistMapper;
 import com.zjuse.bankingsystem.mapper.UserMapper;
 import com.zjuse.bankingsystem.service.BlacklistService;
+import com.zjuse.bankingsystem.service.CardService;
 import com.zjuse.bankingsystem.service.UserAndCardService;
 import com.zjuse.bankingsystem.service.UserPrivilegeService;
 import com.zjuse.bankingsystem.utils.ApiResult;
+import com.zjuse.bankingsystem.utils.CardType;
 
 @SpringBootTest
 @MapperScan("com.zjuse.bankingsystem.mapper")
@@ -42,6 +46,9 @@ public class UserServiceTest {
 
     @Autowired
     UserAndCardService userAndCardService;
+
+    @Autowired 
+    CardService cardService;
 
     User RandomUser() {
         User user = new User();
@@ -127,37 +134,85 @@ public class UserServiceTest {
         assertFalse(userPrivilegeService.getUserPrivilege(13L).ok);
     }
 
-    @Test
-    void BindCardTest() {
-        List<User> list = InsertTest(10);
-        Long N0 = 50000000000000000L;
-        Map<CardOfPerson, Integer> map = new HashMap<CardOfPerson, Integer>();
-        Long M = 20L;
+    void InitCardAndPerson(List<User> userlist, List<Long> cardList, Map<CardOfPerson, Integer> relation,Integer N, Integer M) {
+        for(int i = 0; i < N; i++) {
+            try {
+                User user = RandomUser();
+                userMapper.insert(user);
+                userlist.add(user);
+            }
+            catch (Exception e) {
+                System.out.println("system out " + e.getMessage());
+            }
+        }
         for(Long i = 1L; i <= M; i++) {
             Random random = new Random();
-            Long cardId = i;
-            Integer index = random.nextInt(10);
-            assertTrue(userAndCardService.bindUserAndCard(i, list.get(index).getId_number()).ok);
-            CardOfPerson cardOfPerson = new CardOfPerson();
-            cardOfPerson.setCardId(cardId);
-            cardOfPerson.setUserId(list.get(index).getId());
-            map.put(cardOfPerson, 1);
+            ApiResult apiResult = cardService.registerCard(CardType.CREDIT_CARD);
+            assertTrue(apiResult.ok);
+            Long cardId = (Long) apiResult.payload;
+            cardList.add(cardId);
+            Integer index = random.nextInt(N);
+            assertTrue(userAndCardService.bindUserAndCard(i, userlist.get(index).getId_number()).ok);
+            CardOfPerson cardOfPerson = new CardOfPerson(cardId, userlist.get(index).getId());
+            relation.put(cardOfPerson, 1);
         }
+    }
+
+    @Test
+    void BindCardTest() {
+        Integer N = 10, M = 20;
+        List<User> list = new Vector<>();
+        List<Long> cardList = new Vector<>();
+        Map<CardOfPerson, Integer> map = new HashMap<CardOfPerson, Integer>();
+        InitCardAndPerson(list, cardList, map, N, M);
         Long total = 0L;
         for(User user : list) {
             ApiResult apiResult = userAndCardService.getAllCard(user.getId());
             assertTrue(apiResult.ok);
-            List<Long> cardList = (List<Long>) apiResult.payload;
-            for(Long item : cardList) {
+            List<Long> usercard = (List<Long>) apiResult.payload;
+            for(Long item : usercard) {
                 CardOfPerson cardOfPerson = new CardOfPerson();
                 cardOfPerson.setCardId(item);
                 cardOfPerson.setUserId(user.getId());
                 assertTrue(map.containsKey(cardOfPerson));
             }
-            total += cardList.size();
+            total += usercard.size();
         }
         assertEquals(M, total);
     }
 
+    @Test
+    void TransferTest() {
+        Integer N = 10, M = 20;
+        List<User> list = new Vector<>();
+        List<Long> cardList = new Vector<>();
+        Map<CardOfPerson, Integer> map = new HashMap<CardOfPerson, Integer>();
+        InitCardAndPerson(list, cardList, map, N, M);
+        Random random = new Random();
+        for(int i = 1; i <= M; i++) {
+            Long cardId = cardList.get(i - 1);
+            Integer index = random.nextInt(N);
+            Long targetId = list.get(index).getId();
+            ApiResult apiResult = userAndCardService.transfor(cardId, targetId, new BigDecimal("12342134"), "12342314", "transfer" + i);
+            if (targetId == cardId) {
+                assertFalse(apiResult.ok);
+                
+            }
+            else {
+                assertTrue(apiResult.ok);
+                apiResult = userAndCardService.history(cardId);
+                assertTrue(apiResult.ok);
+                List<History> history = (List<History>) apiResult.payload;
+                boolean flag = false;
+                for(History item : history) {
+                    if (item.getTargetCard() == targetId && item.getRemark().equals("transfer" + i)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                assertTrue(flag);
+            }
+        }
+    }
 
 }

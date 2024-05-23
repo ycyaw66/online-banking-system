@@ -268,6 +268,7 @@ public class UserAndCardService {
             return new ApiResult(true, "success");
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             if (isDec) {
                 try {
                     Rollback(cardId, amount);

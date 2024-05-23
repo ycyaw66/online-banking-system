@@ -1,6 +1,6 @@
 DELETE FROM `user`;
 
-INSERT INTO 'card' (card_type) VALUES (42);
+INSERT INTO `card` (card_type) VALUES (42);
 -- used to handle consume, it is a virtual card
 
 
