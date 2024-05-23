@@ -22,7 +22,7 @@ public class CustomerController {
     }
 
     @PostMapping("/creditCard/customer/card/register")
-    public RespResult addNewCreditCard(@RequestParam String id_number, @RequestParam Double card_limit, @RequestParam String password) {
+    public RespResult addNewCreditCard(@RequestParam String id_number, @RequestParam BigInteger card_limit, @RequestParam String password) {
         return RespResult.success(customerService.addNewCreditCard(id_number, card_limit, password).payload);
     }
 

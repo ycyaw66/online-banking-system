@@ -4,9 +4,9 @@
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
         <el-header
-          style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
-            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;" />
+            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
           </div>
           线上银行系统--信用卡系统
         </el-header>
@@ -18,14 +18,14 @@
                 <el-sub-menu index="1">
                   <template #title>
                     <el-icon>
-                      <UserFilled />
+                      <UserFilled/>
                     </el-icon>
                     用户功能
                   </template>
                   <el-menu-item index="1-1">
                     <router-link to="/creditCard/customer/info">
                       <el-icon>
-                        <HomeFilled />
+                        <HomeFilled/>
                       </el-icon>
                       个人资料
                     </router-link>
@@ -33,7 +33,7 @@
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/customer/card">
                       <el-icon>
-                        <WalletFilled />
+                        <WalletFilled/>
                       </el-icon>
                       信用卡相关
                     </router-link>
@@ -41,7 +41,7 @@
                   <el-menu-item index="1-3">
                     <router-link to="/creditCard/customer/response">
                       <el-icon>
-                        <Promotion />
+                        <Promotion/>
                       </el-icon>
                       请求结果查询
                     </router-link>
@@ -49,7 +49,7 @@
                   <el-menu-item index="1-4">
                     <router-link to="/creditCard/customer/pay">
                       <el-icon>
-                        <Shop />
+                        <Shop/>
                       </el-icon>
                       模拟支付
                     </router-link>
@@ -57,7 +57,7 @@
                   <el-menu-item index="1-5">
                     <router-link to="/creditCard/customer/simulation">
                       <el-icon>
-                        <List />
+                        <List/>
                       </el-icon>
                       流水查询
                     </router-link>
@@ -74,10 +74,10 @@
             <div class="demo-date-picker">
               <div class="block">
                 <el-date-picker v-model="start_date" type="date" placeholder="请选择您的开始日期"
-                  :default-value="new Date(2010, 9, 1)" />
+                                :default-value="new Date(2010, 9, 1)"/>
                 -----
                 <el-date-picker v-model="end_date" type="date" placeholder="请选择您的结束日期"
-                  :default-value="new Date(2010, 9, 1)" />
+                                :default-value="new Date(2010, 9, 1)"/>
               </div>
             </div>
             <div class="mb-4" style="text-align: center;">
@@ -88,10 +88,14 @@
 
             <div style="display: flex; justify-content: center;">
               <el-table :data="bills" stripe style="width: 800px;">
-                <el-table-column prop="id" label="交易订单编号" width="200px" />
-                <el-table-column prop="creditCardId" label="信用卡id" width="200px" />
-                <el-table-column prop="amount" label="交易金额：单位(元)" width="200px" />
-                <el-table-column prop="billDate" label="交易日期" width="200px" />
+                <el-table-column prop="id" label="交易订单编号" width="200px"/>
+                <el-table-column prop="creditCardId" label="信用卡id" width="200px"/>
+                <el-table-column label="交易金额：单位(元)" width="200px">
+                  <template v-slot="{ row = {} }">
+                    <span>{{ row.amount / 100 }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="billDate" label="交易日期" width="200px"/>
               </el-table>
             </div>
 
@@ -111,11 +115,11 @@ export default {
       start_date: '',
       end_date: '',
       bills: [{
-        id: '流水id',
-        idNumber:'',
-        creditCardId: '信用卡id',
-        amount: '交易金额',
-        billDate: '交易日期'
+        id: '100',
+        idNumber: '',
+        creditCardId: '200000000000',
+        amount: '10000',
+        billDate: '20231023'
       }],
     }
   },
@@ -145,12 +149,12 @@ export default {
 </script>
 
 <style>
-.el-menu-item>a {
+.el-menu-item > a {
   color: inherit;
   text-decoration: none !important;
 }
 
-.el-menu-item>a.is-active {
+.el-menu-item > a.is-active {
   color: inherit;
   text-decoration: none !important;
 }

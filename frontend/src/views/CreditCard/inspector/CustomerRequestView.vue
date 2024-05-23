@@ -66,8 +66,8 @@
                 </el-table-column>
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{row.amount}}元</span>
-                    <span v-else-if="row.type === '2'">更新信用卡{{ row.creditCardId }}的额度为{{ row.amount }}元</span>
+                    <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{ row.amount / 100}}元</span>
+                    <span v-else-if="row.type === '2'">更新信用卡{{ row.creditCardId }}的额度为{{ row.amount / 100 }}元</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="处理结果" width="200px">
@@ -97,7 +97,7 @@ export default {
         id: '1',
         idNumber:'123456',
         creditCardId: '',
-        amount: '100.00',
+        amount: '10000',
         type: '1',
         status: '1',
         password:''
@@ -105,7 +105,7 @@ export default {
         id: '2',
         idNumber: '234567',
         creditCardId: '1',
-        amount: '200.00',
+        amount: '20000',
         type: '2',
         status: '2',
         password: ''
@@ -113,7 +113,7 @@ export default {
         id: '3',
         idNumber: '345678',
         creditCardId: '1',
-        amount: '300.00',
+        amount: '30000',
         type: '2',
         status: '3',
         password: ''

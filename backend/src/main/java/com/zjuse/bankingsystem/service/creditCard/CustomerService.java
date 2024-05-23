@@ -17,7 +17,7 @@ public class CustomerService {
         return new ApiResult(true, null, customerMapper.queryCards(idNumber));
     }
 
-    public ApiResult addNewCreditCard(String idNumber, Double cardLimit, String password) {
+    public ApiResult addNewCreditCard(String idNumber, BigInteger cardLimit, String password) {
         customerMapper.addNewCreditCard(idNumber, cardLimit, password);
         return new ApiResult(true, null, null);
     }

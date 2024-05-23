@@ -92,9 +92,9 @@
                     <!-- 卡片内容 -->
                     <div style="margin-left: 10px; text-align: start; font-size: 16px;">
                       <p>信用卡 ID: {{ card.id }}</p>
-                      <p>信用卡总额度: {{ card.cardLimit }}</p>
-                      <p>信用卡已用额度: {{ card.loan }}</p>
-                      <p>信用卡可用额度: {{ card.cardLimit - card.loan }}</p>
+                      <p>信用卡总额度(元): {{ card.cardLimit / 100 }}</p>
+                      <p>信用卡已用额度(元): {{ card.loan / 100 }}</p>
+                      <p>信用卡可用额度(元): {{ (card.cardLimit - card.loan) / 100 }}</p>
                       <p>是否挂失: {{ card.isLost === '1' ? '已挂失' : '未挂失' }}</p>
                     </div>
 
@@ -107,7 +107,7 @@
                         修改密码
                       </el-button>
                       <el-button type="primary"
-                                 @click="modify_limit_card_id = card.id, modify_limit_password = card.password, modify_limit.password = '', modify_limit.new_limit = '0', modify_card_limit_visible = true">
+                                 @click="modify_limit_loan = card.loan, modify_limit_card_id = card.id, modify_limit_password = card.password, modify_limit.password = '', modify_limit.new_limit = '0', modify_card_limit_visible = true">
                         修改额度
                       </el-button>
                       <el-button type="primary"
@@ -175,7 +175,7 @@
                   </template>
                 </el-dialog>
 
-                <el-dialog title="修改密码" v-model="modify_card_limit_visible" style="width: 25vw;">
+                <el-dialog title="修改额度" v-model="modify_card_limit_visible" style="width: 25vw;">
                   <el-form :model="modify_limit">
                     <el-form-item label="请输入申请额度" :label-width="formLabelWidth">
                       <el-input v-model="modify_limit.new_limit" autocomplete="off" style="width: 12.5vw;"></el-input>
@@ -187,7 +187,8 @@
                   </el-form>
                   <template #footer>
                     <el-button @click="modify_card_limit_visible = false">取 消</el-button>
-                    <el-button type="primary" @click="modifyLimit(modify_limit_card_id, modify_limit_password)">确 定
+                    <el-button type="primary"
+                               @click="modifyLimit(modify_limit_card_id, modify_limit_password, modify_limit_loan)">确 定
                     </el-button>
                   </template>
                 </el-dialog>
@@ -314,6 +315,7 @@ export default {
       modify_password_card_id: '',
       modify_limit_password: '',
       modify_limit_card_id: '',
+      modify_limit_loan: '',
       lost_card_password: '',
       lost_card_id: '',
       cancel_card_password: '',
@@ -334,6 +336,12 @@ export default {
         this.$message.error('请输入数字作为信用卡额度！');
         return;
       }
+      var limit = this.new_card.limit * 100;
+      var isInt = limit % 1 === 0;
+      if (!isInt) {
+        this.$message.error('额度的小数部分最多两位');
+        return;
+      }
       // 检查密码是否为空
       if (this.new_card.first_password === '' || this.new_card.second_password === '') {
         this.$message.error('密码不能为空');
@@ -350,13 +358,13 @@ export default {
       this.add_new_card_visible = false;
       //this.$message.success('添加信用卡额度为' + this.new_card.limit)
 
-      axios.post("/creditCard/customer/card/register",null, {
-        params:{
+      axios.post("/creditCard/customer/card/register", null, {
+        params: {
           id_number: this.$store.state.user.ID_number,
-          card_limit: this.new_card.limit,
+          card_limit: limit,
           password: this.new_card.first_password
         }
-          }).then(response => {
+      }).then(response => {
         if (response.data.code === 1) {
           this.$message.error("申请失败")
         } else {
@@ -383,8 +391,8 @@ export default {
       }
       // this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
       this.modify_password_visible = false;
-      axios.post("/creditCard/customer/card/modify",null, {
-        params:{
+      axios.post("/creditCard/customer/card/modify", null, {
+        params: {
           card_id: card_id,
           password: this.modify_password.new_password
         }
@@ -397,10 +405,23 @@ export default {
       });
       this.queryCards();
     },
-    modifyLimit(card_id, password) {
+    modifyLimit(card_id, password, loan) {
       if (isNaN(this.modify_limit.new_limit) || this.modify_limit.new_limit === '') {
         // 如果不是数字，就弹出警告并返回，不继续执行函数
         this.$message.error('请输入数字作为信用卡额度！');
+        return;
+      }
+      console.log(this.modify_limit.new_limit);
+      console.log(loan);
+      var limit = this.modify_limit.new_limit * 100;
+      var isInt = limit % 1 === 0;
+      if (!isInt) {
+        this.$message.error('新额度小数部分最多两位');
+        return;
+      }
+      // 检查新的额度是否超过现有的贷款额度
+      if (limit < loan) {
+        this.$message.error('新额度不能小于当前欠款');
         return;
       }
       if (this.modify_limit.password !== password) {
@@ -408,7 +429,7 @@ export default {
         this.$message.error('信用卡密码错误!');
         return;
       }
-      this.$message.success('修改信用卡' + card_id + '的额度至' + this.modify_limit.new_limit + '元');
+      this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
       this.modify_card_limit_visible = false;
       //TODO
     },

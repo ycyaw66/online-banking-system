@@ -148,7 +148,12 @@ export default {
       if (isNaN(numAccount)) {
         this.$message.error('输入的支付金额不是一个有效的数字');
       } else {
-        this.$message.success('支付成功，共支付 ' + this.account + ' 元');
+        var account = numAccount * 100;
+        var isInt = account % 1 === 0;
+        if(!isInt){
+          this.$message.error('支付金额小数部分最多两位');
+        }
+        this.$message.success('支付成功，共支付 ' + account + ' 元');
       }
     },
   },
