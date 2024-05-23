@@ -68,4 +68,11 @@ public interface CreditCardMapper {
 
     @Select("select * from credit_card_application where status = 1 and type = 1")
     public List<CreditCardApplication> queryPartRequestByInspector();
+
+    @Select("select * from credit_card_application where id_number = #{idNumber}")
+    public List<CreditCardApplication> queryAllRequestsByCustomer(String idNumber);
+
+
+
+
 }

@@ -3,7 +3,7 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         url: jdbc:mysql://localhost:3306/bank?serverTimezone=UTC
-        password: "zhao1290"
+        password: "123456"
 #    sql:
 #        init:
 #            schema-locations: classpath:db/init.sql

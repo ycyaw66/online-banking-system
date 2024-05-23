@@ -114,4 +114,10 @@ public class CreditCardController {
         ApiResult apiResult = creditCardService.queryRequestsByInspector(permission);
         return RespResult.success(apiResult.payload);
     }
+
+    @GetMapping("/creditCard/customer/queryRequests")
+    public  RespResult queryRequestsByCustomer(@RequestParam String idNumber){
+        ApiResult apiResult = creditCardService.queryRequestsByCustomer(idNumber);
+        return RespResult.success((apiResult.payload));
+    }
 }
