@@ -148,17 +148,8 @@ public class CreditCardController {
     @PostMapping("/creditCard/customer/simulation/query")
     public RespResult queryBills(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start_date, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, @RequestParam String id_number) {
         System.out.println("start_date = " + start_date + " and end_date = " + end_date + " and id_number = " + id_number);
-        ApiResult apiResult = new ApiResult(true, null);
-        try {
-            apiResult = creditCardService.queryBills(start_date, end_date, id_number);
-
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        ApiResult apiResult = creditCardService.queryBills(start_date, end_date, id_number);
         return RespResult.success(apiResult.payload);
-//        System.out.println("aaa");
-//        System.out.println(apiResult.payload);
-
     }
 
 }

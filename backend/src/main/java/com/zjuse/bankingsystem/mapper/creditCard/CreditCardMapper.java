@@ -91,6 +91,6 @@ public interface CreditCardMapper {
     @Update("update credit_card set loan = loan + #{account} where id = #{card_id}")
     public void updateLoan(BigInteger card_id, BigInteger account);
 
-    @Update("select * from credit_card_bill where id_number = #{id_number} and bill_date >= #{start_date} and bill_date <= #{end_date}")
+    @Select("select * from credit_card_bill where id_number = #{id_number} and bill_date >= #{start_date} and bill_date <= #{end_date}")
     public List<CreditCardBill> queryBills(Date start_date, Date end_date, String id_number);
 }
