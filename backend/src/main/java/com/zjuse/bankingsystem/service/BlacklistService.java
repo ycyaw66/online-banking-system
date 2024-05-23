@@ -51,9 +51,12 @@ public class BlacklistService {
     }
     public ApiResult addBlacklist(Long userId, String reason) {
         try {
-            Blacklist blacklist = new Blacklist();
-            blacklist.setUserId(userId);
-            blacklist.setReason(reason);
+            QueryWrapper wrapper = new QueryWrapper<>();
+            wrapper.eq("user_id", userId);
+            if (blacklistMapper.selectCount(wrapper) > 0) {
+                return new ApiResult(false, "user already in blacklist");
+            }
+            Blacklist blacklist = new Blacklist(userId, reason);
             blacklistMapper.insert(blacklist);
             return new ApiResult(true, "success");
         }
@@ -65,6 +68,10 @@ public class BlacklistService {
         try {
             QueryWrapper wrapper = new QueryWrapper(); 
             wrapper.eq("user_id", userId);
+            
+            if (blacklistMapper.selectCount(wrapper) == 0) {
+                return new ApiResult(false, "user not in blacklist");
+            }
             blacklistMapper.delete(wrapper);
             return new ApiResult(true, "success");
         }

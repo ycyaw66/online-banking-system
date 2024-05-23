@@ -21,4 +21,7 @@ public class DebitcardService {
     public ApiResult getHistory(Long cardId) {
         return new ApiResult(false, "not implemented");
     }
+    public ApiResult getBalance(Long cardId, String password) {
+        return new ApiResult(false, "not implemented");
+    }
 }

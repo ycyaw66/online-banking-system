@@ -20,7 +20,8 @@ public class CreditcardService {
     public ApiResult loss(Long cradId, String password) {
         return new ApiResult(false, "not implemented");
     }
-    public ApiResult getHistory(Long cardId) {
+
+    public ApiResult getBalance(Long cardId, String password) {
         return new ApiResult(false, "not implemented");
     }
 }
