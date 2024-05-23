@@ -1,15 +1,13 @@
 package com.zjuse.bankingsystem.service.creditCard;
 
-import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
+import com.zjuse.bankingsystem.entity.creditCard.*;
 import com.zjuse.bankingsystem.mapper.creditCard.CreditCardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 import java.util.PrimitiveIterator;
 
@@ -111,6 +109,29 @@ public class CreditCardService {
         }
     }
 
+    public ApiResult acceptRequest(Integer id){
+        CreditCardApplication creditCardApplication = creditCardMapper.selectSingleRequest(id);
+        Integer type = creditCardApplication.getType();
+        if(type.equals(1)){
+            CreditCard creditCard=new CreditCard();
+            creditCard.setCardLimit(creditCardApplication.getAmount());
+            creditCard.setPassword(creditCardApplication.getPassword());
+            creditCard.setIdNumber(creditCardApplication.getIdNumber());
+            creditCard.setLoan(BigInteger.valueOf(0));
+            creditCardMapper.insertCreditCard(creditCard);
+            creditCardMapper.acceptRequest(id);
+            return new ApiResult(true,null);
+        }else{
+            creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
+            creditCardMapper.acceptRequest(id);
+            return new ApiResult(true,null);
+        }
+    }
+
+    public ApiResult rejectRequest(Integer id){
+        creditCardMapper.rejectRequest(id);
+        return new ApiResult(true,null);
+    }
     public  ApiResult queryRequestsByCustomer(String idNumber) {
         List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestsByCustomer(idNumber);
         if(creditCardApplications == null) {
@@ -118,5 +139,27 @@ public class CreditCardService {
         } else {
             return new ApiResult(true, creditCardApplications);
         }
+    }
+
+    public ApiResult bankPay(BigInteger cardId, String idNumber, String password, BigInteger account, Date date){
+        CreditCard matchCard = creditCardMapper.findMatchCard(cardId, idNumber, password);
+        if (matchCard==null){
+            return new ApiResult(false,"输入的信息不完全匹配");
+        }
+        BigInteger cardLimit = matchCard.getCardLimit();
+        BigInteger loan = matchCard.getLoan();
+        BigInteger add = loan.add(account);
+        int result = cardLimit.compareTo(add);
+        if(result < 0){
+            return new ApiResult(false,"信用卡可用额度不足");
+        }
+        creditCardMapper.addPayment(idNumber,cardId,account,date);
+        creditCardMapper.updateLoan(cardId,account);
+        return new ApiResult(true,null);
+    }
+
+    public ApiResult queryBills(Date startDate, Date endDate, String idNumber){
+        List<CreditCardBill> creditCardBills = creditCardMapper.queryBills(startDate, endDate, idNumber);
+        return new ApiResult(true,creditCardBills);
     }
 }

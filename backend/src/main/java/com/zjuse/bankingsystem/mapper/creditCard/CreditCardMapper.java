@@ -1,15 +1,13 @@
 package com.zjuse.bankingsystem.mapper.creditCard;
 
-import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
+import com.zjuse.bankingsystem.entity.creditCard.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -69,10 +67,30 @@ public interface CreditCardMapper {
     @Select("select * from credit_card_application where status = 1 and type = 1")
     public List<CreditCardApplication> queryPartRequestByInspector();
 
+    @Select("select * from credit_card_application where id = #{id}")
+    public CreditCardApplication selectSingleRequest(Integer id);
+
+    @Update("update credit_card set card_limit = #{card_limit} where id = #{id}")
+    public void updateCardLimit(BigInteger card_limit, BigInteger id);
+
+    @Update("update credit_card_application set status = 2 where id = #{id}")
+    public void acceptRequest(Integer id);
+
+    @Update("update credit_card_application set status = 3 where id = #{id}")
+    public void rejectRequest(Integer id);
+
     @Select("select * from credit_card_application where id_number = #{idNumber}")
     public List<CreditCardApplication> queryAllRequestsByCustomer(String idNumber);
 
+    @Select("select * from credit_card where id = #{card_id} and id_number = #{id_number} and password = #{password} and is_lost = 0")
+    public CreditCard findMatchCard(BigInteger card_id, String id_number, String password);
 
+    @Update("insert into credit_card_bill (id_number, credit_card_id, amount, bill_date) VALUES ( #{id_number}, #{credit_card_id}, #{amount}, #{bill_date})")
+    public void addPayment(String id_number, BigInteger credit_card_id, BigInteger amount, Date bill_date);
 
+    @Update("update credit_card set loan = loan + #{account} where id = #{card_id}")
+    public void updateLoan(BigInteger card_id, BigInteger account);
 
+    @Select("select * from credit_card_bill where id_number = #{id_number} and bill_date >= #{start_date} and bill_date <= #{end_date}")
+    public List<CreditCardBill> queryBills(Date start_date, Date end_date, String id_number);
 }

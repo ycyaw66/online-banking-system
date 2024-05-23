@@ -95,7 +95,11 @@
                     <span>{{ row.amount / 100 }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="billDate" label="交易日期" width="200px"/>
+                <el-table-column prop="billDate" label="交易日期" width="200px">
+                  <template v-slot="{ row = {} }">
+                    <span>{{ formatDate(row.billDate) }}</span>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
 
@@ -109,21 +113,28 @@
 
 <script>
 
+import axios from "axios";
+import {format} from "date-fns";
+
 export default {
   data() {
     return {
       start_date: '',
       end_date: '',
       bills: [{
-        id: '100',
+        id: '',
         idNumber: '',
-        creditCardId: '200000000000',
-        amount: '10000',
-        billDate: '20231023'
+        creditCardId: '',
+        amount: '',
+        billDate: ''
       }],
     }
   },
   methods: {
+    formatDate(date) {
+      if (!date) return '';
+      return format(new Date(date), 'yyyy年MM月dd日')
+    },
     exit() {
       this.$router.push('/creditCard/customer/login');
     },
@@ -139,8 +150,20 @@ export default {
         return;
       }
 
-      alert(this.start_date + ' ' + this.end_date);
-      // TODO
+      //alert(this.start_date + ' ' + this.end_date);
+      axios.post("/creditCard/customer/simulation/query",null,{
+        params:{
+          start_date: this.start_date,
+          end_date: this.end_date,
+          id_number: this.$store.state.user.ID_number
+        }
+      }).then(response =>{
+        this.bills = [];
+        let bills = response.data.payload;
+        bills.forEach(bill => {
+          this.bills.push(bill);
+        })
+      })
     },
   },
   mounted() {

@@ -296,8 +296,9 @@ export default {
         } else {
           this.$message.success('添加成功');
         }
+        this.queryInspector();
       });
-      this.queryInspector();
+
     },
     deleteInspector() {
       this.$message.error('删除编号为' + this.delete_inspector_id + '的审查员');
@@ -308,8 +309,8 @@ export default {
             } else {
               this.$message.success('删除审查员成功')
             }
+            this.queryInspector();
           });
-      this.queryInspector();
       this.delete_inspector_visible = false;
     },
     queryInspector() {

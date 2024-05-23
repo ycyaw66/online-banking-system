@@ -39,7 +39,7 @@
               <br>
               <div>
                 <span>密码：</span>
-                <el-input v-model="inspector.password" style="width: 250px" placeholder="请输入密码"/>
+                <el-input type="password" v-model="inspector.password" style="width: 250px" placeholder="请输入密码"/>
               </div>
               <br>
               <div class="mb-4" style="text-align: center;">

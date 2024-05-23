@@ -112,6 +112,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -153,8 +155,24 @@ export default {
         if(!isInt){
           this.$message.error('支付金额小数部分最多两位');
         }
-        this.$message.success('支付成功，共支付 ' + account + ' 元');
+        //this.$message.success('支付成功，共支付 ' + account + ' 元');
       }
+
+      axios.post("/creditCard/customer/pay/add",null,{
+        params:{
+          card_id: this.credit_card_id,
+          id_number: this.$store.state.user.ID_number,
+          account: account,
+          date: this.date,
+          password: this.password
+        }
+      }).then(response => {
+        if(response.data.code === 1){
+          this.$message.error(response.data.err);
+        }else{
+          this.$message.success('支付成功');
+        }
+      })
     },
   },
   mounted() {
