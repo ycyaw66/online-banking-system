@@ -1,6 +1,6 @@
 package com.zjuse.bankingsystem.controller.creditCard;
 
-import com.zjuse.bankingsystem.service.creditCard.CustomerService;
+import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
 import com.zjuse.bankingsystem.utils.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
@@ -12,36 +12,48 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigInteger;
 
 @RestController
-public class CustomerController {
+public class CreditCardController {
 
     @Autowired
-    private CustomerService customerService;
+    private CreditCardService creditCardService;
 
     @GetMapping("/creditCard/customer/card")
     public RespResult getCardsByIdNumber(@RequestParam String id_number) {
-        return RespResult.success(customerService.getCardsByIdNumber(id_number).payload);
+        return RespResult.success(creditCardService.getCardsByIdNumber(id_number).payload);
     }
 
     @PostMapping("/creditCard/customer/card/register")
     public RespResult addNewCreditCard(@RequestParam String id_number, @RequestParam BigInteger card_limit, @RequestParam String password) {
-        return RespResult.success(customerService.addNewCreditCard(id_number, card_limit, password).payload);
+        return RespResult.success(creditCardService.addNewCreditCardRequest(id_number, card_limit, password).payload);
     }
 
     @PostMapping("/creditCard/customer/card/modify")
     public RespResult modifyCreditCardPassword(@RequestParam BigInteger card_id, @RequestParam String password) {
 //        System.out.println("card_id = " + card_id + " and password = " + password);
-        return RespResult.success(customerService.modifyCreditCardPassword(card_id, password).payload);
+        return RespResult.success(creditCardService.modifyCreditCardPassword(card_id, password).payload);
     }
 
     @PostMapping("/creditCard/customer/card/update")
     public RespResult addModifyLimitRequest(@RequestParam String id_number, @RequestParam BigInteger id, @RequestParam BigInteger limit) {
         System.out.println("id_number = " + id_number + " and id = " + id + " and limit = " + limit);
-        return RespResult.success(customerService.addModifyLimitRequest(id_number, id, limit).payload);
+        return RespResult.success(creditCardService.addModifyLimitRequest(id_number, id, limit).payload);
     }
 
     @PostMapping("/creditCard/customer/card/return")
     public RespResult returnMoney(@RequestParam BigInteger card_id, @RequestParam BigInteger amount) {
         System.out.println("card_id = " + card_id + " and amount = " + amount);
-        return RespResult.success(customerService.returnMoney(card_id, amount).payload);
+        return RespResult.success(creditCardService.returnMoney(card_id, amount).payload);
+    }
+
+    @GetMapping("/creditCard/customer/card/lost")
+    public RespResult makeCreditCardLost(@RequestParam BigInteger card_id){
+        System.out.println("card_id = "+card_id);
+        return RespResult.success(creditCardService.makeCreditCardLost(card_id).payload);
+    }
+
+    @GetMapping("/creditCard/customer/card/delete")
+    public RespResult deleteCreditCard(@RequestParam BigInteger card_id){
+        System.out.println("delete card_id = "+card_id);
+        return RespResult.success(creditCardService.deleteCreditCard(card_id).payload);
     }
 }

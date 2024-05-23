@@ -95,7 +95,7 @@
                       <p>信用卡总额度(元): {{ card.cardLimit / 100 }}</p>
                       <p>信用卡已用额度(元): {{ card.loan / 100 }}</p>
                       <p>信用卡可用额度(元): {{ (card.cardLimit - card.loan) / 100 }}</p>
-                      <p>是否挂失: {{ card.isLost === '1' ? '已挂失' : '未挂失' }}</p>
+                      <p>是否挂失: {{ card.isLost === 1 ? '已挂失' : '未挂失' }}</p>
                     </div>
 
                     <el-divider/>
@@ -431,16 +431,16 @@ export default {
       }
       //this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
       this.modify_card_limit_visible = false;
-      axios.post("/creditCard/customer/card/update",null,{
-        params:{
+      axios.post("/creditCard/customer/card/update", null, {
+        params: {
           id_number: this.$store.state.user.ID_number,
           id: card_id,
           limit: limit
         }
       }).then(response => {
-        if(response.data.code === 1){
+        if (response.data.code === 1) {
           this.$message.error('申请失败');
-        }else{
+        } else {
           this.$message.success('申请成功')
         }
       });
@@ -454,7 +454,16 @@ export default {
       }
       this.$message.success('挂失信用卡id为' + card_id)
       this.card_lost_visible = false;
-      //TODO
+
+      axios.get("/creditCard/customer/card/lost", {params: {card_id: card_id}})
+          .then(response => {
+            if (response.data.code === 1) {
+              this.$message.error('挂失失败')
+            } else {
+              this.$message.success('挂失成功')
+            }
+          });
+      this.queryCards();
     },
     cancelCard(card_id, password, loan) {
       if (loan !== 0) {
@@ -468,7 +477,16 @@ export default {
       }
       this.$message.success('注销信用卡id为' + card_id)
       this.card_cancel_visible = false;
-      //TODO
+
+      axios.get("/creditCard/customer/card/delete", {params: {card_id: card_id}})
+          .then(response => {
+            if (response.data.code === 1) {
+              this.$message.error('注销失败')
+            } else {
+              this.$message.success('注销成功')
+            }
+          });
+      this.queryCards();
     },
     returnMoney(password) {
       // 检查密码是否为空
@@ -503,7 +521,7 @@ export default {
 
       var amount = this.return_money.amount * 100;
       var isInt = amount % 1 === 0;
-      if(!isInt){
+      if (!isInt) {
         this.$message.error('还款金额的小数部分最多两位');
         return;
       }
@@ -511,15 +529,15 @@ export default {
       //this.$message.success('还款信用卡id为' + this.return_money.card_id + '成功，还款金额为' + this.return_money.amount);
       this.return_money_visible = false;
       // 如果所有验证都通过，执行后续还款操作
-      axios.post("/creditCard/customer/card/return",null,{
-        params:{
+      axios.post("/creditCard/customer/card/return", null, {
+        params: {
           card_id: this.return_money.card_id,
           amount: amount
         }
       }).then(response => {
-        if(response.data.code === 1){
+        if (response.data.code === 1) {
           this.$message.error('还款失败')
-        }else{
+        } else {
           this.$message.success('还款成功')
         }
       });
