@@ -13,7 +13,7 @@ public class CreditCard {
     private BigInteger id;
     private String idNumber;
     private String password;
-    private Double cardLimit;
-    private Double loan;
+    private BigInteger cardLimit;
+    private BigInteger loan;
     private Integer isLost;
 }
