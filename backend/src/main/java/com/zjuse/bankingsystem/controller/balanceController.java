@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("blacklist")
+@RequestMapping("balance")
 public class balanceController {
 
     @Autowired

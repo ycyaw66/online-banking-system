@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("option")
+@RequestMapping("loss")
 public class lossController {
 
     @Data
@@ -38,7 +38,7 @@ public class lossController {
     @Autowired
     UserAndCardService userAndCardService;
 
-    @PostMapping("transfer")
+    @PostMapping("")
     public RespResult loss(@RequestBody Receiver receiver) {
         ApiResult apiResult = userAndCardService.loss(receiver.getCardId(), receiver.getPassword());
         if (apiResult.ok) {

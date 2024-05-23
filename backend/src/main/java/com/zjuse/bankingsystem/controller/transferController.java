@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("option")
+@RequestMapping("transfer")
 public class transferController {
 
     @Data
@@ -48,7 +48,7 @@ public class transferController {
     @Autowired
     UserAndCardService userAndCardService;
 
-    @PostMapping("transfer")
+    @PostMapping("")
     public RespResult transfer(@RequestBody Receiver receiver) {
         try {
             BigDecimal bigDecimal = new BigDecimal(receiver.amount);

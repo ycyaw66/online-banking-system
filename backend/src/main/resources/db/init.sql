@@ -3,7 +3,14 @@ DROP TABLE IF EXISTS `UserPrivilege`;
 DROP TABLE IF EXISTS `blacklist`;
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `user`;
+DROP TABLE IF EXISTS `card`;
 
+CREATE TABLE `card`
+(
+    card_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '卡ID',
+    card_type INTEGER NOT NULL COMMENT '卡类型',
+    PRIMARY KEY(card_id)
+) AUTO_INCREMENT = 0;
 
 CREATE TABLE `user`
 (
@@ -21,6 +28,8 @@ CREATE TABLE `cardofperson`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
     card_id BIGINT NOT NULL COMMENT '卡ID',
+    FOREIGN KEY(user_id) REFERENCES user(id),
+    FOREIGN KEY(card_id) REFERENCES card(card_id),
     PRIMARY KEY (user_id, card_id)
 );
 
@@ -50,5 +59,7 @@ CREATE TABLE `history`
     amount DECIMAL(15, 2) NOT NULL COMMENT '交易金额',
     time BIGINT NOT NULL COMMENT '交易时间戳',
     remark VARCHAR(64) NOT NULL COMMENT '备注',
+    FOREIGN KEY(card_id) REFERENCES card(card_id),
+    FOREIGN KEY(target_card) REFERENCES card(card_id),
     PRIMARY KEY (id)
 );
