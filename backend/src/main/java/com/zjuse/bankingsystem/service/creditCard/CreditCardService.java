@@ -134,4 +134,12 @@ public class CreditCardService {
         creditCardMapper.rejectRequest(id);
         return new ApiResult(true,null);
     }
+    public  ApiResult queryRequestsByCustomer(String idNumber) {
+        List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestsByCustomer(idNumber);
+        if(creditCardApplications == null) {
+            return new ApiResult(false, "查询失败");
+        } else {
+            return new ApiResult(true, creditCardApplications);
+        }
+    }
 }

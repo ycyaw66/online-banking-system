@@ -121,6 +121,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 
 export default {
   data() {
@@ -157,10 +159,18 @@ export default {
       this.$router.push('/creditCard/customer/login');
     },
     queryResponses(){
-      //TODO
+      axios.get('/creditCard/customer/queryRequests',{param:{idNumber:this.$store.state.user.ID_number}})
+      .then(response => {
+        this.request_responses = []
+        let responses = response.data.payload
+        responses.forEach(element => {
+          this.request_responses.push(element)
+        });
+      })
     }
   },
   mounted() {
+    this.queryResponses();
   }
 }
 </script>

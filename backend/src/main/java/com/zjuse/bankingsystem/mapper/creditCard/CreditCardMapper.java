@@ -80,4 +80,8 @@ public interface CreditCardMapper {
 
     @Update("update credit_card_application set status = 3 where id = #{id}")
     public void rejectRequest(Integer id);
+
+    @Select("select * from credit_card_application where id_number = #{idNumber}")
+    public List<CreditCardApplication> queryAllRequestsByCustomer(String idNumber);
+
 }
