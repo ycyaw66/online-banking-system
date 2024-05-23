@@ -64,8 +64,8 @@
                 </el-table-column>
                 <el-table-column label="权限级别" width="200px">
                   <template v-slot="{ row }">
-                    <span v-if="row.permission === '1'">仅创建信用卡</span>
-                    <span v-else-if="row.permission === '2'">创建信用卡及修改额度</span>
+                    <span v-if="row.permission === 1">仅创建信用卡</span>
+                    <span v-else-if="row.permission === 2">创建信用卡及修改额度</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="400px">
@@ -115,8 +115,8 @@
               <el-form :model="modify_level">
                 <el-form-item label="请选择新的权限等级" :label-width="formLabelWidth">
                   <el-select v-model="modify_level.new_level" style="width: 12.5vw;">
-                    <el-option label="仅创建信用卡" value="1"></el-option>
-                    <el-option label="创建信用卡及修改额度" value="2"></el-option>
+                    <el-option label="仅创建信用卡" value=1></el-option>
+                    <el-option label="创建信用卡及修改额度" value=2></el-option>
                   </el-select>
                 </el-form-item>
               </el-form>
@@ -169,6 +169,8 @@
 </template>
 
 <script>
+
+import axios from "axios";
 
 export default {
   data() {
@@ -227,14 +229,37 @@ export default {
         this.$message.error('新密码不能为空');
         return;
       }
-      this.$message.success('修改id为' + this.modify_password.id + '的审查员密码成功，新密码为' + this.modify_password.new_password);
+      //this.$message.success('修改id为' + this.modify_password.id + '的审查员密码成功，新密码为' + this.modify_password.new_password);
       this.modify_password_visible = false;
-      //TODO
+      axios.post("/creditCard/admin/inspector/modify", null, {
+        params: {
+          id: this.modify_password.id,
+          password: this.modify_password.new_password
+        }
+      }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error('修改密码失败');
+        } else {
+          this.$message.success('修改密码成功');
+        }
+      })
     },
     modifyLevel() {
-      this.$message.success('修改id为' + this.modify_level.id + '的审查员权限等级至' + this.modify_level.new_level);
+      //this.$message.success('修改id为' + this.modify_level.id + '的审查员权限等级至' + this.modify_level.new_level);
       this.modify_level_visible = false;
-      //TODO
+      axios.post("/creditCard/admin/inspector/update", null, {
+        params: {
+          id: this.modify_level.id,
+          permission: this.modify_level.new_level
+        }
+      }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error('修改权限等级失败')
+        } else {
+          this.$message.success('修改权限等级成功')
+        }
+      });
+      this.queryInspector();
     },
     addInspector() {
       // 判断账号名是否为空
@@ -256,21 +281,49 @@ export default {
         this.$message.error('两次输入的密码不一致');
         return;
       }
-      this.$message.success('创建成功，账号名为' + this.new_inspector.name + '；密码为：' + this.new_inspector.password + '；权限等级为:' + this.new_inspector.level)
+      //this.$message.success('创建成功，账号名为' + this.new_inspector.name + '；密码为：' + this.new_inspector.password + '；权限等级为:' + this.new_inspector.level)
       this.add_inspector_visible = false;
-      //TODO: 创建新的审查员
+
+      axios.post("/creditCard/admin/inspector/add", null, {
+        params: {
+          name: this.new_inspector.name,
+          password: this.new_inspector.password,
+          permission: this.new_inspector.level
+        }
+      }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error('添加失败');
+        } else {
+          this.$message.success('添加成功');
+        }
+      });
+      this.queryInspector();
     },
     deleteInspector() {
       this.$message.error('删除编号为' + this.delete_inspector_id + '的审查员');
-      //TODO
+      axios.get("/creditCard/admin/inspector/delete", {params: {id: this.delete_inspector_id}})
+          .then(response => {
+            if (response.data.code === 1) {
+              this.$message.error('删除审查员失败')
+            } else {
+              this.$message.success('删除审查员成功')
+            }
+          });
       this.queryInspector();
       this.delete_inspector_visible = false;
     },
     queryInspector() {
-      //TODO
+      axios.get("/creditCard/admin/inspector").then(response => {
+        this.inspectors = [];
+        let inspectors = response.data.payload;
+        inspectors.forEach(inspector => {
+          this.inspectors.push(inspector);
+        })
+      });
     }
   },
   mounted() {
+    this.queryInspector();
   }
 }
 </script>

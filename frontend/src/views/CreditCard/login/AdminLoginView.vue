@@ -39,7 +39,7 @@
               <br>
               <div>
                 <span>密码：</span>
-                <el-input v-model="admin.password" style="width: 250px" placeholder="请输入密码"/>
+                <el-input type="password" v-model="admin.password" style="width: 250px" placeholder="请输入密码"/>
               </div>
               <br>
               <div class="mb-4" style="text-align: center;">
@@ -59,6 +59,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -70,7 +72,29 @@ export default {
   },
   methods: {
     loginAdmin() {
-      this.$router.push('/creditCard/admin/inspector');
+      // 检查用户名和密码是否为空
+      if (this.admin.name === '') {
+        this.$message.error('用户名不能为空！');
+        return;
+      }
+      if (this.admin.password === '') {
+        this.$message.error('密码不能为空！');
+        return;
+      }
+
+      axios.post("/creditCard/admin/login",null,{
+        params:{
+          name:this.admin.name,
+          password:this.admin.password
+        }
+      }).then(response =>{
+        if(response.data.code === 1){
+          this.$message.error('用户名或密码错误');
+          return;
+        }else{
+          this.$router.push('/creditCard/admin/inspector');
+        }
+      })
     },
   },
   mounted() {

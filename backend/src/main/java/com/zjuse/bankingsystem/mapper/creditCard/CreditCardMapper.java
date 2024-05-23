@@ -1,9 +1,12 @@
 package com.zjuse.bankingsystem.mapper.creditCard;
 
 import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
+import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
+import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -38,4 +41,21 @@ public interface CreditCardMapper {
     @Update("delete from credit_card where id = #{card_id}")
     public void deleteCreditCard(BigInteger card_id);
 
+    @Select("select * from credit_card_admin where name = #{name} and password = #{password}")
+    public CreditCardAdmin loginAdmin(String name, String password);
+
+    @Select("select * from credit_card_inspector")
+    public List<CreditCardInspector> queryInspectors();
+
+    @Update("update credit_card_inspector set password = #{password} where id = #{id}")
+    public void modifyInspectorPassword(Integer id, String password);
+
+    @Update("update credit_card_inspector set permission = #{permission} where id = #{id}")
+    public void modifyInspectorLevel(Integer id, Integer permission);
+
+    @Update("delete from credit_card_inspector where id = #{id}")
+    public void deleteInspector(Integer id);
+
+    @Update("insert into credit_card_inspector (name, password, permission) VALUES ( #{name}, #{password}, #{permission})")
+    public void addNewInspector(String name, String password, Integer permission);
 }

@@ -1,6 +1,7 @@
 package com.zjuse.bankingsystem.controller.creditCard;
 
 import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
+import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
@@ -46,14 +47,55 @@ public class CreditCardController {
     }
 
     @GetMapping("/creditCard/customer/card/lost")
-    public RespResult makeCreditCardLost(@RequestParam BigInteger card_id){
-        System.out.println("card_id = "+card_id);
+    public RespResult makeCreditCardLost(@RequestParam BigInteger card_id) {
+        System.out.println("card_id = " + card_id);
         return RespResult.success(creditCardService.makeCreditCardLost(card_id).payload);
     }
 
     @GetMapping("/creditCard/customer/card/delete")
-    public RespResult deleteCreditCard(@RequestParam BigInteger card_id){
-        System.out.println("delete card_id = "+card_id);
+    public RespResult deleteCreditCard(@RequestParam BigInteger card_id) {
+        System.out.println("delete card_id = " + card_id);
         return RespResult.success(creditCardService.deleteCreditCard(card_id).payload);
+    }
+
+    @PostMapping("/creditCard/admin/login")
+    public RespResult loginAdmin(@RequestParam String name, @RequestParam String password) {
+        System.out.println("loginAdmin where name = " + name + " and password = " + password);
+        ApiResult apiResult = creditCardService.loginAdmin(name, password);
+        if (apiResult.ok) {
+            return RespResult.success(null);
+        } else {
+            return RespResult.fail("登录失败");
+        }
+    }
+
+    @GetMapping("/creditCard/admin/inspector")
+    public RespResult queryInspectors() {
+        ApiResult apiResult = creditCardService.queryInspectors();
+        return RespResult.success(apiResult.payload);
+    }
+
+    @PostMapping("/creditCard/admin/inspector/modify")
+    public RespResult modifyInspectorPassword(@RequestParam Integer id, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.modifyInspectorPassword(id, password);
+        return RespResult.success(null);
+    }
+
+    @PostMapping("/creditCard/admin/inspector/update")
+    public RespResult modifyInspectorLevel(@RequestParam Integer id, @RequestParam Integer permission) {
+        creditCardService.modifyInspectorLevel(id, permission);
+        return RespResult.success(null);
+    }
+
+    @GetMapping("/creditCard/admin/inspector/delete")
+    public RespResult deleteInspector(@RequestParam Integer id) {
+        creditCardService.deleteInspector(id);
+        return RespResult.success(null);
+    }
+
+    @PostMapping("/creditCard/admin/inspector/add")
+    public RespResult addNewInspector(@RequestParam String name, @RequestParam String password, @RequestParam Integer permission) {
+        creditCardService.addNewInspector(name, password, permission);
+        return RespResult.success(null);
     }
 }
