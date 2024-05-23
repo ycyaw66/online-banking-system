@@ -59,6 +59,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -70,7 +72,31 @@ export default {
   },
   methods: {
     loginInspector() {
-      this.$router.push('/creditCard/inspector/request');
+      // 检查用户名和密码是否为空
+      if (this.inspector.name === '') {
+        this.$message.error('用户名不能为空！');
+        return;
+      }
+      if (this.inspector.password === '') {
+        this.$message.error('密码不能为空！');
+        return;
+      }
+
+      axios.post("/creditCard/inspector/login",null,{
+        params:{
+          name:this.inspector.name,
+          password:this.inspector.password
+        }
+      }).then(response =>{
+        if(response.data.code === 1){
+          this.$message.error('用户名或密码错误');
+          return;
+        }else{
+          this.$store.state.creditCardInspector.permission = response.data.payload.permission;
+          console.log(this.$store.state.creditCardInspector.permission);
+          this.$router.push('/creditCard/inspector/request');
+        }
+      })
     },
   },
   mounted() {

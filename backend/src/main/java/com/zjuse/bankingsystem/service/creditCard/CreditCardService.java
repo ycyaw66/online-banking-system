@@ -2,6 +2,7 @@ package com.zjuse.bankingsystem.service.creditCard;
 
 import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
+import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import com.zjuse.bankingsystem.mapper.creditCard.CreditCardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.PrimitiveIterator;
 
 @Service
 public class CreditCardService {
@@ -88,5 +90,24 @@ public class CreditCardService {
     public ApiResult addNewInspector(String name, String password, Integer permission) {
         creditCardMapper.addNewInspector(name, password, permission);
         return new ApiResult(true, "添加成功");
+    }
+
+    public ApiResult loginInspector(String name, String password){
+        CreditCardInspector creditCardInspector = creditCardMapper.loginInspector(name, password);
+        if(creditCardInspector == null){
+            return new ApiResult(false,"登录失败");
+        }else{
+            return new ApiResult(true,creditCardInspector);
+        }
+    }
+
+    public ApiResult queryRequestsByInspector(Integer permission){
+        if(permission.equals(1)){
+            List<CreditCardApplication> creditCardApplications = creditCardMapper.queryPartRequestByInspector();
+            return new ApiResult(true,creditCardApplications);
+        }else{
+            List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestByInspector();
+            return new ApiResult(true,creditCardApplications);
+        }
     }
 }

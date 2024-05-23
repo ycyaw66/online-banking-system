@@ -16,6 +16,9 @@ export default createStore({
             address: 'd',
             phoneNumber: 'e'
         },
+        creditCardInspector:{
+            permission:'',
+        }
     },
     mutations: {},
     actions: {},

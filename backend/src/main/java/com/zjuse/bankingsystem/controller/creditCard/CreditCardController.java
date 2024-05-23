@@ -98,4 +98,20 @@ public class CreditCardController {
         creditCardService.addNewInspector(name, password, permission);
         return RespResult.success(null);
     }
+
+    @PostMapping("/creditCard/inspector/login")
+    public RespResult loginInspector(@RequestParam String name, @RequestParam String password){
+        ApiResult apiResult = creditCardService.loginInspector(name, password);
+        if(apiResult.ok){
+            return RespResult.success(apiResult.payload);
+        }else{
+            return RespResult.fail("登录失败");
+        }
+    }
+
+    @GetMapping("/creditCard/inspector/request")
+    public RespResult queryRequestsByInspector(@RequestParam Integer permission){
+        ApiResult apiResult = creditCardService.queryRequestsByInspector(permission);
+        return RespResult.success(apiResult.payload);
+    }
 }

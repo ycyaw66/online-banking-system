@@ -2,6 +2,7 @@ package com.zjuse.bankingsystem.mapper.creditCard;
 
 import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
+import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -58,4 +59,13 @@ public interface CreditCardMapper {
 
     @Update("insert into credit_card_inspector (name, password, permission) VALUES ( #{name}, #{password}, #{permission})")
     public void addNewInspector(String name, String password, Integer permission);
+
+    @Select("select * from credit_card_inspector where name = #{name} and password = #{password}")
+    public CreditCardInspector loginInspector(String name, String password);
+
+    @Select("select * from credit_card_application where status = 1")
+    public List<CreditCardApplication> queryAllRequestByInspector();
+
+    @Select("select * from credit_card_application where status = 1 and type = 1")
+    public List<CreditCardApplication> queryPartRequestByInspector();
 }

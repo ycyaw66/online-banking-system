@@ -3,10 +3,12 @@
     <div class="common-layout">
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
-        <el-header style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+        <el-header
+            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
-            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;" />
-          </div>线上银行系统--信用卡系统
+            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
+          </div>
+          线上银行系统--信用卡系统
         </el-header>
         <el-container>
           <!--侧边栏区域-->
@@ -20,18 +22,18 @@
                     </el-icon>
                     审查员功能
                   </template>
-<!--                  <el-menu-item index="1-1">-->
-<!--                    <router-link to="/creditCard/inspector/info">-->
-<!--                      <el-icon>-->
-<!--                        <HomeFilled/>-->
-<!--                      </el-icon>-->
-<!--                      审查员信息-->
-<!--                    </router-link>-->
-<!--                  </el-menu-item>-->
+                  <!--                  <el-menu-item index="1-1">-->
+                  <!--                    <router-link to="/creditCard/inspector/info">-->
+                  <!--                      <el-icon>-->
+                  <!--                        <HomeFilled/>-->
+                  <!--                      </el-icon>-->
+                  <!--                      审查员信息-->
+                  <!--                    </router-link>-->
+                  <!--                  </el-menu-item>-->
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/inspector/request">
                       <el-icon>
-                        <Management />
+                        <Management/>
                       </el-icon>
                       用户请求
                     </router-link>
@@ -60,14 +62,14 @@
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === '1'">创建信用卡</span>
-                    <span v-else-if="row.type === '2'">更新信用卡额度</span>
+                    <span v-if="row.type === 1">创建信用卡</span>
+                    <span v-else-if="row.type === 2">更新信用卡额度</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === '1'">创建一张新的信用卡,额度为{{ row.amount / 100}}元</span>
-                    <span v-else-if="row.type === '2'">更新信用卡{{ row.creditCardId }}的额度为{{ row.amount / 100 }}元</span>
+                    <span v-if="row.type === 1">创建一张新的信用卡,额度为{{ row.amount / 100 }}元</span>
+                    <span v-else-if="row.type === 2">更新信用卡的额度为{{row.amount / 100 }}元</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="处理结果" width="200px">
@@ -90,17 +92,19 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   data() {
     return {
       request: [{
         id: '1',
-        idNumber:'123456',
+        idNumber: '123456',
         creditCardId: '',
         amount: '10000',
         type: '1',
         status: '1',
-        password:''
+        password: ''
       }, {
         id: '2',
         idNumber: '234567',
@@ -124,17 +128,26 @@ export default {
     exit() {
       this.$router.push('/creditCard/inspector/login');
     },
-    accept(id){
-      this.$message.success('通过id为'+id+'的请求');
+    accept(id) {
+      this.$message.success('通过id为' + id + '的请求');
     },
-    reject(id){
-      this.$message.error('拒绝了id为'+id+'的请求');
+    reject(id) {
+      this.$message.error('拒绝了id为' + id + '的请求');
     },
-    queryRequest(){
-      //TODO
+    queryRequest() {
+      axios.get("/creditCard/inspector/request", {params: {permission: this.$store.state.creditCardInspector.permission}})
+          .then(response => {
+            this.request = [];
+            let requests = response.data.payload;
+            console.log(requests);
+            requests.forEach(request => {
+              this.request.push(request);
+            })
+          });
     }
   },
   mounted() {
+    this.queryRequest();
   }
 }
 </script>
