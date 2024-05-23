@@ -120,4 +120,5 @@ public class CreditCardController {
         ApiResult apiResult = creditCardService.queryRequestsByCustomer(idNumber);
         return RespResult.success((apiResult.payload));
     }
+
 }
