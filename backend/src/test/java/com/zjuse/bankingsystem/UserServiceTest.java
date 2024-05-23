@@ -101,11 +101,7 @@ public class UserServiceTest {
     void PrivilegeTest() {
         InsertTest(10);
         for(Long i = 1L; i <= 5L; i++) {
-            UserPrivilege userPrivilege = new UserPrivilege();
-            userPrivilege.setUserId(i);
-            userPrivilege.setTranscations(true);
-            userPrivilege.setLoss(true);
-            userPrivilege.setTransfer(true);
+            UserPrivilege userPrivilege = new UserPrivilege(i, true, true, true);
             assertTrue(userPrivilegeService.insertUserPrivilege(userPrivilege).ok);
         }
         for(Long i = 1L; i <= 5L; i++) {
@@ -125,11 +121,7 @@ public class UserServiceTest {
             assertFalse(userPrivilege.isLoss());
         }
 
-        UserPrivilege userPrivilege = new UserPrivilege();
-        userPrivilege.setUserId(15L);
-        userPrivilege.setTranscations(true);
-        userPrivilege.setLoss(true);
-        userPrivilege.setTransfer(true);
+        UserPrivilege userPrivilege = new UserPrivilege(15L, true, true, true);
         assertFalse(userPrivilegeService.insertUserPrivilege(userPrivilege).ok);
         assertFalse(userPrivilegeService.modifyUserPrivilege(userPrivilege).ok);
         assertFalse(userPrivilegeService.getUserPrivilege(13L).ok);

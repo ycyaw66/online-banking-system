@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS `cardofperson`;
 DROP TABLE IF EXISTS `UserPrivilege`;
 DROP TABLE IF EXISTS `blacklist`;
+DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `user`;
 
 
@@ -39,4 +40,15 @@ CREATE TABLE `blacklist`
     reason VARCHAR(100) NOT NULL COMMENT '拉黑原因',
     PRIMARY KEY (user_id),
     foreign key (user_id) references user(id)
+);
+
+CREATE TABLE `history`
+(
+    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    card_id BIGINT NOT NULL COMMENT '卡ID',
+    target_card BIGINT NOT NULL COMMENT '对方卡ID',
+    amount DECIMAL(15, 2) NOT NULL COMMENT '交易金额',
+    time BIGINT NOT NULL COMMENT '交易时间戳',
+    remark VARCHAR(64) NOT NULL COMMENT '备注',
+    PRIMARY KEY (id)
 );
