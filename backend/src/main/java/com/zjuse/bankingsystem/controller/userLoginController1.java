@@ -1,44 +1,58 @@
 package com.zjuse.bankingsystem.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import org.apache.catalina.authenticator.SpnegoAuthenticator.AuthenticateAction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.security.controller.dto.UserLoginReq;
 import com.zjuse.bankingsystem.service.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
+import cn.hutool.jwt.JWT;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
 @RestController
-@RequestMapping("/user")
-public class userLoginController {
+@RequestMapping("/user1")
+public class userLoginController1 {
     @Autowired
     private UserService userService; 
+    @Autowired
+    private AuthenticationManager authenticationManager; 
 
     @PostMapping("/login")
-    public RespResult postMethodName(HttpServletRequest request, @RequestBody Map<String, String> req) {
+    public RespResult postMethodName(@RequestBody UserLoginReq req) {
         String username, password; 
-        if (req.get("username") == null || req.get("password") == null) 
+        if (req.getUsername() == null || req.getUsername() == null) 
             return RespResult.fail("request format wrong");
-        username = req.get("username");
-        password = req.get("password");
+        username = req.getUsername();
+        password = req.getPassword();
         ApiResult res = userService.checkPassword(username, password);
         if (res.ok) {
-            HttpSession session = request.getSession();
-            User user = User.class.cast(res.payload);
-            session.setAttribute("userId", user.getId());
+            UsernamePasswordAuthenticationToken authenticationToken = 
+                new UsernamePasswordAuthenticationToken(username, password);
+            authenticationManager.authenticate(authenticationToken);
+
+            String token = JWT.create()
+                .setPayload("username", username)
+                // TODO modify jwt key to application.yml
+                .setKey("Key".getBytes(StandardCharsets.UTF_8))
+                .sign();
+
             return RespResult.success(res.payload);
         }   else 
             return RespResult.fail(res.message);

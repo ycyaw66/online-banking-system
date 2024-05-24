@@ -1,9 +1,12 @@
 package com.zjuse.bankingsystem.service;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.mapper.UserMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -41,6 +44,17 @@ public class UserService {
             User res = userMapper.selectById(id);
             if (res == null)
                 return new ApiResult(false, "user id not found");
+            return new ApiResult(true, res);
+        } catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
+    public ApiResult getUserByUsername(String username) {
+        try {
+            User res = userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
+            if (Objects.isNull(res))
+                return new ApiResult(false, "username not found");
             return new ApiResult(true, res);
         } catch(Exception e) {
             return new ApiResult(false, e.getMessage());
