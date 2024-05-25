@@ -54,7 +54,7 @@ public class UserServiceTest {
         User user = new User();
         Random random = new Random();
         user.setUsername("test" + Integer.toString(random.nextInt(100000)));
-        user.setId_number(Integer.toString(random.nextInt(10000000)));
+        user.setIdNumber(Integer.toString(random.nextInt(10000000)));
         user.setEmail("sadfsdfa");
         user.setPassword("34321413242134");
         return user;
@@ -152,7 +152,7 @@ public class UserServiceTest {
             Long cardId = (Long) apiResult.payload;
             cardList.add(cardId);
             Integer index = random.nextInt(N);
-            assertTrue(userAndCardService.bindUserAndCard(i, userlist.get(index).getId_number()).ok);
+            assertTrue(userAndCardService.bindUserAndCard(i, userlist.get(index).getIdNumber()).ok);
             CardOfPerson cardOfPerson = new CardOfPerson(cardId, userlist.get(index).getId());
             relation.put(cardOfPerson, 1);
         }

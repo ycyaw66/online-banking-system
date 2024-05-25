@@ -6,7 +6,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.mapper.UserMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
