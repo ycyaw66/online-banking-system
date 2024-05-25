@@ -28,3 +28,10 @@ jwt:
     token-start-with: Bearer
     # token 有效时间
     token-validity-in-seconds: 7200000
+    token-sign-key: "user"
+    # 在线用户的 token
+    online-key: "online-token"
+
+# logging:    
+#     level: 
+#         ROOT: DEBUG

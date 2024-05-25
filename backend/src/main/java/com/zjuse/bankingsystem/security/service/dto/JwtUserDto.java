@@ -7,6 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.zjuse.bankingsystem.entity.User;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class JwtUserDto implements UserDetails {
     private User user;
 

@@ -10,8 +10,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.zjuse.bankingsystem.security.config.JwtConfig;
+import com.zjuse.bankingsystem.security.service.dto.OnlineUserDto;
+
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,36 +26,32 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
-    private final static String AUTH_HEADER = "Authorization";
-    private final static String AUTH_HEADER_TYPE = "Bearer";
+    @Autowired
+    private JwtConfig jwtConfig; 
 
     @Autowired
     private UserDetailsService userDetailsService; 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader(AUTH_HEADER); 
-        if (Objects.isNull(authHeader) || !authHeader.startsWith(AUTH_HEADER_TYPE)) {
+        log.info("---------Start Jwt authentication token filter---------");
+        String authHeader = request.getHeader(jwtConfig.getHeader()); 
+        if (Objects.isNull(authHeader) || !authHeader.startsWith(jwtConfig.getTokenStartWith())) {
             filterChain.doFilter(request, response);
+            log.info("非法 token: {}", authHeader);
             return ;
         }
 
         String authToken = authHeader.split(" ")[1];
-        if (!JWTUtil.verify(authToken, "Key".getBytes(StandardCharsets.UTF_8))) {
+        log.info("authToken: ", authToken);
+        if (StrUtil.isBlank(authToken)|| !JWTUtil.verify(authToken, jwtConfig.getTokenSignKey().getBytes(StandardCharsets.UTF_8))) {
             filterChain.doFilter(request, response);
             return ;
         }
 
-        final String username = (String) JWTUtil.parseToken(authToken).getPayload("username");
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        UsernamePasswordAuthenticationToken authenticationToken = 
-            new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
-
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        // TODO 验证key
 
         filterChain.doFilter(request, response);
+        log.info("---------End Jwt authentication token filter---------");
     }
 }

@@ -10,21 +10,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class JwtAuthenticationProvider implements AuthenticationProvider{
+import com.zjuse.bankingsystem.security.config.JwtConfig;
+import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        log.info("---------Start Jwt token authenticate---------");
         String username = String.valueOf(authentication.getPrincipal());
         String password = String.valueOf(authentication.getCredentials());
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if (password == userDetails.getPassword()) {
-            return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+        if (!password.equals(userDetails.getPassword())) {
+            throw new BadCredentialsException("Password error"); 
         }
+        
 
-        throw new BadCredentialsException("Error"); 
+        log.info("user {} authenticated successfully", username);
+        log.info("---------End Jwt token authenticate---------");
+        return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
     }
 
     @Override

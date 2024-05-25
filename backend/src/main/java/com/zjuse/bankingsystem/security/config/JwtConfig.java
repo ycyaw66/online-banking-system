@@ -12,4 +12,6 @@ public class JwtConfig {
     private String header;
     private String tokenStartWith; 
     private String tokenValidityInSeconds; 
+    private String tokenSignKey; 
+    private String onlineKey; 
 }
