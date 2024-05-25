@@ -4,6 +4,11 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     port: 5173,
-    proxy: 'http://localhost:8082'
+    proxy: {
+      '/': {
+        target: 'http://localhost:8082',
+        changeOrigin: true,
+      }
+    }
   }
 })
