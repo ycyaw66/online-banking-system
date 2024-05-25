@@ -12,6 +12,10 @@ public class RespResult {
         this.payload = payload;
     }
 
+    public static RespResult success() {
+        return new RespResult(0, null, null);
+    }
+
     public static RespResult success(Object payload) {
         return new RespResult(0, null, payload);
     }

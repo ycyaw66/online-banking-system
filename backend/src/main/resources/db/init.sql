@@ -62,4 +62,4 @@ CREATE TABLE `history`
     FOREIGN KEY(card_id) REFERENCES card(card_id),
     FOREIGN KEY(target_card) REFERENCES card(card_id),
     PRIMARY KEY (id)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
