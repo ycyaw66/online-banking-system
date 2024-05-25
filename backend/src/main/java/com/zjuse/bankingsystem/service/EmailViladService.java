@@ -24,11 +24,29 @@ public class EmailViladService {
 
     @Autowired
     RedisUtils user;
-    static final String serviceEmail = "zju_dyxg@outlook.com" ;
+    static final String serviceEmail = "zju_11111111@163.com" ;
+    static final String password = "CUYRWKBTMCEIYACA";
+
 
     public boolean isEmailValid(String email) {
         return email.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
     }
+
+    private Session createSession() throws Exception {
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.163.com");
+		// props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.ssl.enable", "true");
+		props.put("mail.smtp.user", serviceEmail);
+		props.put("mail.smtp.pwd", password);
+		
+		Session session = Session.getInstance(props,null);
+		session.setDebug(true);
+		return session;
+ 
+	}
+
 
     public ApiResult sendEmail(String email, Long userId) {
         try {
@@ -38,17 +56,20 @@ public class EmailViladService {
             if (user.get(userId.toString()) != null) {
                 return new ApiResult(false, "too frequent operation");
             }
-            String code = String.valueOf((int)(Math.random() * 1000000));
-            redisUtils.set(email, code, 300);
-            Session session = JavaMailUtil.createSession();
+            String code = String.format("%06d",Integer.valueOf((int)(Math.random() * 1000000)));
+            Session session = createSession();
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(serviceEmail));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+            // message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             message.setSubject("online-banking-system");
             message.setText("：" + code + "，");
-            System.out.println("### ok");
-            Transport.send(message);
-            System.out.println("### ok");
+
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
+            Transport transport = session.getTransport("smtp");
+            transport.connect("smtp.163.com", serviceEmail, password);
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
+            redisUtils.set(email, code, 300);
             user.set(userId.toString(), 1, 60);
             return new ApiResult(true, "success", code);
         }
@@ -57,7 +78,7 @@ public class EmailViladService {
         }
     }
 
-    public ApiResult validCode(String email, Long userId, String code) {
+    public ApiResult validCode(String email, String code) {
         String realCode = (String) redisUtils.get(email);
         if (realCode == null) {
             return new ApiResult(false, "验证码已过期");
