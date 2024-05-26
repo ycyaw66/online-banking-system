@@ -4,18 +4,23 @@ import { createRouter, createWebHistory } from 'vue-router';
 // 定义路由
 const routes = [
     {
-        path: '/creditCard/firstView',
-        name: 'firstView',
-        component: () => import('../views/CreditCard/FirstView.vue')
+        path: '/personalBank/login',
+        name: 'login',
+        component: () => import('../views/PersonalBank/LoginView.vue')
     },
     {
-        path: '/creditCard/secondview',
-        name: 'secondview',
-        component: () => import('../views/CreditCard/SecondView.vue')
+        path: '/personalBank/register',
+        name: 'register',
+        component: () => import('../views/PersonalBank/RegisterView.vue')
+    },
+    {
+        path: '/personalBank/forget',
+        name: 'forget',
+        component: () => import('../views/PersonalBank/ForgetPassword.vue')
     },
     {
         path: '/',
-        redirect: '/creditCard/firstView'
+        redirect: '/personalBank/login'
     }
 ];
 
