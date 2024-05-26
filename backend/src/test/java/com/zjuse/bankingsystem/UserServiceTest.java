@@ -222,10 +222,13 @@ public class UserServiceTest {
 
     @Test
     void EmailSendTest() {
-        ApiResult apiResult = emailViladService.sendEmail("XuanyiZhou000@outlook.com", 1L);
+        ApiResult apiResult = emailViladService.sendEmail("XuanyiZhou000@outlook.com", null);
         System.out.println("### " + apiResult.message);
         assertTrue(apiResult.ok);
-        String code = (String) apiResult.payload;
-        assertTrue(emailViladService.validCode("XuanyiZhou000@outlook.com", code).ok);
+        String uuid = (String) apiResult.payload;
+        System.out.println("### " + uuid.hashCode());
+
+        String code = "123456";
+        assertTrue(emailViladService.validCode(uuid, "XuanyiZhou000@outlook.com", code).ok);
     }
 }
