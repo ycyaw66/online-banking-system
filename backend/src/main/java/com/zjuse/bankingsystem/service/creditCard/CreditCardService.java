@@ -90,76 +90,80 @@ public class CreditCardService {
         return new ApiResult(true, "添加成功");
     }
 
-    public ApiResult loginInspector(String name, String password){
+    public ApiResult loginInspector(String name, String password) {
         CreditCardInspector creditCardInspector = creditCardMapper.loginInspector(name, password);
-        if(creditCardInspector == null){
-            return new ApiResult(false,"登录失败");
-        }else{
-            return new ApiResult(true,creditCardInspector);
+        if (creditCardInspector == null) {
+            return new ApiResult(false, "登录失败");
+        } else {
+            return new ApiResult(true, creditCardInspector);
         }
     }
 
-    public ApiResult queryRequestsByInspector(Integer permission){
-        if(permission.equals(1)){
+    public ApiResult queryRequestsByInspector(Integer permission) {
+        if (permission.equals(1)) {
             List<CreditCardApplication> creditCardApplications = creditCardMapper.queryPartRequestByInspector();
-            return new ApiResult(true,creditCardApplications);
-        }else{
+            return new ApiResult(true, creditCardApplications);
+        } else {
             List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestByInspector();
-            return new ApiResult(true,creditCardApplications);
+            return new ApiResult(true, creditCardApplications);
         }
     }
 
-    public ApiResult acceptRequest(Integer id){
+    public ApiResult acceptRequest(Integer id) {
         CreditCardApplication creditCardApplication = creditCardMapper.selectSingleRequest(id);
         Integer type = creditCardApplication.getType();
-        if(type.equals(1)){
-            CreditCard creditCard=new CreditCard();
-            creditCard.setCardLimit(creditCardApplication.getAmount());
-            creditCard.setPassword(creditCardApplication.getPassword());
-            creditCard.setIdNumber(creditCardApplication.getIdNumber());
-            creditCard.setLoan(BigInteger.valueOf(0));
-            creditCardMapper.insertCreditCard(creditCard);
+        Integer status = creditCardApplication.getStatus();
+        if (status.equals(1)) {
+            if (type.equals(1)) {
+                CreditCard creditCard = new CreditCard();
+                creditCard.setCardLimit(creditCardApplication.getAmount());
+                creditCard.setPassword(creditCardApplication.getPassword());
+                creditCard.setIdNumber(creditCardApplication.getIdNumber());
+                creditCard.setLoan(BigInteger.valueOf(0));
+                creditCardMapper.insertCreditCard(creditCard);
+            } else {
+                creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
+            }
             creditCardMapper.acceptRequest(id);
-            return new ApiResult(true,null);
-        }else{
-            creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
-            creditCardMapper.acceptRequest(id);
-            return new ApiResult(true,null);
+            return new ApiResult(true, null);
+        } else {
+            return new ApiResult(false, "请求已被处理");
         }
     }
 
-    public ApiResult rejectRequest(Integer id){
+    public ApiResult rejectRequest(Integer id) {
         creditCardMapper.rejectRequest(id);
-        return new ApiResult(true,null);
+        return new ApiResult(true, null);
     }
-    public  ApiResult queryRequestsByCustomer(String idNumber) {
+
+    public ApiResult queryRequestsByCustomer(String idNumber) {
         List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestsByCustomer(idNumber);
-        if(creditCardApplications == null) {
+        if (creditCardApplications == null) {
             return new ApiResult(false, "查询失败");
         } else {
             return new ApiResult(true, creditCardApplications);
         }
     }
 
-    public ApiResult bankPay(BigInteger cardId, String idNumber, String password, BigInteger account, Date date){
+    public ApiResult bankPay(BigInteger cardId, String idNumber, String password, BigInteger account, Date date) {
         CreditCard matchCard = creditCardMapper.findMatchCard(cardId, idNumber, password);
-        if (matchCard==null){
-            return new ApiResult(false,"输入的信息不完全匹配");
+        if (matchCard == null) {
+            return new ApiResult(false, "输入的信息不完全匹配");
         }
         BigInteger cardLimit = matchCard.getCardLimit();
         BigInteger loan = matchCard.getLoan();
         BigInteger add = loan.add(account);
         int result = cardLimit.compareTo(add);
-        if(result < 0){
-            return new ApiResult(false,"信用卡可用额度不足");
+        if (result < 0) {
+            return new ApiResult(false, "信用卡可用额度不足");
         }
-        creditCardMapper.addPayment(idNumber,cardId,account,date);
-        creditCardMapper.updateLoan(cardId,account);
-        return new ApiResult(true,null);
+        creditCardMapper.addPayment(idNumber, cardId, account, date);
+        creditCardMapper.updateLoan(cardId, account);
+        return new ApiResult(true, null);
     }
 
-    public ApiResult queryBills(Date startDate, Date endDate, String idNumber){
+    public ApiResult queryBills(Date startDate, Date endDate, String idNumber) {
         List<CreditCardBill> creditCardBills = creditCardMapper.queryBills(startDate, endDate, idNumber);
-        return new ApiResult(true,creditCardBills);
+        return new ApiResult(true, creditCardBills);
     }
 }

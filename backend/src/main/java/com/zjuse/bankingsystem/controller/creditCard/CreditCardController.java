@@ -60,7 +60,7 @@ public class CreditCardController {
         return RespResult.success(creditCardService.deleteCreditCard(card_id).payload);
     }
 
-    @PostMapping("/creditCard/admin/login")
+    @PostMapping("/creditCard/admin/login/log")
     public RespResult loginAdmin(@RequestParam String name, @RequestParam String password) {
         System.out.println("loginAdmin where name = " + name + " and password = " + password);
         ApiResult apiResult = creditCardService.loginAdmin(name, password);
@@ -101,7 +101,7 @@ public class CreditCardController {
         return RespResult.success(null);
     }
 
-    @PostMapping("/creditCard/inspector/login")
+    @PostMapping("/creditCard/inspector/login/log")
     public RespResult loginInspector(@RequestParam String name, @RequestParam String password) {
         ApiResult apiResult = creditCardService.loginInspector(name, password);
         if (apiResult.ok) {

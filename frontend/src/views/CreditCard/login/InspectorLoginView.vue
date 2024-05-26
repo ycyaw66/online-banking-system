@@ -82,7 +82,7 @@ export default {
         return;
       }
 
-      axios.post("/creditCard/inspector/login",null,{
+      axios.post("/creditCard/inspector/login/log",null,{
         params:{
           name:this.inspector.name,
           password:this.inspector.password
