@@ -353,6 +353,12 @@ export default {
         this.$message.error('两次输入的密码不一致，请重新输入！');
         return;
       }
+      // 检查密码是否超过50个字符
+      if (this.new_card.first_password.length > 50) {
+        // 如果超过50个字符，就弹出警告并返回，不继续执行函数
+        this.$message.error('密码不能超过50个字符！');
+        return;
+      }
 
       // 如果密码一致，就关闭模态框并弹出成功提示
       this.add_new_card_visible = false;
@@ -388,6 +394,12 @@ export default {
       if (this.modify_password.new_password !== this.modify_password.new_password_again) {
         // 如果不一致，就弹出警告并返回，不继续执行函数
         this.$message.error('两次输入的新密码不一致，请重新输入！');
+        return;
+      }
+      // 检查新密码是否超过50个字符
+      if (this.modify_password.new_password.length > 50) {
+        // 如果超过50个字符，就弹出警告并返回，不继续执行函数
+        this.$message.error('新密码不能超过50个字符！');
         return;
       }
       // this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
