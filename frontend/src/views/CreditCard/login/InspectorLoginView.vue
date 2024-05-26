@@ -4,19 +4,19 @@
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
         <el-header
-            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
             <img src="../icons/logo.png"
                  style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
           </div>
-          线上银行系统--信用卡系统
+          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">线上银行系统--信用卡系统</span>
         </el-header>
         <el-container>
           <!--侧边栏区域-->
           <el-aside width="200px" style="height: 100vh;">
             <el-scrollbar>
               <el-menu :default-openeds="['1', '3']">
-                <el-menu-item index="1-1">
+                <el-menu-item index="1-1" style="color: white;">
                   <el-icon>
                     <HomeFilled/>
                   </el-icon>
@@ -118,7 +118,7 @@ export default {
 .el-aside,
 .el-menu,
 .el-sub-menu {
-  background-color: white !important;
+  background-color: rgb(47, 109, 185) !important;
 }
 
 .el-aside .el-menu-item a,

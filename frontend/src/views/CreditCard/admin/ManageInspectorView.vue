@@ -4,11 +4,12 @@
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
         <el-header
-            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
-            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
+            <img src="../icons/logo.png"
+                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
           </div>
-          线上银行系统--信用卡系统
+          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">线上银行系统--信用卡系统</span>
         </el-header>
         <el-container>
           <!--侧边栏区域-->
@@ -17,10 +18,10 @@
               <el-menu :default-openeds="['1', '3']">
                 <el-sub-menu index="1">
                   <template #title>
-                    <el-icon>
+                    <el-icon style="color: white;">
                       <UserFilled/>
                     </el-icon>
-                    系统管理员功能
+                    <span style="color: white;">系统管理员功能</span>
                   </template>
                   <!--                  <el-menu-item index="1-1">-->
                   <!--                    <router-link to="/creditCard/admin/info">-->
@@ -32,10 +33,10 @@
                   <!--                  </el-menu-item>-->
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/admin/inspector">
-                      <el-icon>
+                      <el-icon style="color: white;">
                         <Avatar/>
                       </el-icon>
-                      管理审查员
+                      <span style="color: white;">管理审查员</span>
                     </router-link>
                   </el-menu-item>
                 </el-sub-menu>
@@ -48,7 +49,7 @@
             </el-button>
           </el-aside>
           <!--主展示区域-->
-          <el-main>
+          <el-main style="background-color: #f1f1f1;">
             <br>
             <br>
             <div style="display: flex; justify-content: center;">
@@ -340,8 +341,10 @@ export default {
   text-decoration: none !important;
 }
 
-.el-aside, .el-menu, .el-sub-menu {
-  background-color: white !important;
+.el-aside,
+.el-menu,
+.el-sub-menu {
+  background-color: rgb(47, 109, 185) !important;
 }
 
 .el-aside .el-menu-item a,

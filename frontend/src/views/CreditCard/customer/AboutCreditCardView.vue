@@ -4,11 +4,12 @@
       <el-container class="layout-container-demo" style="height: 700px">
         <!--标题区域-->
         <el-header
-            style="font-size: 30px; background-color: rgb(149, 211, 242); font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
+            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
           <div style="display: inline-block;">
-            <img src="../icons/logo.png" style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
+            <img src="../icons/logo.png"
+                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
           </div>
-          线上银行系统--信用卡系统
+          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">线上银行系统--信用卡系统</span>
         </el-header>
         <el-container>
           <!--侧边栏区域-->
@@ -17,49 +18,49 @@
               <el-menu :default-openeds="['1', '3']">
                 <el-sub-menu index="1">
                   <template #title>
-                    <el-icon>
+                    <el-icon style="color: white;">
                       <UserFilled/>
                     </el-icon>
-                    用户功能
+                    <span style="color: white;">用户功能</span>
                   </template>
                   <el-menu-item index="1-1">
                     <router-link to="/creditCard/customer/info">
-                      <el-icon>
+                      <el-icon style="color: white;">
                         <HomeFilled/>
                       </el-icon>
-                      个人资料
+                      <span style="color: white;">个人资料</span>
                     </router-link>
                   </el-menu-item>
                   <el-menu-item index="1-2">
                     <router-link to="/creditCard/customer/card">
-                      <el-icon>
+                      <el-icon style="color: white;">
                         <WalletFilled/>
                       </el-icon>
-                      信用卡相关
+                      <span style="color: white;">信用卡相关</span>
                     </router-link>
                   </el-menu-item>
                   <el-menu-item index="1-3">
                     <router-link to="/creditCard/customer/response">
-                      <el-icon>
+                      <el-icon style="color: white;">
                         <Promotion/>
                       </el-icon>
-                      请求结果查询
+                      <span style="color: white;">请求结果查询</span>
                     </router-link>
                   </el-menu-item>
                   <el-menu-item index="1-4">
                     <router-link to="/creditCard/customer/pay">
-                      <el-icon>
+                      <el-icon style="color: white;">
                         <Shop/>
                       </el-icon>
-                      模拟支付
+                      <span style="color: white;">模拟支付</span>
                     </router-link>
                   </el-menu-item>
                   <el-menu-item index="1-5">
                     <router-link to="/creditCard/customer/simulation">
-                      <el-icon>
+                      <el-icon style="color: white;">
                         <List/>
                       </el-icon>
-                      流水查询
+                      <span style="color: white;">流水查询</span>
                     </router-link>
                   </el-menu-item>
                 </el-sub-menu>
@@ -70,7 +71,7 @@
             </el-button>
           </el-aside>
           <!--主展示区域-->
-          <el-main>
+          <el-main style="background-color: #f1f1f1;">
 
             <div style="margin-top: 20px; margin-left: 20px;">
 
@@ -87,7 +88,7 @@
               <div style="display: flex;flex-wrap: wrap; justify-content: start;">
 
                 <!-- 信用卡卡片 -->
-                <div class="cardBox" v-for="card in credit_cards" :key="card.id">
+                <div class="cardBox" v-for="card in credit_cards" :key="card.id" style="background-color: white;">
                   <div>
                     <!-- 卡片内容 -->
                     <div style="margin-left: 10px; text-align: start; font-size: 16px;">
@@ -585,6 +586,11 @@ export default {
 .el-menu-item > a.is-active {
   color: inherit;
   text-decoration: none !important;
+}
+.el-aside,
+.el-menu,
+.el-sub-menu {
+  background-color: rgb(47, 109, 185) !important;
 }
 
 .cardBox {
