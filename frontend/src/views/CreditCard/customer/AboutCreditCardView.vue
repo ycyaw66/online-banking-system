@@ -516,7 +516,8 @@ export default {
       }
 
       // 判断输入的还款金额是否大于欠额（loan）
-      if (Number(this.return_money.amount) > Number(this.return_money.loan)) {
+      console.log('还款金额为' + this.return_money.amount + ' and 欠额为' + this.return_money.loan);
+      if (Number(this.return_money.amount) * 100 > Number(this.return_money.loan)) {
         this.$message.error('还款金额不能大于信用卡欠额');
         return;
       }
