@@ -48,8 +48,10 @@ public class RedisUtils {
         return key == null ? null : redisTemplate.opsForValue().get(key);
     }
 
-    public Long getExpire(String key) {
+    /* 
+     * 根据 key 获得过期时间
+     */
+    public long getExpire(Object key) {
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
-    
 }

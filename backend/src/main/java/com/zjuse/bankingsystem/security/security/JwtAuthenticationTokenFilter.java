@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
+    private JwtTokenProvider jwtTokenProvider; 
+    @Autowired
     private JwtConfig jwtConfig; 
 
     @Autowired
@@ -43,13 +46,15 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         String authToken = authHeader.split(" ")[1];
-        log.info("authToken: ", authToken);
+        log.info("authToken: {}", authToken);
         if (StrUtil.isBlank(authToken)|| !JWTUtil.verify(authToken, jwtConfig.getTokenSignKey().getBytes(StandardCharsets.UTF_8))) {
             filterChain.doFilter(request, response);
             return ;
         }
 
         // TODO 验证key
+        Authentication authentication = jwtTokenProvider.getAuthentication(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
         log.info("---------End Jwt authentication token filter---------");

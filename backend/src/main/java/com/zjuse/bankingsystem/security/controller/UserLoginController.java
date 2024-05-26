@@ -2,15 +2,18 @@ package com.zjuse.bankingsystem.security.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mysql.cj.protocol.AuthenticationProvider;
+import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.controller.dto.UserLoginReq;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
@@ -40,6 +44,8 @@ public class UserLoginController {
     private JwtConfig jwtConfig; 
     @Autowired
     private OnlineUserService onlineUserService; 
+    @Autowired
+    private UserDetailsService userDetailsService; 
     
     @PostMapping("/login")
     public RespResult postUserLogin(@Validated @RequestBody UserLoginReq req) {
@@ -61,7 +67,7 @@ public class UserLoginController {
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
         
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
-            put("token", jwtConfig.getTokenStartWith() + token);
+            put("token", jwtConfig.getTokenStartWith() + " " + token);
             put("user", jwtUserDto.getUser());
         }}; 
         onlineUserService.save(jwtUserDto, token);
@@ -71,9 +77,6 @@ public class UserLoginController {
 
     @PostMapping("/register")
     public RespResult postUserRegister() {
-        // TODO: not implemented
-        log.info("---------Start User Register---------");
-        log.info("---------End User Register---------");
         return RespResult.success("success");
     }
 
@@ -83,10 +86,11 @@ public class UserLoginController {
         if (authentication == null) {
             return RespResult.fail("登陆过期");
         }
-        if (authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            return RespResult.success(userDetails);
+        UserDetails userDetails = userDetailsService.loadUserByUsername((String) authentication.getPrincipal());
+        if (Objects.isNull(userDetails)) {
+            return RespResult.fail("找不到当前信息");
+            
         }
-        return RespResult.fail("找不到当前信息");
+        return RespResult.success(userDetails);
     }
 }

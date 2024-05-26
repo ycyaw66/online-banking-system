@@ -1,6 +1,9 @@
 package com.zjuse.bankingsystem.security.security;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +30,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         String password = String.valueOf(authentication.getCredentials());
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (Objects.isNull(userDetails)) {
+            throw new AuthenticationCredentialsNotFoundException("username not found");
+        }
         if (!password.equals(userDetails.getPassword())) {
             throw new BadCredentialsException("Password error"); 
         }
