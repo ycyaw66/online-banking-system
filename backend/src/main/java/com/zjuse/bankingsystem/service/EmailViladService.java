@@ -68,6 +68,10 @@ public class EmailViladService {
                 uuid = UUID.randomUUID().toString();
             }
             else {
+                // System.out.println("### " + redisUtils.getExpire(userUuid));
+                if (redisUtils.getExpire(userUuid) > 240) {
+                    return new ApiResult(false, "too Frequent");
+                }
                 uuid = userUuid;
             }
 

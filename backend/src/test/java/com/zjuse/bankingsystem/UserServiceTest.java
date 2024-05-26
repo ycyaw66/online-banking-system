@@ -230,5 +230,8 @@ public class UserServiceTest {
 
         String code = "123456";
         assertTrue(emailViladService.validCode(uuid, "XuanyiZhou000@outlook.com", code).ok);
+        apiResult = emailViladService.sendEmail("XuanyiZhou000@outlook.com", uuid);
+        System.out.println("### " + apiResult.message);
+        assertFalse(apiResult.ok);
     }
 }
