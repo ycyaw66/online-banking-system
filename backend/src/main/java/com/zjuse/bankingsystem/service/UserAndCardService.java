@@ -53,7 +53,7 @@ public class UserAndCardService {
 
     public ApiResult consume(Long cardId, BigDecimal amount, String password, String remark) {
         try {
-            if (amount.doubleValue() < 0) {
+            if (amount.compareTo(new BigDecimal(0)) < 0) {
                 return new ApiResult(false, "No negetive amout");
             }
             // check priviledge? I don't know
@@ -74,12 +74,13 @@ public class UserAndCardService {
                 apiResult =  new ApiResult(true, "success");
             }
             Date date = new Date();
-            History history = new History(null, cardId, 0L, amount, date.getTime(), remark);
+            History history = new History(null, cardId, 1L, amount, date.getTime(), remark);
             historyMapper.insert(history);
             return apiResult;
         }
         
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
 
         }
@@ -87,7 +88,6 @@ public class UserAndCardService {
 
     public ApiResult loss(Long cardId, String password) {
         try {
-
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
                 if (apiResult.ok == false) {
@@ -103,7 +103,6 @@ public class UserAndCardService {
                 return new ApiResult(true, "success");
             }
         }
-        
         catch (Exception e) {
             return new ApiResult(false, e.getMessage());
 
@@ -145,6 +144,7 @@ public class UserAndCardService {
 
 
 
+
     private void Rollback(Long cardId, BigDecimal amount) throws Exception {
         if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
             ApiResult apiResult = creditcardService.returnMoney(cardId, amount);
@@ -152,18 +152,24 @@ public class UserAndCardService {
         else {
             ApiResult apiResult = debitcardService.increaceBalance(cardId, amount);
         }
-
     }
 
     public ApiResult transfor(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
         boolean isDec = false;
         try {
-            if (amount.doubleValue() < 0) {
+            if (amount.compareTo(new BigDecimal(0)) < 0) {
                 return new ApiResult(false, "No negetive amout");
             }
             if (cardId == targetCardId) {
                 return new ApiResult(false, "can't transfor to same card");
             }
+            if (!cardService.existCard(cardId)) {
+                return new ApiResult(false, "card not exist");
+            }
+            if (!cardService.existCard(targetCardId)) {
+                return new ApiResult(false, "target card not exist");
+            }
+            
             ApiResult apiResult;
             // check priviledge? I don't know
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
@@ -172,6 +178,7 @@ public class UserAndCardService {
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
+                System.out.println("### ok1" + cardId);
                 isDec = true;
             }
             else {
@@ -183,11 +190,12 @@ public class UserAndCardService {
             }
 
             if (cardService.getCardType(targetCardId) == CardType.CREDIT_CARD) {
-                apiResult = creditcardService.returnMoney(cardId, amount);
+                apiResult = creditcardService.returnMoney(targetCardId, amount);
                 if (apiResult.ok == false) {
                     Rollback(cardId, amount);
                     return apiResult;
                 }
+                System.out.println("### ok2" + targetCardId);
             }
             else {
                 apiResult = debitcardService.increaceBalance(cardId, amount);
@@ -196,6 +204,8 @@ public class UserAndCardService {
                     return apiResult;
                 }
             }
+
+            
             Date date = new Date();
             History history = new History(null, cardId, targetCardId, amount, date.getTime(), remark);
             historyMapper.insert(history);

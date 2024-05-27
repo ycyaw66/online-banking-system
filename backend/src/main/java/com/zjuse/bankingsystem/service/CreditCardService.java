@@ -29,12 +29,7 @@ public class CreditCardService {
     }
 
     public ApiResult addNewCreditCardRequest(String idNumber, BigDecimal cardLimit, String password) {
-        ApiResult apiResult = cardService.registerCard(CardType.CREDIT_CARD);
-        if (!apiResult.ok) {
-            return apiResult;
-        }
-        Long cardId = (Long) apiResult.payload;
-        creditCardMapper.addNewCreditCardRequest(cardId, idNumber, cardLimit, password);
+        creditCardMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
         return new ApiResult(true, null, null);
     }
 
@@ -59,7 +54,7 @@ public class CreditCardService {
             return new ApiResult(false, "该信用卡不存在");
         }
         creditCardMapper.setCreditCardLost(cardId);
-        creditCardMapper.insertCreditCard(creditCard);
+        // creditCardMapper.insertCreditCard(creditCard);
         return new ApiResult(true, "挂失成功");
     }
 
@@ -121,25 +116,35 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult acceptRequest(Integer id) {
-        CreditCardApplication creditCardApplication = creditCardMapper.selectSingleRequest(id);
-        Integer type = creditCardApplication.getType();
-        Integer status = creditCardApplication.getStatus();
-        if (status.equals(1)) {
-            if (type.equals(1)) {
-                CreditCard creditCard = new CreditCard();
-                creditCard.setCardLimit(creditCardApplication.getAmount());
-                creditCard.setPassword(creditCardApplication.getPassword());
-                creditCard.setIdNumber(creditCardApplication.getIdNumber());
-                creditCard.setLoan(BigDecimal.valueOf(0));
-                creditCardMapper.insertCreditCard(creditCard);
+    public ApiResult acceptRequest(Long id) {
+        try {
+            CreditCardApplication creditCardApplication = creditCardMapper.selectSingleRequest(id);
+            Integer type = creditCardApplication.getType();
+            Integer status = creditCardApplication.getStatus();
+            if (status.equals(1)) {
+                if (type.equals(1)) {
+                    ApiResult apiResult = cardService.registerCard(CardType.CREDIT_CARD);
+                    if (!apiResult.ok) return apiResult;
+                    Long cardId = (Long) apiResult.payload;
+                    CreditCard creditCard = new CreditCard();
+                    creditCard.setId(cardId);
+                    creditCard.setCardLimit(creditCardApplication.getAmount());
+                    creditCard.setPassword(creditCardApplication.getPassword());
+                    creditCard.setIdNumber(creditCardApplication.getIdNumber());
+                    creditCard.setLoan(BigDecimal.valueOf(0));
+                    creditCardMapper.insertCreditCard(creditCard);
+                    cardService.bindUserAndCard(cardId, creditCardApplication.getIdNumber());
+                } else {
+                    creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
+                }
+                creditCardMapper.acceptRequest(id);
+                return new ApiResult(true, null);
             } else {
-                creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
+                return new ApiResult(false, "请求已被处理");
             }
-            creditCardMapper.acceptRequest(id);
-            return new ApiResult(true, null);
-        } else {
-            return new ApiResult(false, "请求已被处理");
+        }
+        catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
         }
     }
 
@@ -158,20 +163,25 @@ public class CreditCardService {
     }
 
     public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
-        CreditCard matchCard = creditCardMapper.findMatchCard(cardId, password);
-        if (matchCard == null) {
-            return new ApiResult(false, "输入的信息不完全匹配");
+        try {
+            CreditCard matchCard = creditCardMapper.findMatchCard(cardId, password);
+            if (matchCard == null) {
+                return new ApiResult(false, "输入的信息不完全匹配");
+            }
+            BigDecimal cardLimit = matchCard.getCardLimit();
+            BigDecimal loan = matchCard.getLoan();
+            BigDecimal add = loan.add(account);
+            int result = cardLimit.compareTo(add);
+            if (result < 0) {
+                return new ApiResult(false, "信用卡可用额度不足");
+            }
+            creditCardMapper.addPayment(cardId, account, date);
+            creditCardMapper.updateLoan(cardId, account);
+            return new ApiResult(true, null);
         }
-        BigDecimal cardLimit = matchCard.getCardLimit();
-        BigDecimal loan = matchCard.getLoan();
-        BigDecimal add = loan.add(account);
-        int result = cardLimit.compareTo(add);
-        if (result < 0) {
-            return new ApiResult(false, "信用卡可用额度不足");
+        catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
         }
-        creditCardMapper.addPayment(cardId, account, date);
-        creditCardMapper.updateLoan(cardId, account);
-        return new ApiResult(true, null);
     }
 
     public ApiResult queryBills(Date startDate, Date endDate, Long cardId) {

@@ -53,6 +53,15 @@ public class CardService {
         }
         return card.getCardType();
     }
+    
+    public boolean existCard(Long cardid) throws Exception {
+        QueryWrapper<CardOfPerson> wrapper = new QueryWrapper<>();
+        wrapper.eq("card_id", cardid);
+        if (cardOfPersonMapper.selectCount(wrapper) == 0) {
+            return false;
+        }
+        return true;
+    }
 
 
     public ApiResult bindUserAndCard(Long cardId, String id_number) {
