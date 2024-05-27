@@ -7,9 +7,13 @@ public class RespResult {
     public Object payload; 
 
     public RespResult(int code, String errString, Object payload) {
-        this.code = code; 
+        this.code = code;
         this.err = errString;
         this.payload = payload;
+    }
+
+    public static RespResult success() {
+        return new RespResult(0, null, null);
     }
 
     public static RespResult success(Object payload) {

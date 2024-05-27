@@ -2,14 +2,40 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
-        url: jdbc:mysql://localhost:3306/bank?serverTimezone=UTC
-        password: "zhao1290"
-#    sql:
-#        init:
-#            schema-locations: classpath:db/init.sql
-#            data-locations: classpath:db/data-init.sql
+        url: jdbc:mysql://localhost:3306/test?allowPublicKeyRetrieval=true&useSSL=false
+        password: "fbz123456"
+
+    sql:
+        init:
+            schema-locations: classpath:db/init.sql
+            data-locations: classpath:db/data-init.sql
+            mode: always
+    data:
+        redis:
+            host: localhost
+            port: 6379
+            database: 0
 
 server:
     address: 127.0.0.1
     port: 8082
 
+# jwt 相关设置
+jwt:
+    header: Authorization
+    # 令牌前缀
+    token-start-with: Bearer
+    # token 有效时间
+    token-validity-in-seconds: 7200000
+    token-sign-key: "user"
+    # 在线用户的 token
+    online-key: "online-token"
+
+mail: 
+    mail-address: "zju_11111111@163.com"
+    password: "CUYRWKBTMCEIYACA"
+    redis-start-with: "mail-code:"
+
+# logging:    
+#     level: 
+#         ROOT: DEBUG
