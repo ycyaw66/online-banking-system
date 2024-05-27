@@ -1,5 +1,6 @@
 // 引入 Vue 3 的路由模块
 import { createRouter, createWebHistory } from 'vue-router';
+import BaseLayout from '../components/BaseLayout.vue';
 
 // 定义路由
 const routes = [
@@ -16,7 +17,23 @@ const routes = [
     {
         path: '/',
         redirect: '/creditCard/firstView'
-    }
+    },
+    {
+        path: '/administrator',
+        component: BaseLayout,
+        children: [
+            {
+                path: 'privilege',
+                name: 'privilege',
+                component: () => import('../views/Administrator/Privilege.vue')
+            },
+            {
+                path: 'blackList',
+                name: 'blackList',
+                component: () => import('../views/Administrator/BlackList.vue')
+            }
+        ]
+    },
 ];
 
 // 创建并配置路由
