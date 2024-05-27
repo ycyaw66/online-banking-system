@@ -123,6 +123,44 @@ public class UserAndCardService {
             return new ApiResult(false, e.getMessage());
         }
     }
+
+    public ApiResult history(HistoryCondition condition) {
+        try {
+            QueryWrapper<History> wrapper = new QueryWrapper<>();
+            if (condition.getCardId() != null) {
+                wrapper.eq("card_id", condition.getCardId());
+            }
+            if (condition.getTargetCardId() != null) {
+                wrapper.eq("target_card", condition.getTargetCardId());
+            }
+            if (condition.getLeastAmount() != null) {
+                wrapper.ge("amount", condition.getLeastAmount());
+            }
+            if (condition.getMostAmount() != null) {
+                wrapper.le("amount", condition.getMostAmount());
+            }
+            if (condition.getStartTime() != null) {
+                wrapper.ge("time", condition.getStartTime());
+            }
+            if (condition.getEndTime() != null) {
+                wrapper.le("time", condition.getEndTime());
+            }
+            if (condition.getRemark() != null) {
+                wrapper.like("remark", condition.getRemark());
+            }
+            List<History> list = historyMapper.selectList(wrapper);
+            if (list == null) {
+                return new ApiResult(false, "database error");
+            }
+            ApiResult apiResult = new ApiResult(true, "success");
+            apiResult.payload = list;
+            return apiResult;
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
     public ApiResult getBalance(Long cardId, String password) {
         try {
             ApiResult apiResult = null;
