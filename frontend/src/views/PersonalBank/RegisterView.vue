@@ -124,7 +124,7 @@ export default {
   },
   methods: {
       jumpLogin() {
-        this.$router.push('/personalBank/login');
+        this.$router.push('/personalBank/user/login');
       },
       submitForm() {
         // 表单校验

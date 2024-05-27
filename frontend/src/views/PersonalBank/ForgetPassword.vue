@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     jumpLogin() {
-      this.$router.push('/personalBank/login');
+      this.$router.push('/personalBank/user/login');
     },
     handleForget() {
       // 加密后传给后端

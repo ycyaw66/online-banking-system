@@ -15,7 +15,7 @@
           <template #header>
             <div class="container">
               <div style="margin-left:5px" >
-                <span>用户登录</span>
+                <span>管理员登录</span>
               </div>
             </div>
           </template>
@@ -25,17 +25,14 @@
               <el-input v-model="loginForm.username" placeholder="请输入用户名" style="width: 250px"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="password" style="margin-top: 20px">
-              <el-input v-model="loginForm.password" placeholder="请输入密码" style="width: 250px" show-password></el-input> 
-              <el-link type="primary" style="margin-left: 15px; font-size: 13px" :underline="false" @click="jumpForget">忘记密码？</el-link>
+              <el-input v-model="loginForm.password" placeholder="请输入密码" style="width: 250px" show-password></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleLogin" style=" width: 250px">登录</el-button>
               <el-divider style="width: 250px"/>
             </el-form-item>
             <el-form-item style="margin-top: -40px">
-              没有账号？
-              <el-link type="primary" :underline="false" @click="jumpRegister">注册</el-link>
-              <el-link type="primary" :underline="false" @click="jumpAdminLogin" style="margin-left: 80px">管理员登录</el-link>
+              <el-link type="primary" :underline="false" @click="jumpLogin">用户登录</el-link>
             </el-form-item>
           </el-form>
         </el-card>
@@ -67,22 +64,17 @@ export default {
     };
   },
   methods: {
-    jumpRegister() {
-      this.$router.push('/personalBank/user/register');
-    },
-    jumpForget() {
-      this.$router.push('/personalBank/user/forget');
+    jumpLogin() {
+      this.$router.push('/personalBank/user/login');
     },
     jumpInfo() {
-      this.$router.push('/personalBank/user/infoManage');
-    },
-    jumpAdminLogin() {
-      this.$router.push('/personalBank/admin/login');
+      // TODO: 跳转管理员管理界面
+      this.$router.push('/personalBank/adminInfo');
     },
     handleLogin() {
       // 加密后传给后端
       const encrypted = CryptoJS.SHA256(this.loginForm.password).toString();
-      axios.post("/user/login",
+      axios.post("/admin/login",
         {
           "username": this.loginForm.username,
           "password": encrypted
