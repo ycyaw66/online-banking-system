@@ -25,12 +25,12 @@ const routes = [
             {
                 path: 'privilege',
                 name: 'privilege',
-                component: () => import('../views/Administrator/Privilege.vue')
+                component: () => import('../views/PersonalBank/Privilege.vue')
             },
             {
                 path: 'blackList',
                 name: 'blackList',
-                component: () => import('../views/Administrator/BlackList.vue')
+                component: () => import('../views/PersonalBank/BlackList.vue')
             }
         ]
     },
