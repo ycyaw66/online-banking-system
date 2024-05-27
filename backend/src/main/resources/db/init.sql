@@ -1,3 +1,8 @@
+drop table if exists credit_card_admin;
+drop table if exists credit_card_application;
+drop table if exists credit_card_bill;
+drop table if exists credit_card_inspector;
+drop table if exists credit_card;
 DROP TABLE IF EXISTS `cardofperson`;
 DROP TABLE IF EXISTS `UserPrivilege`;
 DROP TABLE IF EXISTS `blacklist`;
@@ -63,3 +68,54 @@ CREATE TABLE `history`
     FOREIGN KEY(target_card) REFERENCES card(card_id),
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+create table `credit_card` (
+    `id` bigint not null,
+    `id_number` varchar(50) not null,
+    `password` varchar(50),
+    `card_limit` DECIMAL(15, 2) not null default 0,
+    `loan` DECIMAL(15, 2) not null default 0,
+    `is_lost` int not null default 0,
+    primary key(`id`),
+    FOREIGN KEY(`id`) REFERENCES card(`card_id`),
+    check(is_lost in (0, 1))
+)engine=innodb charset=utf8mb4;
+
+create table `credit_card_application` (
+    `id` int not null auto_increment,
+    `id_number` varchar(50) not null,
+    `credit_card_id` bigint,
+    `amount` DECIMAL(15, 2) not null default 0,
+    `type` int not null,
+    `status` int not null,
+    `password` varchar(50),
+    primary key (`id`),
+    FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
+) engine=innodb charset=utf8mb4;
+
+create table `credit_card_bill` (
+    `id` int not null auto_increment,
+    `id_number` varchar(50) not null,
+    `credit_card_id` bigint not null,
+    `amount` DECIMAL(15, 2) not null default 0,
+    `bill_date` DATE,
+    primary key (`id`),
+    FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
+) engine=innodb charset=utf8mb4;
+
+create table `credit_card_admin` (
+  `id` int not null auto_increment,
+  `name` varchar(50) not null,
+  `password` varchar(50) not null,
+  primary key (`id`)
+) engine=innodb charset=utf8mb4;
+
+create table `credit_card_inspector` (
+    `id` int not null auto_increment,
+    `name` varchar(50) not null,
+    `password` varchar (50) not null,
+    `permission` int not null,
+    primary key(`id`),
+    check(`permission` in (1, 2))
+)engine=innodb charset=utf8mb4;

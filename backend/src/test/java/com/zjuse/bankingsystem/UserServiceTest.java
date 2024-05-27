@@ -26,7 +26,7 @@ import com.zjuse.bankingsystem.mapper.BlacklistMapper;
 import com.zjuse.bankingsystem.mapper.UserMapper;
 import com.zjuse.bankingsystem.service.BlacklistService;
 import com.zjuse.bankingsystem.service.CardService;
-import com.zjuse.bankingsystem.service.EmailViladService;
+import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.service.UserAndCardService;
 import com.zjuse.bankingsystem.service.UserPrivilegeService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -52,7 +52,7 @@ public class UserServiceTest {
     CardService cardService;
 
     @Autowired
-    EmailViladService emailViladService;
+    EmailValidService emailValidService;
 
     User RandomUser() {
         User user = new User();
@@ -222,15 +222,15 @@ public class UserServiceTest {
 
     @Test
     void EmailSendTest() {
-        ApiResult apiResult = emailViladService.sendEmail("XuanyiZhou000@outlook.com", null);
+        ApiResult apiResult = emailValidService.sendEmail("XuanyiZhou000@outlook.com", null);
         System.out.println("### " + apiResult.message);
         assertTrue(apiResult.ok);
         String uuid = (String) apiResult.payload;
         System.out.println("### " + uuid.hashCode());
 
         String code = "123456";
-        assertTrue(emailViladService.validCode(uuid, "XuanyiZhou000@outlook.com", code).ok);
-        apiResult = emailViladService.sendEmail("XuanyiZhou000@outlook.com", uuid);
+        assertTrue(emailValidService.validCode(uuid, "XuanyiZhou000@outlook.com", code).ok);
+        apiResult = emailValidService.sendEmail("XuanyiZhou000@outlook.com", uuid);
         System.out.println("### " + apiResult.message);
         assertFalse(apiResult.ok);
     }

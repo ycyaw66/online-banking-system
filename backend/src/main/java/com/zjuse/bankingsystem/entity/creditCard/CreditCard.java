@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreditCard {
-    private BigInteger id;
+    private Long id;
     private String idNumber;
     private String password;
-    private BigInteger cardLimit;
-    private BigInteger loan;
+    private BigDecimal cardLimit;
+    private BigDecimal loan;
     private Integer isLost;
 }

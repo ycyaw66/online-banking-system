@@ -12,7 +12,7 @@ import java.util.PropertyResourceBundle;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreditCardBill {
-    private Integer id;
+    private Long id;
     private String idNumber;
     private BigInteger creditCardId;
     private BigInteger amount;

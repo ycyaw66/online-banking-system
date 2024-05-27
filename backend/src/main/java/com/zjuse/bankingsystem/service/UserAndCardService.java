@@ -38,11 +38,10 @@ public class UserAndCardService {
     UserMapper userMapper;
     @Autowired
     HistoryMapper historyMapper;
-    Date date = new Date();
     @Autowired
     UserService userService;
     @Autowired
-    CreditcardService creditcardService;
+    CreditCardService creditcardService;
     @Autowired
     DebitcardService debitcardService;
     @Autowired
@@ -60,7 +59,8 @@ public class UserAndCardService {
             // check priviledge? I don't know
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                apiResult = creditcardService.decreaceBalance(cardId, amount, password);
+                Date date = new Date();
+                apiResult = creditcardService.bankPay(cardId, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -73,6 +73,7 @@ public class UserAndCardService {
                 }
                 apiResult =  new ApiResult(true, "success");
             }
+            Date date = new Date();
             History history = new History(null, cardId, 0L, amount, date.getTime(), remark);
             historyMapper.insert(history);
             return apiResult;
@@ -88,7 +89,7 @@ public class UserAndCardService {
         try {
 
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                ApiResult apiResult = creditcardService.loss(cardId, password);
+                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -130,7 +131,7 @@ public class UserAndCardService {
         try {
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                apiResult = creditcardService.getBalance(cardId, password);
+                // apiResult = creditcardService.getBalance(cardId, password);
             }
             else {
                 apiResult = debitcardService.getBalance(cardId, password);
@@ -146,7 +147,7 @@ public class UserAndCardService {
 
     private void Rollback(Long cardId, BigDecimal amount) throws Exception {
         if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-            ApiResult apiResult = creditcardService.increaceBalance(cardId, amount);
+            ApiResult apiResult = creditcardService.returnMoney(cardId, amount);
         }
         else {
             ApiResult apiResult = debitcardService.increaceBalance(cardId, amount);
@@ -166,7 +167,8 @@ public class UserAndCardService {
             ApiResult apiResult;
             // check priviledge? I don't know
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                apiResult = creditcardService.decreaceBalance(cardId, amount, password);
+                Date date = new Date();
+                apiResult = creditcardService.bankPay(cardId, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -181,7 +183,7 @@ public class UserAndCardService {
             }
 
             if (cardService.getCardType(targetCardId) == CardType.CREDIT_CARD) {
-                apiResult = creditcardService.increaceBalance(cardId, amount);
+                apiResult = creditcardService.returnMoney(cardId, amount);
                 if (apiResult.ok == false) {
                     Rollback(cardId, amount);
                     return apiResult;
@@ -194,6 +196,7 @@ public class UserAndCardService {
                     return apiResult;
                 }
             }
+            Date date = new Date();
             History history = new History(null, cardId, targetCardId, amount, date.getTime(), remark);
             historyMapper.insert(history);
             return new ApiResult(true, "success");
