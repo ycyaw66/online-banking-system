@@ -73,8 +73,8 @@ export default {
     jumpForget() {
       this.$router.push('/personalBank/user/forget');
     },
-    jumpInfo() {
-      this.$router.push('/personalBank/user/infoManage');
+    jumpProfile() {
+      this.$router.push('/personalBank/user/profile');
     },
     jumpAdminLogin() {
       this.$router.push('/personalBank/admin/login');
@@ -90,7 +90,7 @@ export default {
         .then(response => {
           ElMessage.success(response.data);
           // handle successful login, redirect
-          this.jumpInfo();
+          this.jumpProfile();
         })
         .catch(error => {
           ElMessage.error(error.response.data);

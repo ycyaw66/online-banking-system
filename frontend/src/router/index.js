@@ -24,6 +24,11 @@ const routes = [
         component: () => import('../views/PersonalBank/ForgetPassword.vue')
     },
     {
+        path: '/personalBank/user/profile',
+        name: 'profile',
+        component: () => import('../views/PersonalBank/UserProfile.vue')
+    },
+    {
         path: '/',
         redirect: '/personalBank/user/login'
     }
