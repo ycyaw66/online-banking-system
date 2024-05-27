@@ -30,6 +30,7 @@ import com.zjuse.bankingsystem.security.controller.dto.SendMailReq;
 import com.zjuse.bankingsystem.security.controller.dto.UserLoginReq;
 import com.zjuse.bankingsystem.security.controller.dto.UserRegisterReq;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.security.service.OnlineUserService;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
@@ -57,6 +58,8 @@ public class UserLoginController {
     private EmailValidService emailValidService; 
     @Autowired
     private UserService userService; 
+    @Autowired
+    private CurrentUserService currentUserService; 
     
     @PostMapping("/login")
     public RespResult postUserLogin(@Validated @RequestBody UserLoginReq req) {
@@ -137,15 +140,10 @@ public class UserLoginController {
 
     @GetMapping("/profile")
     public RespResult getProfile() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return RespResult.fail("登陆过期");
+        ApiResult apiResult = currentUserService.getCurrentUser(); 
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message); 
         }
-        UserDetails userDetails = userDetailsService.loadUserByUsername((String) authentication.getPrincipal());
-        if (Objects.isNull(userDetails)) {
-            return RespResult.fail("找不到当前信息");
-            
-        }
-        return RespResult.success(userDetails);
+        return RespResult.success(apiResult.payload);
     }
 }
