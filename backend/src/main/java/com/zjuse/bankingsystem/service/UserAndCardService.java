@@ -28,15 +28,6 @@ import com.zjuse.bankingsystem.entity.*;;
 @Service
 public class UserAndCardService {
     @Autowired
-    UserPrivilegeMapper userprivilegeMapper;
-    
-    @Autowired
-    CardOfPersonMapper cardOfPersonMapper;
-    @Autowired
-    BlacklistMapper blacklistMapper;
-    @Autowired
-    UserMapper userMapper;
-    @Autowired
     HistoryMapper historyMapper;
     @Autowired
     UserService userService;
@@ -55,6 +46,12 @@ public class UserAndCardService {
         try {
             if (amount.compareTo(new BigDecimal(0)) < 0) {
                 return new ApiResult(false, "No negetive amout");
+            }
+            if (!cardService.existCard(cardId)) {
+                return new ApiResult(false, "card not exist");
+            }
+            if (!cardService.checkPayment(cardId)) {
+                return new ApiResult(false, "permission denied");
             }
             // check priviledge? I don't know
             ApiResult apiResult = null;
@@ -168,6 +165,15 @@ public class UserAndCardService {
             }
             if (!cardService.existCard(targetCardId)) {
                 return new ApiResult(false, "target card not exist");
+            }
+
+            
+            if (!cardService.checkTransfer(cardId)) {
+                return new ApiResult(false, "permission denied");
+            }
+
+            if (!cardService.checkReceive(targetCardId)) {
+                return new ApiResult(false, "target card permission denied");
             }
             
             ApiResult apiResult;

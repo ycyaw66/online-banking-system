@@ -92,7 +92,9 @@ public class creditcardTest {
                 }
                 Date date = new Date();
                 assertTrue(creditCardService.bankPay(item1.getCardId(), "123456", new BigDecimal(100), date).ok);
-                assertTrue(userAndCardService.consume(item1.getCardId(), new BigDecimal(10), "123456", "??").ok);
+                ApiResult apiResult2 = userAndCardService.consume(item1.getCardId(), new BigDecimal(10), "123456", "??");
+                System.out.println(apiResult2.message);
+                assertTrue(apiResult2.ok);
                 pre = item1.getCardId();
             }
         }

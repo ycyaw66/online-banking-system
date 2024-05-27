@@ -119,17 +119,17 @@ public class UserServiceTest {
             ApiResult apiResult = userPrivilegeService.getUserPrivilege(i);
             assertTrue(apiResult.ok);
             UserPrivilege userPrivilege = (UserPrivilege) apiResult.payload;
-            assertTrue(userPrivilege.isLoss());
-            assertTrue(userPrivilege.isTranscations());
+            assertTrue(userPrivilege.isPayment());
+            assertTrue(userPrivilege.isReceive());
             assertTrue(userPrivilege.isTransfer());
-            userPrivilege.setLoss(false);
+            userPrivilege.setPayment(false);
             assertTrue(userPrivilegeService.modifyUserPrivilege(userPrivilege).ok);
         }
         for(Long i = 1L; i <= 5L; i++) {
             ApiResult apiResult = userPrivilegeService.getUserPrivilege(i);
             assertTrue(apiResult.ok);
             UserPrivilege userPrivilege = (UserPrivilege) apiResult.payload;
-            assertFalse(userPrivilege.isLoss());
+            assertFalse(userPrivilege.isPayment());
         }
 
         UserPrivilege userPrivilege = new UserPrivilege(15L, true, true, true);

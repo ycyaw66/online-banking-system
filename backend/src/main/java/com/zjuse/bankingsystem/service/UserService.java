@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.UserMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
@@ -20,6 +21,9 @@ public class UserService {
     @Autowired
     private UserMapper userMapper; 
     
+    @Autowired
+    private UserPrivilegeService userPrivilegeService;
+
     public ApiResult getUserId(String id_number) {
         try {
             QueryWrapper wrapper = new QueryWrapper();
@@ -38,6 +42,7 @@ public class UserService {
     public ApiResult registerNewUser(User user) {
         try {
             userMapper.insert(user);
+            userPrivilegeService.insertUserPrivilege(new UserPrivilege(user.getId(), true, true, true));
             return new ApiResult(true, null); 
         } catch(Exception e) {
             return new ApiResult(false, e.getMessage()); 

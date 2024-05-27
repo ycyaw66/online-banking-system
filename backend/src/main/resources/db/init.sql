@@ -41,9 +41,9 @@ CREATE TABLE `cardofperson`
 CREATE TABLE `UserPrivilege`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
-    transcations BOOLEAN NOT NULL COMMENT '交易记录查看权限',
+    payment BOOLEAN NOT NULL COMMENT '支付权限',
     transfer BOOLEAN NOT NULL COMMENT '转账权限',
-    loss BOOLEAN NOT NULL COMMENT '挂失权限',
+    receive BOOLEAN NOT NULL COMMENT '收款权限',
     PRIMARY KEY(user_id),
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
