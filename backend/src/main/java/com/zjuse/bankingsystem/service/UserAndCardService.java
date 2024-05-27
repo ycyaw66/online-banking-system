@@ -52,74 +52,6 @@ public class UserAndCardService {
     CardService cardService;
     
 
-    public ApiResult bindUserAndCard(Long cardId, String id_number) {
-        try {
-            ApiResult apiResult =  userService.getUserId(id_number);
-            if (apiResult.ok == false) {
-                return apiResult;
-            }
-            Long userId = (Long) apiResult.payload;
-
-            apiResult = blacklistService.isInblacklist(userId);
-            if (apiResult.ok == false) {
-                return apiResult;
-            }
-            Boolean isInBlacklist = (boolean) apiResult.payload;
-            if (isInBlacklist) {
-                return new ApiResult(false, "user is in blacklist");
-            }
-
-            CardOfPerson cardOfPerson = new CardOfPerson();
-            cardOfPerson.setCardId(cardId);
-            cardOfPerson.setUserId(userId);
-            cardOfPersonMapper.insert(cardOfPerson);
-            // cardOfPersonMapper
-
-            return new ApiResult(true, "success");
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new ApiResult(false, e.getMessage());
-        }
-    }
-
-    public ApiResult getAllCard(Long userId) {
-        try {
-            QueryWrapper wrapper = new QueryWrapper();
-            wrapper.eq("user_id", userId);
-            List<CardOfPerson> list = cardOfPersonMapper.selectList(wrapper);
-            if (list == null) {
-                return new ApiResult(false, "database error");
-            }
-            List<Card> cardList = new Vector<Card>();
-            for (var item : list) {
-                CardType cardType = getCardType(item.getCardId());
-                cardList.add(new Card(item.getCardId(), cardType));
-            }
-            ApiResult apiResult = new ApiResult(true, "success", cardList);
-            return apiResult;
-        }
-        catch (Exception e) {
-            return new ApiResult(false, e.getMessage());
-
-        }
-    }
-
-    public ApiResult getAllCard(String id_number) {
-        try {
-            ApiResult apiResult =  userService.getUserId(id_number);
-            if (apiResult.ok == false) {
-                return apiResult;
-            }
-            Long userId = (Long) apiResult.payload;
-            return getAllCard(userId);
-        }
-        catch (Exception e) {
-            return new ApiResult(false, e.getMessage());
-
-        }
-    }
-
     public ApiResult consume(Long cardId, BigDecimal amount, String password, String remark) {
         try {
             if (amount.doubleValue() < 0) {
@@ -127,7 +59,7 @@ public class UserAndCardService {
             }
             // check priviledge? I don't know
             ApiResult apiResult = null;
-            if (getCardType(cardId) == CardType.CREDIT_CARD) {
+            if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 apiResult = creditcardService.decreaceBalance(cardId, amount, password);
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -155,7 +87,7 @@ public class UserAndCardService {
     public ApiResult loss(Long cardId, String password) {
         try {
 
-            if (getCardType(cardId) == CardType.CREDIT_CARD) {
+            if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 ApiResult apiResult = creditcardService.loss(cardId, password);
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -197,7 +129,7 @@ public class UserAndCardService {
     public ApiResult getBalance(Long cardId, String password) {
         try {
             ApiResult apiResult = null;
-            if (getCardType(cardId) == CardType.CREDIT_CARD) {
+            if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 apiResult = creditcardService.getBalance(cardId, password);
             }
             else {
@@ -213,7 +145,7 @@ public class UserAndCardService {
 
 
     private void Rollback(Long cardId, BigDecimal amount) throws Exception {
-        if (getCardType(cardId) == CardType.CREDIT_CARD) {
+        if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
             ApiResult apiResult = creditcardService.increaceBalance(cardId, amount);
         }
         else {
@@ -233,7 +165,7 @@ public class UserAndCardService {
             }
             ApiResult apiResult;
             // check priviledge? I don't know
-            if (getCardType(cardId) == CardType.CREDIT_CARD) {
+            if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 apiResult = creditcardService.decreaceBalance(cardId, amount, password);
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -248,7 +180,7 @@ public class UserAndCardService {
                 isDec = true;
             }
 
-            if (getCardType(targetCardId) == CardType.CREDIT_CARD) {
+            if (cardService.getCardType(targetCardId) == CardType.CREDIT_CARD) {
                 apiResult = creditcardService.increaceBalance(cardId, amount);
                 if (apiResult.ok == false) {
                     Rollback(cardId, amount);
@@ -280,14 +212,5 @@ public class UserAndCardService {
         }
     }
 
-    private CardType getCardType(Long cardId) throws Exception {
-        ApiResult apiResult = cardService.getCardType(cardId);
-        if (apiResult.ok) {
-            return (CardType) apiResult.payload;
-        }
-        else {
-            throw new Exception(apiResult.message);
-        }
-    }
 
 }
