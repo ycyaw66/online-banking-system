@@ -68,8 +68,7 @@ export default {
       this.$router.push('/personalBank/user/login');
     },
     jumpInfo() {
-      // TODO: 跳转管理员管理界面
-      this.$router.push('/personalBank/adminInfo');
+      this.$router.push('/personalBank/admin/privilage');
     },
     handleLogin() {
       // 加密后传给后端

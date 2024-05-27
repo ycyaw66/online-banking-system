@@ -1,8 +1,14 @@
 // 引入 Vue 3 的路由模块
 import { createRouter, createWebHistory } from 'vue-router';
+import AdminBaseLayout from '../components/AdminBaseLayout.vue';
+import UserBaseLayout from '../components/UserBaseLayout.vue';
 
 // 定义路由
 const routes = [
+    {
+        path: '/',
+        redirect: '/personalBank/user/login'
+    },
     {
         path: '/personalBank/user/login',
         name: 'login',
@@ -24,14 +30,32 @@ const routes = [
         component: () => import('../views/PersonalBank/ForgetPassword.vue')
     },
     {
-        path: '/personalBank/user/profile',
-        name: 'profile',
-        component: () => import('../views/PersonalBank/UserProfile.vue')
+        path: '/personalBank/user',
+        component: UserBaseLayout,
+        children: [
+            {
+                path: 'profile',
+                name: 'profile',
+                component: () => import('../views/PersonalBank/UserProfile.vue')
+            },
+        ]
     },
     {
-        path: '/',
-        redirect: '/personalBank/user/login'
-    }
+        path: '/personalBank/admin',
+        component: AdminBaseLayout,
+        children: [
+            {
+                path: 'privilege',
+                name: 'privilege',
+                component: () => import('../views/PersonalBank/Privilege.vue')
+            },
+            {
+                path: 'blackList',
+                name: 'blackList',
+                component: () => import('../views/PersonalBank/BlackList.vue')
+            },
+        ]
+    },
 ];
 
 // 创建并配置路由
