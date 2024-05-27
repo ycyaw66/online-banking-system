@@ -156,7 +156,7 @@ public class UserServiceTest {
             Long cardId = (Long) apiResult.payload;
             cardList.add(cardId);
             Integer index = random.nextInt(N);
-            assertTrue(userAndCardService.bindUserAndCard(i, userlist.get(index).getIdNumber()).ok);
+            assertTrue(cardService.bindUserAndCard(i, userlist.get(index).getIdNumber()).ok);
             CardOfPerson cardOfPerson = new CardOfPerson(cardId, userlist.get(index).getId());
             relation.put(cardOfPerson, 1);
         }
@@ -171,7 +171,7 @@ public class UserServiceTest {
         InitCardAndPerson(list, cardList, map, N, M);
         Long total = 0L;
         for(User user : list) {
-            ApiResult apiResult = userAndCardService.getAllCard(user.getId());
+            ApiResult apiResult = cardService.getAllCardbyUserId(user.getId());
             assertTrue(apiResult.ok);
             List<Long> usercard = (List<Long>) apiResult.payload;
             for(Long item : usercard) {
