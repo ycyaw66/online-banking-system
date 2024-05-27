@@ -49,12 +49,14 @@ public class CreditCardService {
     }
 
     public ApiResult makeCreditCardLost(Long cardId, String password) {
-        CreditCard creditCard = creditCardMapper.findMatchCard(cardId, password);
+        CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
         if (creditCard.getId() == null) {
             return new ApiResult(false, "该信用卡不存在");
         }
+        if (!creditCard.getPassword().equals(password)) {
+            return new ApiResult(false, "Wrong password");
+        }
         creditCardMapper.setCreditCardLost(cardId);
-        // creditCardMapper.insertCreditCard(creditCard);
         return new ApiResult(true, "挂失成功");
     }
 
@@ -164,9 +166,12 @@ public class CreditCardService {
 
     public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
         try {
-            CreditCard matchCard = creditCardMapper.findMatchCard(cardId, password);
+            CreditCard matchCard = creditCardMapper.findCreditCard(cardId);
             if (matchCard == null) {
-                return new ApiResult(false, "输入的信息不完全匹配");
+                return new ApiResult(false, "Credit Card not find");
+            }
+            if (!matchCard.getPassword().equals(password)) {
+                return new ApiResult(false, "Wrong password");
             }
             BigDecimal cardLimit = matchCard.getCardLimit();
             BigDecimal loan = matchCard.getLoan();
