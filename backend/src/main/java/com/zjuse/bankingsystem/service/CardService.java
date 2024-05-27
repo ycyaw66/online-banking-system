@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.Card;
 import com.zjuse.bankingsystem.entity.CardOfPerson;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.CardMapper;
 import com.zjuse.bankingsystem.mapper.CardOfPersonMapper;
 import com.zjuse.bankingsystem.mapper.UserPrivilegeMapper;
+import com.zjuse.bankingsystem.mapper.CardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
 

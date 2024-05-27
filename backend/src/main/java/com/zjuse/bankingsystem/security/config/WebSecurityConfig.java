@@ -39,14 +39,18 @@ public class WebSecurityConfig {
         httpSecurity.csrf(CsrfConfigurer::disable)
             .sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorizationRegistry -> authorizationRegistry
+                .requestMatchers("/test/hello").permitAll()
                 .requestMatchers(HttpMethod.GET, "/", "/*.html").permitAll()
-                .requestMatchers("/user/login").permitAll()
+                .requestMatchers("/user/login", "/user/register", "/user/register/sendMail").permitAll()
+                // 忘记密码
+                .requestMatchers("/user/forget").permitAll()
                 // 跨域的一次 OPTION 预检
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
             )
             .headers(headersConfigurer -> headersConfigurer
                 .cacheControl(HeadersConfigurer.CacheControlConfig::disable))
+            .authenticationProvider(jwtAuthenticationProvider())
             .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
             ;
         return httpSecurity.build();

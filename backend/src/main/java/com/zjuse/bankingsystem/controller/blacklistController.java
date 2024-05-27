@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("blacklist")
-public class blacklistController {
+public class BlacklistController {
 
     @Autowired
     BlacklistService blacklistService;
