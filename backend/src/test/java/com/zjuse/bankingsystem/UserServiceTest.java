@@ -24,9 +24,9 @@ import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.BlacklistMapper;
 import com.zjuse.bankingsystem.mapper.UserMapper;
+import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.service.BlacklistService;
 import com.zjuse.bankingsystem.service.CardService;
-import com.zjuse.bankingsystem.service.EmailViladService;
 import com.zjuse.bankingsystem.service.UserAndCardService;
 import com.zjuse.bankingsystem.service.UserPrivilegeService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -52,7 +52,7 @@ public class UserServiceTest {
     CardService cardService;
 
     @Autowired
-    EmailViladService emailViladService;
+    EmailValidService emailViladService;
 
     User RandomUser() {
         User user = new User();

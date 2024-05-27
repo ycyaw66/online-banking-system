@@ -1,5 +1,7 @@
 package com.zjuse.bankingsystem.utils;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +55,32 @@ public class RedisUtils {
      */
     public long getExpire(Object key) {
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 删除缓存
+     *
+     * @param key 可以传一个值 或多个
+     */
+    public void del(String... keys) {
+        if (keys != null && keys.length > 0) {
+            if (keys.length == 1) {
+                boolean result = redisTemplate.delete(keys[0]);
+                log.debug("--------------------------------------------");
+                log.debug(new StringBuilder("删除缓存：").append(keys[0]).append("，结果：").append(result).toString());
+                log.debug("--------------------------------------------");
+            } else {
+                Set<Object> keySet = new HashSet<>();
+                for (String key : keys) {
+                    if (redisTemplate.hasKey(key))
+                        keySet.add(key);
+                }
+                long count = redisTemplate.delete(keySet);
+                log.debug("--------------------------------------------");
+                log.debug("成功删除缓存：" + keySet.toString());
+                log.debug("缓存删除数量：" + count + "个");
+                log.debug("--------------------------------------------");
+            }
+        }
     }
 }

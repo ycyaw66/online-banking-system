@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("balance")
-public class balanceController {
+public class BalanceController {
 
     @Autowired
     UserAndCardService userAndCardService;

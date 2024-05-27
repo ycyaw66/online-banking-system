@@ -52,7 +52,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return ;
         }
 
-        // TODO 验证key
+
         Authentication authentication = jwtTokenProvider.getAuthentication(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

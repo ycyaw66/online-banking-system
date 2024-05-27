@@ -32,6 +32,11 @@ jwt:
     # 在线用户的 token
     online-key: "online-token"
 
+mail: 
+    mail-address: "zju_11111111@163.com"
+    password: "CUYRWKBTMCEIYACA"
+    redis-start-with: "mail-code:"
+
 # logging:    
 #     level: 
 #         ROOT: DEBUG
