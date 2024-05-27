@@ -60,6 +60,7 @@
 <script>
 
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -92,6 +93,7 @@ export default {
           this.$message.error('用户名或密码错误');
           return;
         }else{
+          Cookies.set('credit_card_inspector_permission',response.data.payload.permission);
           this.$store.state.creditCardInspector.permission = response.data.payload.permission;
           console.log(this.$store.state.creditCardInspector.permission);
           this.$router.push('/creditCard/inspector/request');

@@ -123,6 +123,7 @@
 
 <script>
 import axios from 'axios';
+import Cookies from "js-cookie";
 
 
 export default {
@@ -160,7 +161,7 @@ export default {
       this.$router.push('/creditCard/customer/login');
     },
     queryResponses() {
-      axios.get("/creditCard/customer/queryRequests", {params: {idNumber: this.$store.state.user.ID_number}})
+      axios.get("/creditCard/customer/queryRequests", {params: {idNumber: Cookies.get('credit_card_user_id_card')}})
           .then(response => {
             this.request_responses = []
             let responses = response.data.payload

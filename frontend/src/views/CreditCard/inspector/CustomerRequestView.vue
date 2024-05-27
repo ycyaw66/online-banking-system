@@ -94,6 +94,7 @@
 <script>
 
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -154,7 +155,7 @@ export default {
           });
     },
     queryRequest() {
-      axios.get("/creditCard/inspector/request", {params: {permission: this.$store.state.creditCardInspector.permission}})
+      axios.get("/creditCard/inspector/request", {params: {permission: Cookies.get('credit_card_inspector_permission')}})
           .then(response => {
             this.request = [];
             let requests = response.data.payload;

@@ -114,6 +114,7 @@
 <script>
 
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -162,7 +163,7 @@ export default {
       axios.post("/creditCard/customer/pay/add",null,{
         params:{
           card_id: this.credit_card_id,
-          id_number: this.$store.state.user.ID_number,
+          id_number: Cookies.get('credit_card_user_id_card'),
           account: account,
           date: this.date,
           password: this.password

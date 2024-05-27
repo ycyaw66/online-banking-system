@@ -116,6 +116,7 @@
 
 import axios from "axios";
 import {format} from "date-fns";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -150,7 +151,7 @@ export default {
         params:{
           start_date: this.start_date,
           end_date: this.end_date,
-          id_number: this.$store.state.user.ID_number
+          id_number: Cookies.get('credit_card_user_id_card'),
         }
       }).then(response =>{
         this.bills = [];

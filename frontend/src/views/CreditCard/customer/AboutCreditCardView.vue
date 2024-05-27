@@ -253,11 +253,13 @@
 <script>
 
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export default {
   data() {
     return {
       formLabelWidth: '150px',
+      id_number: Cookies.get('credit_card_user_id_card'),
       credit_cards: [{
         id: '1',
         idNumber: '3220101234',
@@ -367,7 +369,7 @@ export default {
 
       axios.post("/creditCard/customer/card/register", null, {
         params: {
-          id_number: this.$store.state.user.ID_number,
+          id_number: Cookies.get('credit_card_user_id_card'),
           card_limit: limit,
           password: this.new_card.first_password
         }
@@ -447,7 +449,7 @@ export default {
       this.modify_card_limit_visible = false;
       axios.post("/creditCard/customer/card/update", null, {
         params: {
-          id_number: this.$store.state.user.ID_number,
+          id_number: Cookies.get('credit_card_user_id_card'),
           id: card_id,
           limit: limit
         }
@@ -561,7 +563,7 @@ export default {
     },
     queryCards() {
       this.credit_cards = [];
-      axios.get('/creditCard/customer/card', {params: {id_number: this.$store.state.user.ID_number}})
+      axios.get('/creditCard/customer/card', {params: {id_number: Cookies.get('credit_card_user_id_card')}})
           .then(response => {
             let cards = response.data.payload;
             console.log(cards);
@@ -587,6 +589,7 @@ export default {
   color: inherit;
   text-decoration: none !important;
 }
+
 .el-aside,
 .el-menu,
 .el-sub-menu {

@@ -54,6 +54,8 @@
 
 <script>
 
+import Cookies from "js-cookie";
+
 export default {
   data() {
     return {
@@ -69,7 +71,8 @@ export default {
         this.$message.warning('用户身份证号码不能为空');
         return;
       }
-      this.$store.state.user.ID_number = this.customer.ID_card;
+      // this.$store.state.user.ID_number = this.customer.ID_card;
+      Cookies.set('credit_card_user_id_card',this.customer.ID_card);
       this.$router.push('/creditCard/customer/info');
     },
     //   loginInspector(){

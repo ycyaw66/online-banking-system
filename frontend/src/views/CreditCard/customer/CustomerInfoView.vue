@@ -91,7 +91,7 @@
                 <el-text>{{ this.$store.state.customer.phoneNumber }}</el-text>
               </el-form-item>
               <el-form-item label="身份证号码">
-                <el-text>{{ this.$store.state.user.ID_number }}</el-text>
+                <el-text>{{ id_number }}</el-text>
               </el-form-item>
             </el-form>
           </el-main>
@@ -104,11 +104,16 @@
 
 <script>
 
+import Cookies from "js-cookie";
+
 export default {
   data() {
-    return {}
+    return {
+      id_number: Cookies.get('credit_card_user_id_card'),
+    }
   },
   methods: {
+    Cookies,
     exit() {
       this.$router.push('/creditCard/customer/login');
     },
