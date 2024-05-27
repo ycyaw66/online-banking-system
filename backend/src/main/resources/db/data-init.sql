@@ -34,4 +34,3 @@ INSERT INTO `user` (username, password, id_number, email, phone_number) VALUES
 '134015851838831655', 'test6@zju.edu.cn', '12967777598');
 
 -- end of user example
-

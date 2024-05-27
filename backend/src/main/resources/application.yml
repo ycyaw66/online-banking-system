@@ -16,7 +16,6 @@ spring:
             port: 6379
             database: 0
 
-
 server:
     address: 127.0.0.1
     port: 8082

@@ -5,6 +5,19 @@ export default createStore({
         person: {
             id: 'person_id',
             name: 'person_name'
+        },
+        user: {
+            ID_number: ''
+        },
+        customer: {
+            id: 'a',
+            name: 'b',
+            identification: 'c',
+            address: 'd',
+            phoneNumber: 'e'
+        },
+        creditCardInspector:{
+            permission:'',
         }
     },
     mutations: {},
