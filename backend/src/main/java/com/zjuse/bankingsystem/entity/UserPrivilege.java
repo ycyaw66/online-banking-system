@@ -16,9 +16,9 @@ public class UserPrivilege {
     @NonNull
     Long userId;
     @NonNull
-    boolean transcations;
+    boolean payment;
     @NonNull
     boolean transfer;
     @NonNull
-    boolean loss;
+    boolean receive;
 }

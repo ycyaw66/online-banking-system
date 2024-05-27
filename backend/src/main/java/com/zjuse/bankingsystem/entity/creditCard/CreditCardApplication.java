@@ -5,16 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreditCardApplication {
-    private Integer id;
+    private Long id;
     private String idNumber;
-    private BigInteger creditCardId;
-    private BigInteger amount;
+    private Long creditCardId;
+    private BigDecimal amount;
     private Integer type;
     private Integer status;
     private String password;

@@ -1,3 +1,8 @@
+drop table if exists credit_card_admin;
+drop table if exists credit_card_application;
+drop table if exists credit_card_bill;
+drop table if exists credit_card_inspector;
+drop table if exists credit_card;
 DROP TABLE IF EXISTS `cardofperson`;
 DROP TABLE IF EXISTS `UserPrivilege`;
 DROP TABLE IF EXISTS `blacklist`;
@@ -10,7 +15,7 @@ CREATE TABLE `card`
     card_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '卡ID',
     card_type INTEGER NOT NULL COMMENT '卡类型',
     PRIMARY KEY(card_id)
-) AUTO_INCREMENT = 0;
+);
 
 CREATE TABLE `user`
 (
@@ -36,9 +41,9 @@ CREATE TABLE `cardofperson`
 CREATE TABLE `UserPrivilege`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
-    transcations BOOLEAN NOT NULL COMMENT '交易记录查看权限',
+    payment BOOLEAN NOT NULL COMMENT '支付权限',
     transfer BOOLEAN NOT NULL COMMENT '转账权限',
-    loss BOOLEAN NOT NULL COMMENT '挂失权限',
+    receive BOOLEAN NOT NULL COMMENT '收款权限',
     PRIMARY KEY(user_id),
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
@@ -63,3 +68,53 @@ CREATE TABLE `history`
     FOREIGN KEY(target_card) REFERENCES card(card_id),
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+create table `credit_card` (
+    `id` bigint not null,
+    `id_number` varchar(50) not null,
+    `password` varchar(50),
+    `card_limit` DECIMAL(15, 2) not null default 0,
+    `loan` DECIMAL(15, 2) not null default 0,
+    `is_lost` int not null default 0,
+    primary key(`id`),
+    FOREIGN KEY(`id`) REFERENCES card(`card_id`),
+    check(is_lost in (0, 1))
+)engine=innodb charset=utf8mb4;
+
+create table `credit_card_application` (
+    `id` int not null auto_increment,
+    `id_number` varchar(50) not null,
+    `credit_card_id` bigint,
+    `amount` DECIMAL(15, 2) not null default 0,
+    `type` int not null,
+    `status` int not null,
+    `password` varchar(50),
+    primary key (`id`),
+    FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
+) engine=innodb charset=utf8mb4;
+
+create table `credit_card_bill` (
+    `id` int not null auto_increment,
+    `credit_card_id` bigint not null,
+    `amount` DECIMAL(15, 2) not null default 0,
+    `bill_date` DATE,
+    primary key (`id`),
+    FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
+) engine=innodb charset=utf8mb4;
+
+create table `credit_card_admin` (
+  `id` int not null auto_increment,
+  `name` varchar(50) not null,
+  `password` varchar(50) not null,
+  primary key (`id`)
+) engine=innodb charset=utf8mb4;
+
+create table `credit_card_inspector` (
+    `id` int not null auto_increment,
+    `name` varchar(50) not null,
+    `password` varchar (50) not null,
+    `permission` int not null,
+    primary key(`id`),
+    check(`permission` in (1, 2))
+)engine=innodb charset=utf8mb4;

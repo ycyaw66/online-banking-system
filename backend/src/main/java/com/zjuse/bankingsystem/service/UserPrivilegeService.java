@@ -59,7 +59,33 @@ public class UserPrivilegeService {
             System.out.println(e.getMessage());
             return new ApiResult(false, e.getMessage());
         }
+    }
 
+    public boolean checkPayment(Long userId) throws Exception {
+        ApiResult apiResult = getUserPrivilege(userId);
+        if (apiResult.ok == false) {
+            throw new Exception(apiResult.message);
+        }
+        UserPrivilege userPrivilege = (UserPrivilege) apiResult.payload;
+        return userPrivilege.isPayment();
+    }
+
+    public boolean checkTransfer(Long userId) throws Exception {
+        ApiResult apiResult = getUserPrivilege(userId);
+        if (apiResult.ok == false) {
+            throw new Exception(apiResult.message);
+        }
+        UserPrivilege userPrivilege = (UserPrivilege) apiResult.payload;
+        return userPrivilege.isTransfer();
+    }
+
+    public boolean checkReceive(Long userId) throws Exception {
+        ApiResult apiResult = getUserPrivilege(userId);
+        if (apiResult.ok == false) {
+            throw new Exception(apiResult.message);
+        }
+        UserPrivilege userPrivilege = (UserPrivilege) apiResult.payload;
+        return userPrivilege.isReceive();
     }
 
 }

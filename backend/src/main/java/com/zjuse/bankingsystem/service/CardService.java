@@ -30,6 +30,9 @@ public class CardService {
     UserService userService;
 
     @Autowired
+    UserPrivilegeService userPrivilegeService;
+
+    @Autowired
     CardOfPersonMapper cardOfPersonMapper;
 
     public ApiResult registerCard(CardType cardType) {
@@ -52,6 +55,15 @@ public class CardService {
             throw new Exception("card not found");
         }
         return card.getCardType();
+    }
+    
+    public boolean existCard(Long cardid) throws Exception {
+        QueryWrapper<CardOfPerson> wrapper = new QueryWrapper<>();
+        wrapper.eq("card_id", cardid);
+        if (cardOfPersonMapper.selectCount(wrapper) == 0) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -109,7 +121,6 @@ public class CardService {
         }
         catch (Exception e) {
             return new ApiResult(false, e.getMessage());
-
         }
     }
 
@@ -144,5 +155,48 @@ public class CardService {
 
         }
     }
+
+    public ApiResult getUserId(Long cardId) {
+        try {
+            QueryWrapper wrapper = new QueryWrapper();
+            wrapper.eq("card_id", cardId);
+            CardOfPerson cardOfPerson = cardOfPersonMapper.selectOne(wrapper);
+            if (cardOfPerson == null) {
+                return new ApiResult(false, "card not found");
+            }
+            return new ApiResult(true, "success", cardOfPerson.getUserId());
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
+    public boolean checkPayment(Long cardId) throws Exception{
+        ApiResult apiResult = getUserId(cardId);
+        if (apiResult.ok == false) {
+            throw new Exception(apiResult.message);
+        }
+        Long userId = (Long) apiResult.payload;
+        return userPrivilegeService.checkPayment(userId);
+    }
+
+    public boolean checkTransfer(Long cardId) throws Exception{
+        ApiResult apiResult = getUserId(cardId);
+        if (apiResult.ok == false) {
+            throw new Exception(apiResult.message);
+        }
+        Long userId = (Long) apiResult.payload;
+        return userPrivilegeService.checkTransfer(userId);
+    }
+
+    public boolean checkReceive(Long cardId) throws Exception{
+        ApiResult apiResult = getUserId(cardId);
+        if (apiResult.ok == false) {
+            throw new Exception(apiResult.message);
+        }
+        Long userId = (Long) apiResult.payload;
+        return userPrivilegeService.checkReceive(userId);
+    }
+
 
 }
