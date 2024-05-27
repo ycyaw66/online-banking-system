@@ -48,8 +48,8 @@ public class CreditCardService {
         return new ApiResult(true, null, null);
     }
 
-    public ApiResult makeCreditCardLost(Long cardId) {
-        CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
+    public ApiResult makeCreditCardLost(Long cardId, String password) {
+        CreditCard creditCard = creditCardMapper.findMatchCard(cardId, password);
         if (creditCard.getId() == null) {
             return new ApiResult(false, "该信用卡不存在");
         }

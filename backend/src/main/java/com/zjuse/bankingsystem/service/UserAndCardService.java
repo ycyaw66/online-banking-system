@@ -86,7 +86,7 @@ public class UserAndCardService {
     public ApiResult loss(Long cardId, String password) {
         try {
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
+                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId, password);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
