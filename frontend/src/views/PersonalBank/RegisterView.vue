@@ -10,15 +10,15 @@
                     </div>
                 </template>
                 <!-- 注册卡片的body -->
-                <el-form :model="registerForm" :rules="registerRules" label-width="80px">
+                <el-form :model="registerForm" :rules="registerRules" ref="registerForm"  label-width="80px">
                     <el-form-item label="用户名" prop="username">
                         <el-input v-model="registerForm.username" placeholder="3-10位，仅包含大小写字母和数字" style="width: 300px"></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password" style="margin-top: 20px">
                         <el-input v-model="registerForm.password" placeholder="6-16位，至少包括字母和数字" style="width: 300px" show-password></el-input> 
                     </el-form-item>
-                    <el-form-item label="重复密码" prop="repeatPassword" style="margin-top: 20px">
-                        <el-input v-model="registerForm.repeatPassword" placeholder="请再次输入密码" style="width: 300px" show-password></el-input> 
+                    <el-form-item label="重复密码" prop="repassword" style="margin-top: 20px">
+                        <el-input v-model="registerForm.repassword" placeholder="请再次输入密码" style="width: 300px" show-password></el-input> 
                     </el-form-item>
                     <el-form-item label="身份证号" prop="idCard" style="margin-top: 20px">
                         <el-input v-model="registerForm.idCard" placeholder="身份证号" style="width: 300px"></el-input>
@@ -28,13 +28,14 @@
                     </el-form-item>
                     <el-form-item label="邮箱" prop="email" style="margin-top: 20px">
                         <el-input v-model="registerForm.email" placeholder="邮箱" style="width: 200px"></el-input>
-                        <el-button type="primary" style="width: 100px" >获取验证码</el-button>
+                        <el-button v-if="isCounting" type="primary" style="width: 100px" :disabled="isCounting">{{countDown}}秒后重试</el-button>
+                        <el-button v-else type="primary" style="width: 100px" @click="getVerificationCode">获取验证码</el-button>
                     </el-form-item>
                     <el-form-item label="验证码" prop="verificationCode" style="margin-top: 20px">
                         <el-input v-model="registerForm.verificationCode" placeholder="六位数字验证码" style="width: 200px"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="handleRegister" style="width: 300px">注册</el-button>
+                        <el-button type="primary" @click="submitForm" style="width: 300px">注册</el-button>
                         <el-divider style="width: 300px"/>
                     </el-form-item>
                     <el-form-item style="margin-top: -40px">
@@ -55,11 +56,25 @@ import { ElMessage } from 'element-plus';
 
 export default {
     data() {
+        const checkPassword = (rule, value, callback) => {
+            if (value !== this.registerForm.password) {
+                callback(new Error('两次密码不一致'));
+            } else {
+                callback();
+            }
+        };
         return {
+            // 邮件发送验证码倒计时
+            countDown: 60,
+            // 是否正在倒计时
+            isCounting: false,
+            // 倒计时定时器
+            countDownTimeout: null,
+
             registerForm: {
                 username: '',
                 password: '',
-                repeatPassword: '',
+                repassword: '',
                 idCard: '',
                 phone: '',
                 email: '',
@@ -74,21 +89,25 @@ export default {
                     { required: true, message: '请输入密码', trigger: 'change' },
                     { pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,16}$/, message: '密码必须为6-16位，且同时包含字母和数字', trigger: 'blur' }
                 ],
+                repassword: [
+                    { required: true, message: '请再次输入密码', trigger: 'change'},
+                    { validator: checkPassword, message: '两次密码不一致', trigger: 'blur'}
+                ],
                 idCard: [
                     { required: true, message: '请输入身份证号', trigger: 'change' },
                     { pattern: /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(([0-2][1-9])|10|20|30|31)\d{3}(\d|X)$/, message: '请输入有效的身份证号', trigger: 'blur' }
                 ],
                 phone: [
                     { required: true, message: '请输入手机号', trigger: 'change' },
-                    { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号', trigger: 'change' }
+                    { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号', trigger: 'blur' }
                 ],
                 email: [
                     { required: true, message: '请输入邮箱', trigger: 'change' },
-                    { pattern: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: '请输入有效的邮箱地址', trigger: 'change' }
+                    { pattern: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, message: '请输入有效的邮箱地址', trigger: 'blur' }
                 ],
                 verificationCode: [
                     { required: true, message: '请输入验证码', trigger: 'change' },
-                    { pattern: /^\d{6}$/, message: '请输入有效的验证码', trigger: 'change' }
+                    { pattern: /^\d{6}$/, message: '请输入有效的验证码', trigger: 'blur' }
                 ]
             }
         };
@@ -97,12 +116,20 @@ export default {
         jumpLogin() {
             this.$router.push('/personalBank/login');
         },
+        submitForm() {
+            // 表单校验
+            this.$refs["registerForm"].validate((valid) => {
+                if (!valid) {
+                    ElMessage.error("注册失败，请检查注册信息");
+                    console.log("校验不通过");
+                    return;
+                } else {
+                    console.log("校验通过");
+                    this.handleRegister();
+                }
+            });
+        },
         handleRegister() {
-            // 判断两次密码是否相同
-            if (this.registerForm.password !== this.registerForm.repeatPassword) {
-                this.$message.error('注册失败，两次密码不一致');
-                return;
-            }
             // 加密后传给后端
             const encrypted = CryptoJS.SHA256(this.registerForm.password).toString();
             axios.post("/user/register",
@@ -122,6 +149,43 @@ export default {
                 .catch(error => {
                     ElMessage.error(error.response.data);
                 })
+        },
+        getVerificationCode() {
+            if (!this.isEmailValid) {
+                ElMessage.error("请输入有效的邮箱地址");
+                return;
+            }
+            console.log("发送成功");
+            this.countDown = 30;
+            this.isCounting = true;
+            this.doCountdown();
+            axios.post("/user/register/sendMail",
+                {
+                    "email": this.registerForm.email
+                })
+                .then(response => {
+                    ElMessage.success(response.data);
+                })
+                .catch(error => {
+                    ElMessage.error(error.response.data);
+                })
+        },
+        doCountdown() {
+            this.countDownTimeout = setTimeout(() => {
+                if (this.countDown <= 0) {
+                    this.isCounting = false;
+                    clearTimeout(this.countDownTimeout);
+                } else {
+                    this.countDown--;
+                    this.doCountdown();
+                }
+            },1000)
+        }
+    },
+    computed: {
+        isEmailValid() {
+            const pattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+            return pattern.test(this.registerForm.email);
         }
     }
 };
