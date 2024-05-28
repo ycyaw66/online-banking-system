@@ -1,6 +1,7 @@
 package com.zjuse.bankingsystem.entity;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,8 +18,8 @@ public class HistoryCondition {
     @JsonProperty("most_amount")
     BigDecimal MostAmount;
     @JsonProperty("start_time")
-    Long startTime;
+    Date startTime;
     @JsonProperty("end_time")
-    Long endTime;
+    Date endTime;
     String remark;
 }

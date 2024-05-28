@@ -48,14 +48,14 @@ public class CreditCardService {
         return new ApiResult(true, null, null);
     }
 
-    public ApiResult makeCreditCardLost(Long cardId, String password) {
+    public ApiResult makeCreditCardLost(Long cardId) {
         CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
         if (creditCard.getId() == null) {
             return new ApiResult(false, "该信用卡不存在");
         }
-        if (!creditCard.getPassword().equals(password)) {
-            return new ApiResult(false, "Wrong password");
-        }
+        // if (!creditCard.getPassword().equals(password)) {
+        //     return new ApiResult(false, "Wrong password");
+        // }
         creditCardMapper.setCreditCardLost(cardId);
         return new ApiResult(true, "挂失成功");
     }

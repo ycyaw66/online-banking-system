@@ -7,7 +7,7 @@ import com.zjuse.bankingsystem.mapper.*;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Calendar;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -56,7 +56,7 @@ public class UserAndCardService {
             // check priviledge? I don't know
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                Date date = new Date();
+                Date date = new Date(System.currentTimeMillis());
                 apiResult = creditcardService.bankPay(cardId, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -70,8 +70,8 @@ public class UserAndCardService {
                 }
                 apiResult =  new ApiResult(true, "success");
             }
-            Date date = new Date();
-            History history = new History(null, cardId, 1L, amount, date.getTime(), remark);
+            Date date = new Date(System.currentTimeMillis());
+            History history = new History(null, cardId, 1L, amount, date, remark);
             historyMapper.insert(history);
             return apiResult;
         }
@@ -86,7 +86,7 @@ public class UserAndCardService {
     public ApiResult loss(Long cardId, String password) {
         try {
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId, password);
+                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -189,7 +189,7 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult transfor(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
+    public ApiResult transfer(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
         boolean isDec = false;
         try {
             if (amount.compareTo(new BigDecimal(0)) < 0) {
@@ -217,7 +217,7 @@ public class UserAndCardService {
             ApiResult apiResult;
             // check priviledge? I don't know
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                Date date = new Date();
+                Date date = new Date(System.currentTimeMillis());
                 apiResult = creditcardService.bankPay(cardId, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -250,8 +250,8 @@ public class UserAndCardService {
             }
 
             
-            Date date = new Date();
-            History history = new History(null, cardId, targetCardId, amount, date.getTime(), remark);
+            Date date = new Date(System.currentTimeMillis());
+            History history = new History(null, cardId, targetCardId, amount, date, remark);
             historyMapper.insert(history);
             return new ApiResult(true, "success");
         }
