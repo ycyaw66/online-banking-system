@@ -127,4 +127,31 @@ public class CardController {
         }
     }
 
+    @Data
+    @AllArgsConstructor
+    class BindingReceiver {
+        @JsonProperty("card_id")
+        @NonNull
+        Long cardId;
+        @JsonProperty("user_id")
+        @NonNull
+        Long userId;
+        @NonNull
+        String password;
+    };
+    
+    @PostMapping("binding")
+    public RespResult binding(@RequestBody BindingReceiver receiver) {
+        ApiResult apiResult = userAndCardService.valid(receiver.getCardId(), receiver.getPassword());
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        apiResult = cardService.bindUserAndCard(receiver.getUserId(), receiver.getCardId());
+        if (apiResult.ok) {
+            return RespResult.success();
+        }
+        else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
 }

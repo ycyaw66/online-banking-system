@@ -98,6 +98,31 @@ public class CardService {
         }
     }
 
+    public ApiResult bindUserAndCard(Long cardId, Long userId) {
+        try {
+            ApiResult apiResult = blacklistService.isInblacklist(userId);
+            if (apiResult.ok == false) {
+                return apiResult;
+            }
+            Boolean isInBlacklist = (boolean) apiResult.payload;
+            if (isInBlacklist) {
+                return new ApiResult(false, "user is in blacklist");
+            }
+
+            CardOfPerson cardOfPerson = new CardOfPerson();
+            cardOfPerson.setCardId(cardId);
+            cardOfPerson.setUserId(userId);
+            cardOfPersonMapper.insert(cardOfPerson);
+            // cardOfPersonMapper
+
+            return new ApiResult(true, "success");
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
     public ApiResult getAllCardbyUserId(Long userId) {
         try {
             // ApiResult apiResult = userService.getUserByUsername(username);
