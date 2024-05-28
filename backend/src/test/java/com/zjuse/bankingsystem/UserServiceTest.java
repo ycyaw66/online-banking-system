@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
-import org.assertj.core.api.AssertJProxySetup;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,10 @@ import com.zjuse.bankingsystem.entity.CardOfPerson;
 import com.zjuse.bankingsystem.entity.History;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
-import com.zjuse.bankingsystem.mapper.BlacklistMapper;
 import com.zjuse.bankingsystem.mapper.UserMapper;
+import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.service.BlacklistService;
 import com.zjuse.bankingsystem.service.CardService;
-import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.service.UserAndCardService;
 import com.zjuse.bankingsystem.service.UserPrivilegeService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -197,7 +195,7 @@ public class UserServiceTest {
             Long cardId = cardList.get(i - 1);
             Integer index = random.nextInt(N);
             Long targetId = list.get(index).getId();
-            ApiResult apiResult = userAndCardService.transfor(cardId, targetId, new BigDecimal("12342134"), "12342314", "transfer" + i);
+            ApiResult apiResult = userAndCardService.transfer(cardId, targetId, new BigDecimal("12342134"), "12342314", "transfer" + i);
             if (targetId == cardId) {
                 assertFalse(apiResult.ok);
                 

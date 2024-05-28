@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zjuse.bankingsystem.entity.Card;
+import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.CardService;
 import com.zjuse.bankingsystem.service.UserAndCardService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -38,15 +40,20 @@ public class CardController {
     };
 
     @Autowired
-    UserAndCardService userAndCardService;
+    CardService cardService;
+    @Autowired
+    CurrentUserService currentUserService; 
+    @Autowired
+    UserAndCardService userAndCardService; 
 
     @GetMapping("")
-    public RespResult showCard(@RequestParam Long userId) {
-        
-        if (userId == null) {
-            return RespResult.fail("userId is null");
+    public RespResult showCard() {
+        ApiResult apiResult = currentUserService.getCurrentUser(); 
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
         }
-        ApiResult apiResult = userAndCardService.getAllCard(userId);
+        User user = (User) apiResult.payload; 
+        apiResult = cardService.getAllCardbyUserId(user.getId());
         if (apiResult.ok) {
             return RespResult.success((List<Card>)apiResult.payload);
         } 

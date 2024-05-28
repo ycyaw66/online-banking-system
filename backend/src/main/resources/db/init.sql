@@ -38,7 +38,7 @@ CREATE TABLE `cardofperson`
     PRIMARY KEY (user_id, card_id)
 );
 
-CREATE TABLE `UserPrivilege`
+CREATE TABLE `user_privilege`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
     payment BOOLEAN NOT NULL COMMENT '支付权限',
@@ -69,18 +69,25 @@ CREATE TABLE `history`
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `admin`
+(
+    `id` int not null auto_increment,
+    `name` varchar(50) not null,
+    `password` varchar(64) not null,
+    primary key (`id`)
+);
 
-create table `credit_card` (
+CREATE TABLE `credit_card` (
     `id` bigint not null,
     `id_number` varchar(50) not null,
-    `password` varchar(50),
+    `password` varchar(64),
     `card_limit` DECIMAL(15, 2) not null default 0,
     `loan` DECIMAL(15, 2) not null default 0,
     `is_lost` int not null default 0,
     primary key(`id`),
     FOREIGN KEY(`id`) REFERENCES card(`card_id`),
     check(is_lost in (0, 1))
-)engine=innodb charset=utf8mb4;
+)engine=innodb DEFAULT charset=utf8mb4;
 
 create table `credit_card_application` (
     `id` int not null auto_increment,
@@ -89,7 +96,7 @@ create table `credit_card_application` (
     `amount` DECIMAL(15, 2) not null default 0,
     `type` int not null,
     `status` int not null,
-    `password` varchar(50),
+    `password` varchar(64),
     primary key (`id`),
     FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
 ) engine=innodb charset=utf8mb4;
