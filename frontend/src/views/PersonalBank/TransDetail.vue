@@ -35,32 +35,36 @@
                     <div style="font-size: 24px;">交易明细-{{accountNumber}}卡号</div>
                     <button @click="ReturnAcc" style="position: absolute; top: 40px; right: 20px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">返回</button>
                     
-                    <div style="width: 90%; margin: 0 auto; padding-top: 5vh; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="width: 30%; display: flex; align-items: center;">
+                    <div style="width: 90%; margin: 0 auto; padding-top: 5vh; display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap;">
+                        <span style="margin-right: 5px;">付款账户:</span>
+                        <el-input v-model="this.Cond.cardID" style="width: 8%;"></el-input>
+                        <span style="margin-right: 5px;">收款账户:</span>
+                        <el-input v-model="this.Cond.target_id" style="width: 8%;"></el-input>
+                        
+                        <div style="width: 25%; display: flex; align-items: center;">
                             <span style="margin-right: 5px;">交易金额:</span>
                             <el-input v-model="this.Cond.MinAmount" style="flex: 1;"></el-input>
                             <span style="margin: 0 5px;">-</span>
                             <el-input v-model="this.Cond.MaxAmount" style="flex: 1;"></el-input>
                         </div>
-                        <el-radio-group v-model="Cond.Direction" style="display: flex; align-items: center;">
-                            <el-radio label="">收付款</el-radio>
-                            <el-radio label="收款">收款</el-radio>
-                            <el-radio label="付款">付款</el-radio>
-                        </el-radio-group>
-                        <span style="margin-right: 5px;">日期:</span>
-                        <el-input v-model="this.Cond.Date" placeholder="日期" style="width: 15%;"></el-input>
+
+                        <div style="width: 25%; display: flex; align-items: center;">
+                            <span style="margin-right: 5px;">日期:</span>
+                            <el-input v-model="this.Cond.MinDate" style="flex: 1;"></el-input>
+                            <span style="margin: 0 5px;">-</span>
+                            <el-input v-model="this.Cond.MaxDate" style="flex: 1;"></el-input>
+                        </div>
                         <span style="margin-right: 5px;">备注:</span>
-                        <el-input v-model="this.Cond.Remark" placeholder="备注" style="width: 15%;"></el-input>
-                        <el-button type="primary" @click="QueryCond" style="width: 10%;">查询</el-button>
+                        <el-input v-model="this.Cond.Remark" placeholder="备注" style="width: 8%;"></el-input>
+                        <el-button type="primary" @click="QueryCond" style="width: 8%;">查询</el-button>
                     </div>
 
                     <el-table :data="Data" height="600" 
                         style="width: 100%; margin-left: 50px; margin-top: 30px; margin-right: 50px; max-width: 80vw; table-layout: fixed;">
                         <el-table-column prop="date" label="交易日期" min-width="150"></el-table-column>
-                        <el-table-column prop="direction" label="收/付款" min-width="150"></el-table-column>
+                        <el-table-column prop="card_id" label="付款账户" min-width="150"></el-table-column>
+                        <el-table-column prop="target_id" label="收款账户" min-width="150"></el-table-column>
                         <el-table-column prop="amount" label="交易金额" min-width="150"></el-table-column>
-                        <el-table-column prop="balance" label="余额" min-width="150"></el-table-column>
-                        <el-table-column prop="account_number" label="交易账户" min-width="150"></el-table-column>
                         <el-table-column prop="message" label="备注" min-width="150"></el-table-column>
                     </el-table>
                 </div>
@@ -84,26 +88,30 @@ export default {
             token : '',
             accountNumber: this.$route.query.account_number || '',
             Data: [
-                {date: '05.12', direction: '收款', amount: '100', balance: '300.00', account_number: '123213', message: 'aaa'},
-                {date: '05.14', direction: '付款', amount: '100', balance: '200.00', account_number: '123213', message: 'aaa'}
+                {card_id : '1123213', date: '2024.05.12', amount: '100', target_id: '111', message: 'aaa'},
+                {card_id : '1123213', date: '2025.05.20', amount: '100', target_id: '111', message: 'aaa'}
             ],
             Cond:{
+                cardID: '',
+                target_id: '',
                 MinAmount: '',
                 MaxAmount: '',
-                Date: '',
-                Remark: '',
-                Direction: ''  
+                MinDate: '',
+                MaxDate: '',
+                Remark: ''
             }
         };
     },
     methods:{
         QueryData(){
             this.Cond = {
+                cardID: '',
+                target_id: '',
                 MinAmount: '',
                 MaxAmount: '',
-                Date: '',
-                Remark: '',
-                Direction: ''  
+                MinDate: '',
+                MaxDate: '',
+                Remark: ''
             },
             this.QueryCond()
         },
@@ -112,15 +120,34 @@ export default {
         },
         async QueryCond(){
             this.Data = []
-            let response = await axios.get("/account/trans", { params: { "MinAmount": Number(this.Cond.MinAmount), "MaxAmount": this.Cond.MaxAmount, "Date": this.Cond.Date, "Direction": this.Cond.Direction, "Remark": this.Cond.Remark} })
-            let querydata = response.data 
-            querydata.forEach(querydt => { 
-                this.Data.push(querydt)
-            });
+            try {
+                const tg = this.Cond.target_card_id ? Number(this.Cond.target_card_id) : this.Cond.target_card_id ;
+                const cd = this.Cond.cardID ? Number(this.Cond.cardID) : this.Cond.cardID ;
+                const ia = this.Cond.MinAmount ? Number(this.Cond.MinAmount) : this.Cond.MinAmount ;
+                const xa = this.Cond.MaxAmount ? Number(this.Cond.MaxAmount) : this.Cond.MaxAmount ;
+                const st = this.Cond.MinDate;
+                const et = this.Cond.MaxDate;
+                console.log(cd);
+                console.log(ia);
+                console.log(st);
+                let response = await axios.get("/account/trans", { params: { "card_id" : Number(this.accountNumber), "target_card_id" : tg, "transfer_card_id" : cd, "MinAmount": ia, "MaxAmount": xa, "start_time": st, "end_time" : et, "Remark": this.Cond.Remark} }, {headers: { 'Authorization': this.token.toString() } })
+                let querydata = response.data 
+                querydata.forEach(item => {
+                    this.Date.push({
+                        card_id: item.card_id,
+                        target_id: item.target_id,
+                        amout: item.amout,
+                        date: item.time,
+                        message: item.remark
+                    });
+                });
+            } catch (error) {
+                ElMessage.error(error.response.data);
+            }
         }
     },
     mounted() {
-        this.token = Cookies.get('token');
+        this.token = Cookies.get('token')
          //this.QueryData() // 查询账户信息
     }
 }
