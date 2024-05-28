@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zjuse.bankingsystem.entity.Card;
+import com.zjuse.bankingsystem.entity.HistoryCondition;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.CardService;
@@ -93,4 +94,37 @@ public class CardController {
             return RespResult.fail(apiResult.message);
         }
     }
+
+    @PostMapping("/history")
+    public RespResult history(@RequestBody HistoryCondition historyCondition) {
+        ApiResult apiResult = userAndCardService.history(historyCondition);
+        if (apiResult.ok) {
+            return RespResult.success((List<com.zjuse.bankingsystem.entity.History>)apiResult.payload);
+        }
+        else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class ValidReceiver {
+        @JsonProperty("card_id")
+        @NonNull
+        Long cardId;
+        @NonNull
+        String password;
+    };
+
+    @PostMapping("/valid")
+    public RespResult valid(@RequestBody ValidReceiver validReceiver) {
+        ApiResult apiResult = userAndCardService.valid(validReceiver.getCardId(), validReceiver.getPassword());
+        if (apiResult.ok) {
+            return RespResult.success((List<com.zjuse.bankingsystem.entity.History>)apiResult.payload);
+        }
+        else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
+
 }

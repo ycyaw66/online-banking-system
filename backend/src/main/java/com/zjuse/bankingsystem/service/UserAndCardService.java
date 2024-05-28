@@ -179,6 +179,22 @@ public class UserAndCardService {
 
 
 
+    public ApiResult valid(Long cardId, String password) {
+        try {
+            if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
+                ApiResult apiResult = creditcardService.valid(cardId, password);
+                return apiResult;
+            }
+            else {
+                // ApiResult apiResult = debitcardService.valid(cardId, password);
+                return new ApiResult(false, "not implemented");
+            }
+        }
+        catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
 
     private void Rollback(Long cardId, BigDecimal amount) throws Exception {
         if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {

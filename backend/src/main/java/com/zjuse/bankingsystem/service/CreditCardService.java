@@ -28,6 +28,17 @@ public class CreditCardService {
         return new ApiResult(true, null, creditCardMapper.queryCards(idNumber));
     }
 
+    public ApiResult valid(Long cardId, String password) {
+        CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
+        if (creditCard.getId() == null || !creditCard.getPassword().equals(password) ) {
+            return new ApiResult(false, "该信用卡不存在或密码错误");
+        }
+        if (creditCard.getIsLost() == 1) {
+            return new ApiResult(false, "该信用卡已挂失");
+        }
+        return new ApiResult(true, "验证成功");
+    }
+
     public ApiResult addNewCreditCardRequest(String idNumber, BigDecimal cardLimit, String password) {
         creditCardMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
         return new ApiResult(true, null, null);
@@ -52,6 +63,9 @@ public class CreditCardService {
         CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
         if (creditCard.getId() == null) {
             return new ApiResult(false, "该信用卡不存在");
+        }
+        if (creditCard.getIsLost() == 1) {
+            return new ApiResult(false, "该信用卡已挂失");
         }
         // if (!creditCard.getPassword().equals(password)) {
         //     return new ApiResult(false, "Wrong password");
@@ -167,11 +181,11 @@ public class CreditCardService {
     public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
         try {
             CreditCard matchCard = creditCardMapper.findCreditCard(cardId);
-            if (matchCard == null) {
-                return new ApiResult(false, "Credit Card not find");
+            if (matchCard == null || !matchCard.getPassword().equals(password)) {
+                return new ApiResult(false, "Credit Card not find Or Wrong password");
             }
-            if (!matchCard.getPassword().equals(password)) {
-                return new ApiResult(false, "Wrong password");
+            if (matchCard.getIsLost() == 1) {
+                return new ApiResult(false, "Credit Card is lost");
             }
             BigDecimal cardLimit = matchCard.getCardLimit();
             BigDecimal loan = matchCard.getLoan();
