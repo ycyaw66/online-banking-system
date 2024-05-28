@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.sql.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 import javax.management.Query;
 
@@ -127,12 +128,23 @@ public class UserAndCardService {
     public ApiResult history(HistoryCondition condition) {
         try {
             QueryWrapper<History> wrapper = new QueryWrapper<>();
-            if (condition.getCardId() != null) {
-                wrapper.eq("card_id", condition.getCardId());
+            // QueryWrapper<History> idWrapper = new QueryWrapper<>();
+            if (condition.getTargetCardId() != null && condition.getTransferCardId() != null) {
+                return new ApiResult(false, "target card and transfer card can't be set at the same time");
             }
-            if (condition.getTargetCardId() != null) {
+            if (condition.getTargetCardId() == null && condition.getTransferCardId() == null) {
+                wrapper.and(w -> w.eq("card_id", condition.getCardId()).or().eq("target_card", condition.getCardId()));
+            }
+            else if (condition.getTargetCardId() != null) {
+                wrapper.eq("card_id", condition.getCardId());
                 wrapper.eq("target_card", condition.getTargetCardId());
             }
+            else {
+                wrapper.eq("card_id", condition.getTransferCardId());
+                wrapper.eq("target_card", condition.getCardId());
+
+            }
+
             if (condition.getLeastAmount() != null) {
                 wrapper.ge("amount", condition.getLeastAmount());
             }

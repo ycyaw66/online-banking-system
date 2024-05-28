@@ -5,14 +5,18 @@ import java.sql.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.micrometer.common.lang.NonNull;
 import lombok.Data;
 
 @Data
 public class HistoryCondition {
     @JsonProperty("card_id")
+    @NonNull
     Long cardId;
     @JsonProperty("target_card_id")
     Long targetCardId;
+    @JsonProperty("transfer_card_id")
+    Long transferCardId;
     @JsonProperty("least_amount")
     BigDecimal LeastAmount;
     @JsonProperty("most_amount")
