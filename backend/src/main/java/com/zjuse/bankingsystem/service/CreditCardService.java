@@ -1,6 +1,5 @@
 package com.zjuse.bankingsystem.service;
 
-import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.creditCard.*;
 import com.zjuse.bankingsystem.mapper.CreditCardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -10,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 @Service
 public class CreditCardService {
@@ -162,7 +159,7 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
+    public ApiResult bankPay(Long cardId, String password, BigDecimal amount, Date date) {
         try {
             CreditCard matchCard = creditCardMapper.findMatchCard(cardId, password);
             if (matchCard == null) {
@@ -170,13 +167,13 @@ public class CreditCardService {
             }
             BigDecimal cardLimit = matchCard.getCardLimit();
             BigDecimal loan = matchCard.getLoan();
-            BigDecimal add = loan.add(account);
+            BigDecimal add = loan.add(amount);
             int result = cardLimit.compareTo(add);
             if (result < 0) {
                 return new ApiResult(false, "信用卡可用额度不足");
             }
-            creditCardMapper.addPayment(cardId, account, date);
-            creditCardMapper.updateLoan(cardId, account);
+            creditCardMapper.addPayment(cardId, amount, date);
+            creditCardMapper.updateLoan(cardId, amount);
             return new ApiResult(true, null);
         }
         catch(Exception e) {

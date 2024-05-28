@@ -19,6 +19,7 @@ public class Card {
     @JsonProperty("card_id")
     @TableId(type =  IdType.AUTO)
     Long cardId;
+    @JsonProperty("card_type")
     @NonNull
     CardType cardType;
 }

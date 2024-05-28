@@ -53,7 +53,7 @@ public class TransferController {
         try {
             BigDecimal bigDecimal = new BigDecimal(receiver.amount);
             
-            ApiResult apiResult = userAndCardService.transfor(receiver.getCardId(), receiver.getTargetCard(), bigDecimal, receiver.getPassword(), receiver.getRemark());
+            ApiResult apiResult = userAndCardService.transfer(receiver.getCardId(), receiver.getTargetCard(), bigDecimal, receiver.getPassword(), receiver.getRemark());
             if (apiResult.ok) {
                 return RespResult.success(null);
             } 

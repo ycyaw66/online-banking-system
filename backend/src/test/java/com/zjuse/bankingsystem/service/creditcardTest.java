@@ -88,7 +88,7 @@ public class creditcardTest {
             List<Card> creditCards = (List<Card>) apiResult1.payload;
             for(Card item1 : creditCards) {
                 if (pre != null) {
-                    assertTrue(userAndCardService.transfor(item1.getCardId(), pre, new BigDecimal(50), "123456", "??").ok);
+                    assertTrue(userAndCardService.transfer(item1.getCardId(), pre, new BigDecimal(50), "123456", "??").ok);
                 }
                 Date date = new Date();
                 assertTrue(creditCardService.bankPay(item1.getCardId(), "123456", new BigDecimal(100), date).ok);

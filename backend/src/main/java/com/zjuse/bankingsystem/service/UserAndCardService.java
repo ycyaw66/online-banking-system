@@ -5,22 +5,12 @@ import com.zjuse.bankingsystem.utils.CardType;
 import com.zjuse.bankingsystem.mapper.*;
 
 import java.math.BigDecimal;
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
-
-import javax.management.Query;
-
-import org.apache.tomcat.util.buf.HexUtils;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.*;;
 
 
@@ -151,7 +141,7 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult transfor(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
+    public ApiResult transfer(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
         boolean isDec = false;
         try {
             if (amount.compareTo(new BigDecimal(0)) < 0) {
