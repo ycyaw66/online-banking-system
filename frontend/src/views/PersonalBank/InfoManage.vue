@@ -40,12 +40,18 @@
                         <el-table-column prop="category" label="账户类别" min-width="150"></el-table-column>
                         <el-table-column label="操作" min-width="200">
                             <template v-slot="scope">
-                                <el-button type="text" @click="ConfirmPassword('1', scope.row)" style="border: 1px solid red; color: red; height: 24px; line-height: 22px;">交易明细</el-button>
+                                <el-button type="text" @click="TransactionDetail(scope.row)" style="border: 1px solid red; color: red; height: 24px; line-height: 22px;">交易明细</el-button>
                                 <el-button type="text" @click="Transfer(scope.row)" style="border: 1px solid green; color: green; height: 24px; line-height: 22px;">转账</el-button>
-                                <el-button type="text" @click="ConfirmPassword('2', scope.row)" style="border: 1px solid blue; color: blue; height: 24px; line-height: 22px;">挂失</el-button>
+                                <el-button type="text" @click="PreLoss(scope.row)" style="border: 1px solid blue; color: blue; height: 24px; line-height: 22px;">挂失</el-button>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="balance" label="余额" min-width="150"></el-table-column>
+                        <el-table-column label="余额" min-width="150">
+                            <template v-slot="scope">
+                                <span>{{ scope.row.balance }}</span>
+                                <el-button v-if="!scope.row.showBalance" type="text" @click="openBalnce(scope.row)">显示密码</el-button>
+                                <el-button v-else type="text" @click="scope.row.showBalance = false, closeBalance(scope.row)">关闭显示</el-button>
+                            </template>
+                        </el-table-column>
                     </el-table>
                 </div>
             </el-main>
@@ -113,6 +119,21 @@
                 </template>
           </el-dialog>
 
+          <el-dialog v-model="PassVisible" title="密码确认" width="30%">
+                <el-form :model="PasswordCheck" :rules="passRules"  style="width: 100%;">
+                    <el-form-item label="支付密码" prop="Password">
+                        <el-input v-model="PasswordCheck.Password" type="password" style="width: 100%;"></el-input>
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <span class="dialog-footer">
+                        <el-button @click="PasswordVisible = false">取消</el-button>
+                        <el-button type="primary" @click="getBalance(Row)"
+                        :disabled="PasswordCheck.Password.length === 0">确定</el-button>
+                    </span>
+                </template>
+          </el-dialog>
+
           <el-dialog v-model="PassError" title="支付密码错误" width="30%">
                 <template #footer>
                     <span class="dialog-footer">
@@ -149,7 +170,6 @@ export default {
             token : '',
             Acc_Info: {
                 username: '',
-                password: '',
                 id_number: '',
                 phone_number: '',
                 email: ''
@@ -162,27 +182,29 @@ export default {
                 message: ''
             },
             AccountData: [
-                { account_number: '1123213', category: '信用卡', balance: 1200.3 },
-                { account_number: '3123112', category: '存折', balance: 600.2 },
-                { account_number: '1231321', category: '信用卡', balance: 1500 },
-                { account_number: '1231321', category: '信用卡', balance: 1500 },
-                { account_number: '1231231', category: '存折', balance: 200 }
+                { account_number: '1123213', category: '信用卡', balance: '***', showBalance: false},
+                { account_number: '3123112', category: '存折', balance: '***', showBalance: false},
+                { account_number: '1231321', category: '信用卡', balance: '***', showBalance: false},
+                { account_number: '1231321', category: '信用卡', balance: '***', showBalance: false},
+                { account_number: '1231231', category: '存折', balance: '***', showBalance: false}
             ],
             AddAccountVisible: false,
             TransVisible: false,
+            PassVisible: false,
             PasswordVisible: false,
             LossVisible: false,
             PassError: false,
-            PasswordCheck:{
-                account_number: '',
-                Option: '',
-                Password: ''
-            },
             AddAccount: {
                 accountType: '',
                 accountNumber: '',
                 paymentPassword: ''
             },
+            PasswordCheck:{
+                account_number: '',
+                Password: '',
+                Row: ''
+            },
+            Loss_account_number: '',
             rules: {
                 accountType: [{ required: true, message: '请选择账户类型', trigger: 'change' }],
                 accountNumber: [{ required: true, message: '请输入账户号', trigger: 'blur' }],
@@ -208,21 +230,25 @@ export default {
             };
         },
         handleAccountTypeChange(value) {
-            if (value === '信用卡') {
+            if (value === 'CREDIT_CARD') {
                 this.AddAccount.accountType = 1;
-            }else if (value === '存折') {
+            }else if (value === 'DEBIT_CARD') {
                 this.AddAccount.accountType = 2;
+            }
+        },
+        async GetAccInfo(){
+            try{
+                let response = await axios.get("user/profile", { headers: {'Authorization': 'token', }});
+                this.Acc_Info.username = response.data.payload.username;
+                this.Acc_Info.id_number = response.data.payload.id_number;
+                this.Acc_Info.phone_number = response.data.payload.phone_number;
+                this.Acc_Info.email = response.data.payload.email;
+            }   catch (error) {
+                ElMessage.error(error.response.data.err);
             }
         },
         async ConfirmAddAccount() {
             const encrypted = CryptoJS.SHA256(this.AddAccount.paymentPassword).toString();
-            this.Acc_Info = {
-                username: '',
-                password: '',
-                id_number: '',
-                phone_number: '',
-                email: ''
-            };
             axios.post("/account/bind",
                 {
                     "username": this.Acc_Info.username,
@@ -240,43 +266,43 @@ export default {
         },
         async QueryAccount(){
             this.AccountData = [] 
-            let response = await axios.get("/card") 
-                .then(response => {
-                    let AccountData = response.data
-                    AccountData.forEach(Account => { 
-                        this.AccountData.push(Account) 
-                    })
-                })
+            try {
+                let response = await axios.get("/card", { headers: { 'Authorization': this.token } });
+                let payload = response.data.payload;
+                payload.forEach(item => {
+                    this.AccountData.push({
+                        account_number: item.card_id,
+                        category: item.card_type,
+                        balance: '***',
+                        showBalance: false
+                    });
+                });
+            } catch (error) {
+                ElMessage.error(error.response.data.err);
+            }
         },
-        ConfirmPassword(op, row){
-            this.PasswordCheck.Password = '',
-            this.PasswordCheck.Option = op,
+        openBalnce(row){
             this.PasswordCheck.account_number = row.account_number,
-            this.PasswordVisible = true
+            this.PassVisible = true,
+            this.PasswordCheck.Row = row
         },
-        async Password_Check(){
-            const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
-            await axios.get("/account/pass", { params: { "account_number": this.PasswordCheck.account_number } })
-                .then(response => {
-                    const receivedPassword = response.data; 
-                    const encryptedReceivedPassword = CryptoJS.SHA256(receivedPassword).toString();
-                    if (encrypted === encryptedReceivedPassword) {
-                        if (this.PasswordCheck.Option === '1') {this.TransactionDetail();}
-                        if (this.PasswordCheck.Option === '2') {this.LossVisible = true;}
-                        this.PasswordVisible = false;
-                    } else {
-                        this.PassError = true;
-                        console.log("Password does not match");
-                    }
-            })
-            .catch(error => {
-                console.error("Error fetching password:", error);
-            });
+        async getBalance(){
+            try {
+                let response = await axios.get("/card/balance", { headers: { 'Authorization': this.token } });
+                    this.PasswordCheck.Row.balance = response.data.balance,
+                    this.PassVisible = false,
+                    this.PasswordCheck.Row.showBalance = true
+            } catch (error) {
+                ElMessage.error(error.response.data);
+            }
+        }, 
+        closeBalance(row){
+            row.balance = '***'
         },
-        TransactionDetail() {
+        TransactionDetail(row) { //ok
             this.$router.push({
                 path: '/personalBank/transDetail',
-                query: { account_number: this.PasswordCheck.account_number }
+                query: { account_number: row.account_number }
             });
         },
         Transfer(row) {
@@ -289,11 +315,14 @@ export default {
                 message: ''
             };
         },
+        Password_Check(){
+
+        },
         PasswordError(){
             this.PassError = false,
             this.PasswordCheck.Password = ''
         },
-        async ConfirmTransfer(){
+        async ConfirmTransfer(){ //ok
             const encrypted = CryptoJS.SHA256(this.Trans.password).toString();
             axios.post("/option/transfer",
                 {
@@ -302,7 +331,7 @@ export default {
                     "password": encrypted,
                     "amount": this.Trans.amount.toString(),
                     "remark": this.Trans.message  
-                }, {headers: { 'token': Cookies.get('token') } })
+                }, {headers: { 'Authorization': this.token} })
                 .then(response => {
                     ElMessage.success(response.data);
                     this.AddAccountVisible = false;
@@ -311,11 +340,15 @@ export default {
                     ElMessage.error(error.response.data);
                 })
         },
-        async ConfirmLoss() {
-            axios.post("/option/loss",
+        PreLoss(row){
+            this.Loss_account_number = row.account_number,
+            this.LossVisible = true
+        },
+        async ConfirmLoss() { //ok
+            axios.post("/card/loss",
                 {
-                    "card_id": Number(this.PasswordCheck.account_number)
-                })
+                    "card_id": Number(this.Loss_account_number)
+                }, {headers: { 'Authorization': this.token} })
                 .then(response => {
                     ElMessage.success(response.data);
                     this.LossVisible = false;
@@ -326,7 +359,9 @@ export default {
         },
     },
     mounted() { // 当页面被渲染时
-        this.token = Cookies.get('token')
+        this.token = Cookies.get('token');
+        //this.GetAccInfo(); //获取登陆账号信息
+        if (this.token) this.token = this.token.toString();
         //this.QueryAccount() // 查询账户信息
     }
 }
