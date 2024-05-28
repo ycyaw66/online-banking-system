@@ -120,7 +120,7 @@ public class CardController {
     public RespResult valid(@RequestBody ValidReceiver validReceiver) {
         ApiResult apiResult = userAndCardService.valid(validReceiver.getCardId(), validReceiver.getPassword());
         if (apiResult.ok) {
-            return RespResult.success((List<com.zjuse.bankingsystem.entity.History>)apiResult.payload);
+            return RespResult.success();
         }
         else {
             return RespResult.fail(apiResult.message);
