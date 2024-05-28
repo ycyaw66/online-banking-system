@@ -225,7 +225,7 @@ export default {
         },
         async GetAccInfo(){
             try{
-                let response = await axios.get("user/profile", { headers: {'Authorization': 'token', }});
+                let response = await axios.get("user/profile", { headers: {'Authorization': this.token }});
                 this.Acc_Info.username = response.data.payload.username;
                 this.Acc_Info.id_number = response.data.payload.id_number;
                 this.Acc_Info.phone_number = response.data.payload.phone_number;
@@ -241,7 +241,7 @@ export default {
                     "username": this.Acc_Info.username,
                     "card_id": Number(this.AddAccount.accountNumber),
                     "password": encrypted
-                }, {headers: { 'token': Cookies.get('token') } })
+                }, { headers: {'Authorization': this.token }})
                 .then(response => {
                     ElMessage.success(response.data);
                     this.AddAccountVisible = false;
@@ -303,10 +303,10 @@ export default {
             };
         },
         async Password_Check(){
-            if (this.PasswordCheck.op == '1') {
+            /*if (this.PasswordCheck.op == '1') {
                 this.TransactionDetail();
-            }
-            /*try {
+            }*/
+            try {
                 const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
                 let response = await axios.get("/password/check", {"card_id": Number(this.PasswordCheck.account_number), "password": encrypted},{ headers: { 'Authorization': this.token } });
                 if (response.data.result == true){
@@ -323,13 +323,13 @@ export default {
                 }
             } catch (error) {
                 ElMessage.error(error.response.data);
-            }*/
+            }
         },
         PasswordError(){
             this.PassError = false,
             this.PasswordCheck.Password = ''
         },
-        async ConfirmTransfer(){ //ok
+        async ConfirmTransfer(){ 
             const encrypted = CryptoJS.SHA256(this.Trans.password).toString();
             axios.post("/option/transfer",
                 {
