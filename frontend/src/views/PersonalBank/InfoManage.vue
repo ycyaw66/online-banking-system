@@ -40,7 +40,7 @@
                         <el-table-column prop="category" label="账户类别" min-width="150"></el-table-column>
                         <el-table-column label="操作" min-width="200">
                             <template v-slot="scope">
-                                <el-button type="text" @click="TransactionDetail(scope.row)" style="border: 1px solid red; color: red; height: 24px; line-height: 22px;">交易明细</el-button>
+                                <el-button type="text" @click="Check(scope.row)" style="border: 1px solid red; color: red; height: 24px; line-height: 22px;">交易明细</el-button>
                                 <el-button type="text" @click="Transfer(scope.row)" style="border: 1px solid green; color: green; height: 24px; line-height: 22px;">转账</el-button>
                                 <el-button type="text" @click="PreLoss(scope.row)" style="border: 1px solid blue; color: blue; height: 24px; line-height: 22px;">挂失</el-button>
                             </template>
@@ -58,12 +58,6 @@
 
             <el-dialog v-model="AddAccountVisible" title="绑定新账户" width="30%" >
                 <el-form :model="AddAccount" :rules="rules" ref="AddAccount" style="width: 100%;">
-                    <el-form-item label="账户类型" prop="accountType">
-                        <el-radio-group v-model="AddAccount.accountType" @change="handleAccountTypeChange">
-                            <el-radio :label="1">信用卡</el-radio>
-                            <el-radio :label="2">存折</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
                     <el-form-item label="账户号" prop="accountNumber">
                         <el-input v-model="AddAccount.accountNumber" style="margin-left: 12pt; width: 100%;"></el-input>
                     </el-form-item>
@@ -75,7 +69,7 @@
                     <span class="dialog-footer">
                         <el-button @click="AddAccountVisible = false">取消</el-button>
                         <el-button type="primary" @click="ConfirmAddAccount"
-                            :disabled="AddAccount.accountType.length === 0 || AddAccount.accountNumber.length === 0 || AddAccount.paymentPassword.length === 0">确定</el-button>
+                            :disabled="AddAccount.accountNumber.length === 0 || AddAccount.paymentPassword.length === 0">确定</el-button>
                     </span>
                 </template>
             </el-dialog>
@@ -200,6 +194,7 @@ export default {
                 paymentPassword: ''
             },
             PasswordCheck:{
+                op: '',
                 account_number: '',
                 Password: '',
                 Row: ''
@@ -224,17 +219,9 @@ export default {
         OpenAddAccount(){
             this.AddAccountVisible = true;
             this.AddAccount = {
-                accountType: '',
                 accountNumber: '',
                 paymentPassword: ''
             };
-        },
-        handleAccountTypeChange(value) {
-            if (value === 'CREDIT_CARD') {
-                this.AddAccount.accountType = 1;
-            }else if (value === 'DEBIT_CARD') {
-                this.AddAccount.accountType = 2;
-            }
         },
         async GetAccInfo(){
             try{
@@ -252,8 +239,7 @@ export default {
             axios.post("/account/bind",
                 {
                     "username": this.Acc_Info.username,
-                    "accounttype": this.AddAccount.accountType,
-                    "accountnumber": this.AddAccount.accountNumber,
+                    "card_id": Number(this.AddAccount.accountNumber),
                     "password": encrypted
                 }, {headers: { 'token': Cookies.get('token') } })
                 .then(response => {
@@ -272,7 +258,7 @@ export default {
                 payload.forEach(item => {
                     this.AccountData.push({
                         account_number: item.card_id,
-                        category: item.card_type,
+                        category: item.card_type == 'CREDIT_CARD' ? '信用卡' : '存折',
                         balance: '***',
                         showBalance: false
                     });
@@ -288,10 +274,11 @@ export default {
         },
         async getBalance(){
             try {
-                let response = await axios.get("/card/balance", { headers: { 'Authorization': this.token } });
-                    this.PasswordCheck.Row.balance = response.data.balance,
-                    this.PassVisible = false,
-                    this.PasswordCheck.Row.showBalance = true
+                const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
+                let response = await axios.get("/card/balance", {"card_id": Number(this.PasswordCheck.account_number), "password": encrypted}, {headers: { 'Authorization': this.token } });
+                this.PasswordCheck.Row.balance = response.data.balance,
+                this.PassVisible = false,
+                this.PasswordCheck.Row.showBalance = true
             } catch (error) {
                 ElMessage.error(error.response.data);
             }
@@ -299,10 +286,10 @@ export default {
         closeBalance(row){
             row.balance = '***'
         },
-        TransactionDetail(row) { //ok
+        TransactionDetail() {
             this.$router.push({
                 path: '/personalBank/transDetail',
-                query: { account_number: row.account_number }
+                query: { account_number: this.PasswordCheck.account_number }
             });
         },
         Transfer(row) {
@@ -315,8 +302,28 @@ export default {
                 message: ''
             };
         },
-        Password_Check(){
-
+        async Password_Check(){
+            if (this.PasswordCheck.op == '1') {
+                this.TransactionDetail();
+            }
+            /*try {
+                const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
+                let response = await axios.get("/password/check", {"card_id": Number(this.PasswordCheck.account_number), "password": encrypted},{ headers: { 'Authorization': this.token } });
+                if (response.data.result == true){
+                    this.PasswordVisible = false;
+                    if (this.PasswordCheck.op == '1') {
+                        this.TransactionDetail();
+                    }
+                    if (this.PasswordCheck.op == '2') {
+                        this.LossVisible = true;
+                    }
+                }
+                else{
+                    this.PassError = true;
+                }
+            } catch (error) {
+                ElMessage.error(error.response.data);
+            }*/
         },
         PasswordError(){
             this.PassError = false,
@@ -340,9 +347,18 @@ export default {
                     ElMessage.error(error.response.data);
                 })
         },
+        Check(row){
+            this.PasswordCheck.account_number = row.account_number,
+            this.PasswordCheck.op = '1',
+            this.PasswordCheck.Password = '',
+            this.PasswordVisible = true
+        },  
         PreLoss(row){
             this.Loss_account_number = row.account_number,
-            this.LossVisible = true
+            this.PasswordCheck.account_number = row.account_number,
+            this.PasswordCheck.op = '2',
+            this.PasswordCheck.Password = '',
+            this.PasswordVisible = true
         },
         async ConfirmLoss() { //ok
             axios.post("/card/loss",
@@ -360,8 +376,8 @@ export default {
     },
     mounted() { // 当页面被渲染时
         this.token = Cookies.get('token');
-        //this.GetAccInfo(); //获取登陆账号信息
         if (this.token) this.token = this.token.toString();
+        //this.GetAccInfo(); //获取登陆账号信息
         //this.QueryAccount() // 查询账户信息
     }
 }
