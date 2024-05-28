@@ -1,10 +1,11 @@
-drop table if exists credit_card_admin;
-drop table if exists credit_card_application;
-drop table if exists credit_card_bill;
-drop table if exists credit_card_inspector;
-drop table if exists credit_card;
+drop table if exists `credit_card_admin`;
+drop table if exists `credit_card_application`;
+drop table if exists `credit_card_bill`;
+drop table if exists `credit_card_inspector`;
+drop table if exists `credit_card`;
+DROP TABLE IF EXISTS `admin`;
 DROP TABLE IF EXISTS `cardofperson`;
-DROP TABLE IF EXISTS `UserPrivilege`;
+DROP TABLE IF EXISTS `user_privilege`;
 DROP TABLE IF EXISTS `blacklist`;
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `user`;

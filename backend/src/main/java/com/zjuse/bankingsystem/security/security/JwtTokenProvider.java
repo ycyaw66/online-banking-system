@@ -36,7 +36,7 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(username, "******", new ArrayList<>());
     }
 
-    public String getToken(HttpServletRequest request) {
+    public String getTokenFromRequest(HttpServletRequest request) {
         final String requestHeader = request.getHeader(jwtConfig.getHeader());
         if (requestHeader != null && requestHeader.startsWith(jwtConfig.getTokenStartWith())) {
             return requestHeader.substring(7);

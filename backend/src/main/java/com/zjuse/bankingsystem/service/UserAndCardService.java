@@ -189,7 +189,7 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult transfor(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
+    public ApiResult transfer(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
         boolean isDec = false;
         try {
             if (amount.compareTo(new BigDecimal(0)) < 0) {

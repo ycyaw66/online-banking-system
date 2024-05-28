@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zjuse.bankingsystem.service.CreditCardService;
+import com.zjuse.bankingsystem.service.InspectorService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
@@ -15,11 +16,11 @@ import com.zjuse.bankingsystem.utils.RespResult;
 @RequestMapping("/credit-card/inspector")
 public class InspectorController {
     @Autowired
-    private CreditCardService creditCardService;
+    private InspectorService inspectorService;
 
     @PostMapping("/login")
     public RespResult loginInspector(@RequestParam String name, @RequestParam String password) {
-        ApiResult apiResult = creditCardService.loginInspector(name, password);
+        ApiResult apiResult = inspectorService.loginInspector(name, password);
         if (apiResult.ok) {
             return RespResult.success(apiResult.payload);
         } else {
@@ -29,19 +30,19 @@ public class InspectorController {
 
     @GetMapping("/request")
     public RespResult queryRequestsByInspector(@RequestParam Integer permission) {
-        ApiResult apiResult = creditCardService.queryRequestsByInspector(permission);
+        ApiResult apiResult = inspectorService.queryRequestsByInspector(permission);
         return RespResult.success(apiResult.payload);
     }
 
     @GetMapping("/request/accept")
     public RespResult acceptRequest(@RequestParam Long id) {
-        ApiResult apiResult = creditCardService.acceptRequest(id);
+        ApiResult apiResult = inspectorService.acceptRequest(id);
         return RespResult.success(apiResult.payload);
     }
 
     @GetMapping("/request/reject")
     public RespResult rejectRequest(@RequestParam Integer id) {
-        ApiResult apiResult = creditCardService.rejectRequest(id);
+        ApiResult apiResult = inspectorService.rejectRequest(id);
         return RespResult.success(apiResult.payload);
     }
 }

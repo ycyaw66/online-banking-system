@@ -7,6 +7,7 @@ import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.utils.RedisUtils;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Component
 public class UserCacheManager {
@@ -35,4 +36,10 @@ public class UserCacheManager {
             redisUtils.set(username, jwtUserDto, time);
         }
     } 
+
+    public void cleanUserCache(String username) {
+        if (!StrUtil.isBlank(username)) {
+            redisUtils.del(username);
+        }
+    }
 }

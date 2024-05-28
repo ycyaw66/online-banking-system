@@ -26,10 +26,14 @@ jwt:
     # 令牌前缀
     token-start-with: Bearer
     # token 有效时间
-    token-validity-in-seconds: 7200000
+    token-validity-in-seconds: 60
     token-sign-key: "user"
     # 在线用户的 token
-    online-key: "online-token"
+    online-key: "online-token:"
+
+user-cache:
+    validity-time-in-seconds: 7200000
+    user-cache-key: "user-cache:"
 
 mail: 
     mail-address: "zju_11111111@163.com"

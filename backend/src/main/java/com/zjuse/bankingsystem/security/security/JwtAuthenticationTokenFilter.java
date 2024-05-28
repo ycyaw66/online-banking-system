@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.zjuse.bankingsystem.security.config.JwtConfig;
+import com.zjuse.bankingsystem.security.service.OnlineUserService;
+import com.zjuse.bankingsystem.security.service.UserCacheManager;
 import com.zjuse.bankingsystem.security.service.dto.OnlineUserDto;
 
 import cn.hutool.core.util.StrUtil;
@@ -34,6 +36,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService; 
+    @Autowired
+    private OnlineUserService onlineUserService; 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -52,6 +56,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return ;
         }
 
+        OnlineUserDto onlineUserDto = onlineUserService.getOnlineUser(authToken);
+        // if (Objects.isNull(onlineUserDto)) {
+            
+        // }
 
         Authentication authentication = jwtTokenProvider.getAuthentication(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
