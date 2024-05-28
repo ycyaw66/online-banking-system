@@ -127,9 +127,6 @@ export default {
                 const xa = this.Cond.MaxAmount ? Number(this.Cond.MaxAmount) : this.Cond.MaxAmount ;
                 const st = this.Cond.MinDate;
                 const et = this.Cond.MaxDate;
-                console.log(cd);
-                console.log(ia);
-                console.log(st);
                 let response = await axios.get("/account/trans", { params: { "card_id" : Number(this.accountNumber), "target_card_id" : tg, "transfer_card_id" : cd, "MinAmount": ia, "MaxAmount": xa, "start_time": st, "end_time" : et, "Remark": this.Cond.Remark} }, {headers: { 'Authorization': this.token.toString() } })
                 let querydata = response.data 
                 querydata.forEach(item => {
