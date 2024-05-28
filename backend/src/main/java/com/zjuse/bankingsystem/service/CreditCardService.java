@@ -1,5 +1,6 @@
 package com.zjuse.bankingsystem.service;
 
+import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.creditCard.*;
 import com.zjuse.bankingsystem.mapper.CreditCardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.PrimitiveIterator;
 
 @Service
 public class CreditCardService {
@@ -45,13 +48,15 @@ public class CreditCardService {
         return new ApiResult(true, null, null);
     }
 
-    public ApiResult makeCreditCardLost(Long cardId) {
+    public ApiResult makeCreditCardLost(Long cardId, String password) {
         CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
         if (creditCard.getId() == null) {
             return new ApiResult(false, "该信用卡不存在");
         }
+        if (!creditCard.getPassword().equals(password)) {
+            return new ApiResult(false, "Wrong password");
+        }
         creditCardMapper.setCreditCardLost(cardId);
-        // creditCardMapper.insertCreditCard(creditCard);
         return new ApiResult(true, "挂失成功");
     }
 
@@ -159,21 +164,24 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult bankPay(Long cardId, String password, BigDecimal amount, Date date) {
+    public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
         try {
-            CreditCard matchCard = creditCardMapper.findMatchCard(cardId, password);
+            CreditCard matchCard = creditCardMapper.findCreditCard(cardId);
             if (matchCard == null) {
-                return new ApiResult(false, "输入的信息不完全匹配");
+                return new ApiResult(false, "Credit Card not find");
+            }
+            if (!matchCard.getPassword().equals(password)) {
+                return new ApiResult(false, "Wrong password");
             }
             BigDecimal cardLimit = matchCard.getCardLimit();
             BigDecimal loan = matchCard.getLoan();
-            BigDecimal add = loan.add(amount);
+            BigDecimal add = loan.add(account);
             int result = cardLimit.compareTo(add);
             if (result < 0) {
                 return new ApiResult(false, "信用卡可用额度不足");
             }
-            creditCardMapper.addPayment(cardId, amount, date);
-            creditCardMapper.updateLoan(cardId, amount);
+            creditCardMapper.addPayment(cardId, account, date);
+            creditCardMapper.updateLoan(cardId, account);
             return new ApiResult(true, null);
         }
         catch(Exception e) {

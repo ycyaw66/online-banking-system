@@ -5,12 +5,22 @@ import com.zjuse.bankingsystem.utils.CardType;
 import com.zjuse.bankingsystem.mapper.*;
 
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
+
+import javax.management.Query;
+
+import org.apache.tomcat.util.buf.HexUtils;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.*;;
 
 
@@ -76,7 +86,7 @@ public class UserAndCardService {
     public ApiResult loss(Long cardId, String password) {
         try {
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
+                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId, password);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -113,6 +123,44 @@ public class UserAndCardService {
             return new ApiResult(false, e.getMessage());
         }
     }
+
+    public ApiResult history(HistoryCondition condition) {
+        try {
+            QueryWrapper<History> wrapper = new QueryWrapper<>();
+            if (condition.getCardId() != null) {
+                wrapper.eq("card_id", condition.getCardId());
+            }
+            if (condition.getTargetCardId() != null) {
+                wrapper.eq("target_card", condition.getTargetCardId());
+            }
+            if (condition.getLeastAmount() != null) {
+                wrapper.ge("amount", condition.getLeastAmount());
+            }
+            if (condition.getMostAmount() != null) {
+                wrapper.le("amount", condition.getMostAmount());
+            }
+            if (condition.getStartTime() != null) {
+                wrapper.ge("time", condition.getStartTime());
+            }
+            if (condition.getEndTime() != null) {
+                wrapper.le("time", condition.getEndTime());
+            }
+            if (condition.getRemark() != null) {
+                wrapper.like("remark", condition.getRemark());
+            }
+            List<History> list = historyMapper.selectList(wrapper);
+            if (list == null) {
+                return new ApiResult(false, "database error");
+            }
+            ApiResult apiResult = new ApiResult(true, "success");
+            apiResult.payload = list;
+            return apiResult;
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
     public ApiResult getBalance(Long cardId, String password) {
         try {
             ApiResult apiResult = null;
@@ -141,7 +189,7 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult transfer(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
+    public ApiResult transfor(Long cardId, Long targetCardId, BigDecimal amount, String password, String remark) {
         boolean isDec = false;
         try {
             if (amount.compareTo(new BigDecimal(0)) < 0) {
