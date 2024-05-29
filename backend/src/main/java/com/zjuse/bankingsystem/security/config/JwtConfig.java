@@ -14,4 +14,6 @@ public class JwtConfig {
     private Long tokenValidityInSeconds; 
     private String tokenSignKey; 
     private String onlineKey; 
+    private Long detectTime;
+    private Long renewTime; 
 }

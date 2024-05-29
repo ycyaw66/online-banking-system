@@ -1,15 +1,15 @@
-drop table if exists `credit_card_admin`;
-drop table if exists `credit_card_application`;
-drop table if exists `credit_card_bill`;
-drop table if exists `credit_card_inspector`;
-drop table if exists `credit_card`;
-DROP TABLE IF EXISTS `admin`;
-DROP TABLE IF EXISTS `cardofperson`;
-DROP TABLE IF EXISTS `user_privilege`;
-DROP TABLE IF EXISTS `blacklist`;
-DROP TABLE IF EXISTS `history`;
-DROP TABLE IF EXISTS `user`;
-DROP TABLE IF EXISTS `card`;
+drop table if exists `credit_card_admin` cascade;
+drop table if exists `credit_card_application` cascade;
+drop table if exists `credit_card_bill` cascade;
+drop table if exists `credit_card_inspector` cascade;
+drop table if exists `credit_card` cascade;
+DROP TABLE IF EXISTS `admin` cascade;
+DROP TABLE IF EXISTS `cardofperson` cascade;
+DROP TABLE IF EXISTS `user_privilege` cascade;
+DROP TABLE IF EXISTS `blacklist` cascade;
+DROP TABLE IF EXISTS `history` cascade;
+DROP TABLE IF EXISTS `user` cascade;
+DROP TABLE IF EXISTS `card` cascade;
 
 CREATE TABLE `card`
 (

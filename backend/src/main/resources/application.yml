@@ -26,10 +26,14 @@ jwt:
     # 令牌前缀
     token-start-with: Bearer
     # token 有效时间
-    token-validity-in-seconds: 60
+    token-validity-in-seconds: 7200000
     token-sign-key: "user"
     # 在线用户的 token
     online-key: "online-token:"
+    # token 续期检查时间范围（毫秒），
+    detect-time: 1800000
+    # 续期时间范围，默认1小时，单位毫秒
+    renew-time: 3600000
 
 user-cache:
     validity-time-in-seconds: 7200000

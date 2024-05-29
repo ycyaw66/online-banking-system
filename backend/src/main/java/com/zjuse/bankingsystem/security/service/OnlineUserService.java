@@ -33,8 +33,10 @@ public class OnlineUserService {
             onlineUserDto = new OnlineUserDto(jwtUserDto.getUsername(), token, new Date()); 
         } catch(Exception e) {
             log.error(e.getMessage(), e);
+            return ;
         }
         String loginKey = jwtTokenProvider.loginKey(token);
+        log.info(loginKey);
         redisUtils.set(loginKey, onlineUserDto, jwtConfig.getTokenValidityInSeconds());
     }
 

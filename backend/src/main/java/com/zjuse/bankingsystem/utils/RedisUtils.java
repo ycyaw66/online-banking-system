@@ -83,4 +83,24 @@ public class RedisUtils {
             }
         }
     }
+
+    /**
+     * 指定缓存失效时间
+     *
+     * @param key      键
+     * @param time     时间(秒) 注意:这里将会替换原有的时间
+     * @param timeUnit 单位
+     */
+    public boolean expire(String key, long time, TimeUnit timeUnit) {
+        try {
+            if (time > 0) {
+                redisTemplate.expire(key, time, timeUnit);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
 }
