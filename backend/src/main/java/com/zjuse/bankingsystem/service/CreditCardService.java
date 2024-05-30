@@ -39,6 +39,14 @@ public class CreditCardService {
         return new ApiResult(true, "验证成功");
     }
 
+    public ApiResult getBalance(Long cardId) {
+        CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
+        if (creditCard.getId() == null) {
+            return new ApiResult(false, "该信用卡不存在");
+        }
+        return new ApiResult(true, creditCard.getLoan().negate());
+    }
+
     public ApiResult addNewCreditCardRequest(String idNumber, BigDecimal cardLimit, String password) {
         creditCardMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
         return new ApiResult(true, null, null);

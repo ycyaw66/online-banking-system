@@ -177,7 +177,7 @@ public class UserAndCardService {
         try {
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                // apiResult = creditcardService.getBalance(cardId, password);
+                apiResult = creditcardService.getBalance(cardId);
             }
             else {
                 apiResult = debitcardService.getBalance(cardId, password);
