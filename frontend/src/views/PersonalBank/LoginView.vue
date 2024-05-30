@@ -19,7 +19,7 @@
               </div>
             </div>
           </template>
-          <!-- 登陆卡片的body -->
+          <!-- 登录卡片的body -->
           <el-form :model="loginForm" ref="loginForm" :rules="loginRules" label-width="80px">
             <el-form-item label="用户名" prop="username">
               <el-input v-model="loginForm.username" placeholder="请输入用户名" style="width: 250px"></el-input>

@@ -143,22 +143,22 @@ export default {
         // 加密后传给后端
         const encrypted = CryptoJS.SHA256(this.registerForm.password).toString();
         axios.post("/user/register",
-          {
-            "username": this.registerForm.username,
-            "password": encrypted,
-            "id_number": this.registerForm.idCard,
-            "phone_number": this.registerForm.phone,
-            "email": this.registerForm.email,
-            "verificationCode": this.registerForm.verificationCode
-          })
-          .then(response => {
-            ElMessage.success(response.data);
-            // handle successful login, redirect
-            this.jumpLogin();
-          })
-          .catch(error => {
-            ElMessage.error(error.response.data);
-          })
+        {
+          "username": this.registerForm.username,
+          "password": encrypted,
+          "id_number": this.registerForm.idCard,
+          "phone_number": this.registerForm.phone,
+          "email": this.registerForm.email,
+          "verificationCode": this.registerForm.verificationCode
+        })
+        .then(response => {
+          ElMessage.success(response.data);
+          // handle successful login, redirect
+          this.jumpLogin();
+        })
+        .catch(error => {
+          ElMessage.error(error.response.data);
+        })
       },
       getVerificationCode() {
         if (!this.isEmailValid) {
@@ -170,15 +170,15 @@ export default {
         this.isCounting = true;
         this.doCountdown();
         axios.post("/user/register/sendMail",
-          {
-            "email": this.registerForm.email
-          })
-          .then(response => {
-            ElMessage.success(response.data);
-          })
-          .catch(error => {
-            ElMessage.error(error.response.data);
-          })
+        {
+          "email": this.registerForm.email
+        })
+        .then(response => {
+          ElMessage.success(response.data);
+        })
+        .catch(error => {
+          ElMessage.error(error.response.data);
+        })
       },
       doCountdown() {
         this.countDownTimeout = setTimeout(() => {
