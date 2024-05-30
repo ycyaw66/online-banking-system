@@ -19,8 +19,16 @@
           <el-table-column label="余额" min-width="150">
             <template v-slot="scope">
               <span>{{ scope.row.balance }}</span>
-              <el-button v-if="!scope.row.showBalance" type="text" @click="openBalnce(scope.row)">显示余额</el-button>
-              <el-button v-else type="text" @click="scope.row.showBalance = false, closeBalance(scope.row)">关闭显示</el-button>
+              <el-button v-if="!scope.row.showBalance" type="text" @click="openBalance(scope.row)">
+                <el-icon>
+                  <View />
+                </el-icon>
+              </el-button>
+              <el-button v-else type="text" @click="scope.row.showBalance = false, closeBalance(scope.row)">
+                <el-icon>
+                  <Hide />
+                </el-icon>
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -233,7 +241,7 @@ export default {
                 ElMessage.error(error.response.data.err);
             }
         },
-        openBalnce(row){
+        openBalance(row){
             this.PasswordCheck.account_number = row.account_number,
             this.PassVisible = true,
             this.PasswordCheck.Row = row
