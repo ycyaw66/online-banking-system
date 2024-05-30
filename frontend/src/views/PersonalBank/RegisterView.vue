@@ -38,8 +38,8 @@
             </el-form-item>
             <el-form-item label="邮箱" prop="email" style="margin-top: 20px">
               <el-input v-model="registerForm.email" placeholder="邮箱" style="width: 200px"></el-input>
-                <el-button v-if="isCounting" type="primary" style="width: 100px" :disabled="isCounting">{{countDown}}秒后重试</el-button>
-                <el-button v-else type="primary" style="width: 100px" @click="getVerificationCode">获取验证码</el-button>
+                <el-button v-if="isCounting" type="primary" style="margin-left: 5px; width: 95px" :disabled="isCounting">{{countDown}}秒后重试</el-button>
+                <el-button v-else type="primary" style="margin-left: 5px; width: 95px" @click="getVerificationCode">获取验证码</el-button>
             </el-form-item>
             <el-form-item label="验证码" prop="verificationCode" style="margin-top: 20px">
               <el-input v-model="registerForm.verificationCode" placeholder="六位数字验证码" style="width: 200px"></el-input>
