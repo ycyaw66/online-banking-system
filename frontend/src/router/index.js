@@ -38,6 +38,16 @@ const routes = [
                 name: 'profile',
                 component: () => import('../views/PersonalBank/UserProfile.vue')
             },
+            {
+                path: 'account',
+                name: 'account',
+                component: () => import('../views/PersonalBank/InfoManage.vue')
+            },
+            {
+                path: 'transfer',
+                name: 'transfer',
+                component: () => import('../views/PersonalBank/TransDetail.vue')
+            }
         ]
     },
     {

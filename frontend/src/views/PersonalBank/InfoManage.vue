@@ -1,139 +1,107 @@
 <template>
-    <div>
-      <div class="main" style="overflow-y: hidden; ">
-        <el-container >
-          <el-header class="title">
-            <div style="margin-top: 12px; display: inline-block;">
-              <img src="./icons/logo.png"
-                style=" margin-right: 20px; height: 40px;vertical-align: middle;" />
-              <span style="font-size: large; font-family: 'Microsoft YaHei';
-                  color: black; font-weight: bold;">在线银行系统</span>
-            </div>
-          </el-header>
-          <el-container style="width: 100%; ">
-            <el-aside class="aside" style="display: flex;">
-              <el-menu active-text-color="#ffd04b" background-color="#0270c1" default-active="1" text-color="#fff"
-                style="height:100%; width: 100%;" :router="true">
-                <el-menu-item index="InfoManage">
-                    <el-icon><operation /></el-icon>
-                    <span>账户管理</span>
-                </el-menu-item>
-                <el-menu-item index="foreign_exchange">
-                    <el-icon><coin /></el-icon>
-                    <span>外汇交易</span>
-                </el-menu-item>
-                <el-menu-item index="load">
-                    <el-icon><money /></el-icon>
-                    <span>贷款模块</span>
-                </el-menu-item>
-  
-              </el-menu>
-            </el-aside>
-            <el-main style="height: 100%; width: 100%; position: relative;">
-                <div style="background-color: white; width: 100%; height: auto; padding: 20px; margin-bottom: 20px;">
-                    <div style="font-size: 24px;">账户信息管理</div>
-                    <button @click="OpenAddAccount" style="position: absolute; top: 40px; right: 20px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">添加新账户</button>
+  <el-container style="width: 100%;">
+    <el-main style="height: 100%; width: 100%; position: relative;">
+      <div style="background-color: white; width: 100%; height: auto; padding: 20px; margin-bottom: 20px;">
+        <div style="font-size: 24px;">账户信息管理</div>
+        <button @click="OpenAddAccount" style="position: absolute; top: 40px; right: 20px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">添加新账户</button>
 
-                    <el-table :data="AccountData" height="600" 
-                        style="width: 100%; margin-left: 50px; margin-top: 30px; margin-right: 50px; max-width: 80vw; table-layout: fixed;">
-                        <el-table-column prop="account_number" label="账户号码" min-width="150"></el-table-column>
-                        <el-table-column prop="category" label="账户类别" min-width="150"></el-table-column>
-                        <el-table-column label="操作" min-width="200">
-                            <template v-slot="scope">
-                                <el-button type="text" @click="ConfirmPassword('1', scope.row)" style="border: 1px solid red; color: red; height: 24px; line-height: 22px;">交易明细</el-button>
-                                <el-button type="text" @click="Transfer(scope.row)" style="border: 1px solid green; color: green; height: 24px; line-height: 22px;">转账</el-button>
-                                <el-button type="text" @click="ConfirmPassword('2', scope.row)" style="border: 1px solid blue; color: blue; height: 24px; line-height: 22px;">挂失</el-button>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="balance" label="余额" min-width="150"></el-table-column>
-                    </el-table>
-                </div>
-            </el-main>
-
-            <el-dialog v-model="AddAccountVisible" title="绑定新账户" width="30%" >
-                <el-form :model="AddAccount" :rules="rules" ref="AddAccount" style="width: 100%;">
-                    <el-form-item label="账户类型" prop="accountType">
-                        <el-radio-group v-model="AddAccount.accountType" @change="handleAccountTypeChange">
-                            <el-radio :label="1">信用卡</el-radio>
-                            <el-radio :label="2">存折</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="账户号" prop="accountNumber">
-                        <el-input v-model="AddAccount.accountNumber" style="margin-left: 12pt; width: 100%;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="支付密码" prop="paymentPassword">
-                        <el-input v-model="AddAccount.paymentPassword" type="password" style="width: 100%;"></el-input>
-                    </el-form-item>
-                </el-form>
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button @click="AddAccountVisible = false">取消</el-button>
-                        <el-button type="primary" @click="ConfirmAddAccount"
-                            :disabled="AddAccount.accountType.length === 0 || AddAccount.accountNumber.length === 0 || AddAccount.paymentPassword.length === 0">确定</el-button>
-                    </span>
-                </template>
-            </el-dialog>
-
-            <el-dialog v-model="TransVisible" title="转账" width="30%" >
-                <el-form :model="Trans" :rules="transferRules" ref="Trans" style="width: 100%;">
-                    <el-form-item label="转入账户号" prop="toaccount">
-                        <el-input v-model="Trans.toaccount" style="width: 100%;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="金额" prop="amount">
-                        <el-input v-model="Trans.amount" style="margin-left: 31pt; width: 100%;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="支付密码" prop="password">
-                        <el-input v-model="Trans.password" type="password" style="margin-left: 10pt; width: 100%;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="留言" prop="message">
-                        <el-input v-model="Trans.message" style="margin-left: 39pt; width: 100%;"></el-input>
-                    </el-form-item>
-                </el-form>
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button @click="TransVisible = false">取消</el-button>
-                        <el-button type="primary" @click="ConfirmTransfer"
-                        :disabled="Trans.toaccount.length === 0 || Trans.amount <= 0 || Trans.password.length === 0">确定</el-button>
-                    </span>
-                </template>
-          </el-dialog>
-
-          <el-dialog v-model="PasswordVisible" title="密码确认" width="30%">
-                <el-form :model="PasswordCheck" :rules="passRules" ref="PasswordCheck" style="width: 100%;">
-                    <el-form-item label="支付密码" prop="Password">
-                        <el-input v-model="PasswordCheck.Password" type="password" style="width: 100%;"></el-input>
-                    </el-form-item>
-                </el-form>
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button @click="PasswordVisible = false">取消</el-button>
-                        <el-button type="primary" @click="Password_Check"
-                        :disabled="PasswordCheck.Password.length === 0">确定</el-button>
-                    </span>
-                </template>
-          </el-dialog>
-
-          <el-dialog v-model="PassError" title="支付密码错误" width="30%">
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button type="primary" @click="PasswordError">确定</el-button>
-                    </span>
-                </template>
-          </el-dialog>
-
-          <el-dialog v-model="LossVisible" title="确认挂失" width="30%">
-                <template #footer>
-                    <span class="dialog-footer">
-                        <el-button @click="LossVisible = false">取消</el-button>
-                        <el-button type="primary" @click="ConfirmLoss">确定</el-button>
-                    </span>
-                </template>
-          </el-dialog>
-
-          </el-container>
-        </el-container>
+        <el-table :data="AccountData" height="600" 
+          style="width: 100%; margin-left: 50px; margin-top: 30px; margin-right: 50px; max-width: 80vw; table-layout: fixed;">
+          <el-table-column prop="account_number" label="账户号码" min-width="150"></el-table-column>
+          <el-table-column prop="category" label="账户类别" min-width="150"></el-table-column>
+          <el-table-column label="操作" min-width="200">
+            <template v-slot="scope">
+              <el-button type="text" @click="ConfirmPassword('1', scope.row)" style="border: 1px solid red; color: red; height: 24px; line-height: 22px;">交易明细</el-button>
+              <el-button type="text" @click="Transfer(scope.row)" style="border: 1px solid green; color: green; height: 24px; line-height: 22px;">转账</el-button>
+              <el-button type="text" @click="ConfirmPassword('2', scope.row)" style="border: 1px solid blue; color: blue; height: 24px; line-height: 22px;">挂失</el-button>
+            </template>
+            </el-table-column>
+          <el-table-column prop="balance" label="余额" min-width="150"></el-table-column>
+        </el-table>
       </div>
-    </div>
+    </el-main>
+
+    <el-dialog v-model="AddAccountVisible" title="绑定新账户" width="30%" >
+        <el-form :model="AddAccount" :rules="rules" ref="AddAccount" style="width: 100%;">
+            <el-form-item label="账户类型" prop="accountType">
+                <el-radio-group v-model="AddAccount.accountType" @change="handleAccountTypeChange">
+                    <el-radio :label="1">信用卡</el-radio>
+                    <el-radio :label="2">存折</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="账户号" prop="accountNumber">
+                <el-input v-model="AddAccount.accountNumber" style="margin-left: 12pt; width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="支付密码" prop="paymentPassword">
+                <el-input v-model="AddAccount.paymentPassword" type="password" style="width: 100%;"></el-input>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="AddAccountVisible = false">取消</el-button>
+                <el-button type="primary" @click="ConfirmAddAccount"
+                    :disabled="AddAccount.accountType.length === 0 || AddAccount.accountNumber.length === 0 || AddAccount.paymentPassword.length === 0">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-model="TransVisible" title="转账" width="30%" >
+        <el-form :model="Trans" :rules="transferRules" ref="Trans" style="width: 100%;">
+            <el-form-item label="转入账户号" prop="toaccount">
+                <el-input v-model="Trans.toaccount" style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="金额" prop="amount">
+                <el-input v-model="Trans.amount" style="margin-left: 31pt; width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="支付密码" prop="password">
+                <el-input v-model="Trans.password" type="password" style="margin-left: 10pt; width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="留言" prop="message">
+                <el-input v-model="Trans.message" style="margin-left: 39pt; width: 100%;"></el-input>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="TransVisible = false">取消</el-button>
+                <el-button type="primary" @click="ConfirmTransfer"
+                :disabled="Trans.toaccount.length === 0 || Trans.amount <= 0 || Trans.password.length === 0">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-model="PasswordVisible" title="密码确认" width="30%">
+        <el-form :model="PasswordCheck" :rules="passRules" ref="PasswordCheck" style="width: 100%;">
+            <el-form-item label="支付密码" prop="Password">
+                <el-input v-model="PasswordCheck.Password" type="password" style="width: 100%;"></el-input>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="PasswordVisible = false">取消</el-button>
+                <el-button type="primary" @click="Password_Check"
+                :disabled="PasswordCheck.Password.length === 0">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-model="PassError" title="支付密码错误" width="30%">
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="PasswordError">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-model="LossVisible" title="确认挂失" width="30%">
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="LossVisible = false">取消</el-button>
+                <el-button type="primary" @click="ConfirmLoss">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
+
+  </el-container>
   
 </template>
 
@@ -240,13 +208,11 @@ export default {
         },
         async QueryAccount(){
             this.AccountData = [] 
-            let response = await axios.get("/card") 
-                .then(response => {
-                    let AccountData = response.data
-                    AccountData.forEach(Account => { 
-                        this.AccountData.push(Account) 
-                    })
-                })
+            let response = await axios.get("/card");
+            let AccountData = response.data
+            AccountData.forEach(Account => { 
+                this.AccountData.push(Account) 
+            })
         },
         ConfirmPassword(op, row){
             this.PasswordCheck.Password = '',
@@ -275,7 +241,7 @@ export default {
         },
         TransactionDetail() {
             this.$router.push({
-                path: '/personalBank/transDetail',
+                path: '/personalBank/user/transaction',
                 query: { account_number: this.PasswordCheck.account_number }
             });
         },

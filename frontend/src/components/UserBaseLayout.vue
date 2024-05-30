@@ -19,6 +19,24 @@
               </el-icon>
               <span>用户信息</span>
             </el-menu-item>
+            <el-menu-item index="account">
+              <el-icon>
+                <Operation />
+              </el-icon>
+              <span>账户管理</span>
+            </el-menu-item>
+            <el-menu-item index="foreign_exchange">
+              <el-icon>
+                <Coin />
+              </el-icon>
+              <span>外汇交易</span>
+            </el-menu-item>
+            <el-menu-item index="load">
+              <el-icon>
+                <Money />
+              </el-icon>
+              <span>贷款模块</span>
+            </el-menu-item>
             <el-button class="logout-button" type="danger" @click="logoutVisible = true">
               退出登录
             </el-button>
