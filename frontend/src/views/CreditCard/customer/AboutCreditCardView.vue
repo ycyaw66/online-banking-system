@@ -339,7 +339,7 @@ export default {
   methods: {
     exit() {
       this.$store.state.user.ID_number = '';
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
     addNewCard() {
       // 检查信用卡额度是否为空

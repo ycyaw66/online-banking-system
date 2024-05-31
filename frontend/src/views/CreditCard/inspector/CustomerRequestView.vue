@@ -55,10 +55,10 @@
             <div style="display: flex; justify-content: center;">
               <el-table :data="request" stripe style="width: 1100px;">
                 <el-table-column prop="id" label="请求编号" width="200px"/>
-                <el-table-column prop="creditCardId" label="信用卡id" width="200px">
+                <el-table-column prop="credit_card_id" label="信用卡id" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.creditCardId === null || row.creditCardId === ''">暂未创建</span>
-                    <span v-else>{{ row.creditCardId }}</span>
+                    <span v-if="row.credit_card_id === null || row.credit_card_id === ''">暂未创建</span>
+                    <span v-else>{{ row.credit_card_id }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
@@ -96,29 +96,41 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
+
 export default {
   data() {
     return {
       request: [{
         id: '1',
-        idNumber: '123456',
-        creditCardId: '',
+        id_number: '123456',
+        credit_card_id: '',
         amount: '10000',
         type: '1',
         status: '1',
         password: ''
       }, {
         id: '2',
-        idNumber: '234567',
-        creditCardId: '1',
+        id_number: '234567',
+        credit_card_id: '1',
         amount: '20000',
         type: '2',
         status: '2',
         password: ''
       }, {
         id: '3',
-        idNumber: '345678',
-        creditCardId: '1',
+        id_number: '345678',
+        credit_card_id: '1',
         amount: '30000',
         type: '2',
         status: '3',
@@ -131,7 +143,7 @@ export default {
       this.$router.push('/creditCard/inspector/login');
     },
     accept(id) {
-      axios.get("/creditCard/inspector/request/accept", {params: {id: id}})
+      axiosInstance().get("/credit-card/inspector/request/accept", {params: {id: id}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error('允许请求失败');
@@ -139,12 +151,15 @@ export default {
               this.$message.success('允许请求成功');
             }
             this.queryRequest();
-          });
+          }).catch(error => {
+        console.error('inspector accept error:', error);
+        this.$message.error('允许请求失败');
+      });
       //this.$message.success('通过id为' + id + '的请求');
     },
     reject(id) {
       //this.$message.error('拒绝了id为' + id + '的请求');
-      axios.get("/creditCard/inspector/request/reject", {params: {id: id}})
+      axios.get("/credit-card/inspector/request/reject", {params: {id: id}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error('驳回请求失败');
@@ -152,10 +167,14 @@ export default {
               this.$message.success('驳回请求成功');
             }
             this.queryRequest();
-          });
+          }).catch(error => {
+        console.error('inspector reject error:', error);
+        this.$message.error('驳回请求失败');
+      });
+
     },
     queryRequest() {
-      axios.get("/creditCard/inspector/request", {params: {permission: Cookies.get('credit_card_inspector_permission')}})
+      axiosInstance.get("/credit-card/inspector/request", {params: {permission: Cookies.get('credit_card_inspector_permission')}})
           .then(response => {
             this.request = [];
             let requests = response.data.payload;
@@ -163,7 +182,9 @@ export default {
             requests.forEach(request => {
               this.request.push(request);
             })
-          });
+          }).catch(error => {
+        console.error('query request error:', error);
+      })
     }
   },
   mounted() {

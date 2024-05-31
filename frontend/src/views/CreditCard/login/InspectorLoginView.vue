@@ -86,7 +86,7 @@ export default {
 
       const encrypted_password = CryptoJS.SHA256(this.inspector.password).toString();
 
-      axios.post("/creditCard/inspector/login/log", null, {
+      axios.post("/credit-card/inspector/login", null, {
         params: {
           name: this.inspector.name,
           password: encrypted_password

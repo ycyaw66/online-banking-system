@@ -115,7 +115,7 @@ export default {
   methods: {
     Cookies,
     exit() {
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
   },
   mounted() {
