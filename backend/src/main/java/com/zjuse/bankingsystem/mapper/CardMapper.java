@@ -1,8 +1,9 @@
+
 package com.zjuse.bankingsystem.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zjuse.bankingsystem.entity.test;
+import com.zjuse.bankingsystem.entity.Card;
 
-public interface testMapper extends BaseMapper<test> {
+public interface CardMapper extends BaseMapper<Card> {
     
 }
