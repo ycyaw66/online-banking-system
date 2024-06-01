@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.google.protobuf.Api;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.UserPrivilegeMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;

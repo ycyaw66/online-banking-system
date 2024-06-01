@@ -34,6 +34,8 @@ public class creditcardTest {
 
     @Autowired
     UserAndCardService userAndCardService;
+    @Autowired
+    InspectorService inspectorService; 
     
     final Integer N = 10;
 
@@ -75,11 +77,11 @@ public class creditcardTest {
         for(User item : user) {
             creditCardService.addNewCreditCardRequest(item.getIdNumber(), new BigDecimal(1000), "123456");
         }
-        ApiResult apiResult = creditCardService.queryRequestsByInspector(2);
+        ApiResult apiResult = inspectorService.queryRequestsByInspector(2);
         assertTrue(apiResult.ok);
         List<CreditCardApplication> creditCardApplication = (List<CreditCardApplication>) apiResult.payload;
         for(CreditCardApplication item : creditCardApplication) {
-            assertTrue(creditCardService.acceptRequest(item.getId()).ok);
+            assertTrue(inspectorService.acceptRequest(item.getId()).ok);
         }
         Long pre = null;
         for(User item : user) {

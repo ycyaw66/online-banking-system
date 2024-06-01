@@ -1,7 +1,6 @@
 package com.zjuse.bankingsystem.controller;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,8 +88,8 @@ public class CreditCardController {
     }
 
     @GetMapping("/lost")
-    public RespResult makeCreditCardLost(@RequestParam Long card_id) {
-        ApiResult apiResult = creditCardService.makeCreditCardLost(card_id); 
+    public RespResult makeCreditCardLost(@RequestParam Long card_id, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.makeCreditCardLost(card_id, password); 
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }

@@ -3,23 +3,26 @@ package com.zjuse.bankingsystem.security.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.zjuse.bankingsystem.security.config.UserCacheConfig;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.utils.RedisUtils;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 
 @Component
 public class UserCacheManager {
     @Autowired
     private RedisUtils redisUtils; 
-    private long cacheTime = 7200000;
+    @Autowired
+    private UserCacheConfig userCacheConfig;
 
     /*
      * 获取用户缓存的数据
      */
     public JwtUserDto getUserCache(String username) {
         if (username != "") {
-            Object obj = redisUtils.get(username);
+            Object obj = redisUtils.get(cacheKey(username));
             if (obj != null)
                 return (JwtUserDto) obj; 
         }
@@ -31,8 +34,18 @@ public class UserCacheManager {
      */
     public void addUserCache(String username, JwtUserDto jwtUserDto) {
         if (username != null) {
-            long time = cacheTime + RandomUtil.randomInt(999, 1999);
-            redisUtils.set(username, jwtUserDto, time);
+            long time = userCacheConfig.getValidityTimeInSeconds() + RandomUtil.randomInt(999, 1999);
+            redisUtils.set(cacheKey(username), jwtUserDto, time);
         }
     } 
+
+    public void cleanUserCache(String username) {
+        if (!StrUtil.isBlank(username)) {
+            redisUtils.del(cacheKey(username));
+        }
+    }
+
+    public String cacheKey(String username) {
+        return userCacheConfig.getUserCacheKey() + username;
+    }
 }

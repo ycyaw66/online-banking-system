@@ -57,12 +57,11 @@ public class UserServiceTest {
         Random random = new Random();
         user.setUsername("test" + Integer.toString(random.nextInt(100000)));
         user.setIdNumber(Integer.toString(random.nextInt(10000000)));
-        user.setEmail("sadfsdfa");
+        user.setEmail("sadfsdfa" + Integer.toString(random.nextInt(100000)));
         user.setPassword("34321413242134");
         return user;
     }
     
-    @Test
     List<User> InsertTest(Integer N) {
         // System.out.println("InsertTest");
         List<User> users = new Vector<User>();

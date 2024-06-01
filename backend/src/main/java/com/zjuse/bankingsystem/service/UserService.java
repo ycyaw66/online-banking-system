@@ -26,7 +26,7 @@ public class UserService {
 
     public ApiResult getUserId(String id_number) {
         try {
-            QueryWrapper wrapper = new QueryWrapper();
+            QueryWrapper<User> wrapper = new QueryWrapper<User>();
             wrapper.eq("id_number", id_number);
             User user = (User) userMapper.selectOne(wrapper);
             ApiResult result = new ApiResult(true, "success");
@@ -51,7 +51,7 @@ public class UserService {
 
     public ApiResult updatePasswordByEmail(String email, String newPassword) {
         try {
-            UpdateWrapper wrapper = new UpdateWrapper<>();
+            UpdateWrapper<User> wrapper = new UpdateWrapper<>();
             wrapper.eq("email", email);
             wrapper.set("password", newPassword);
             userMapper.update(wrapper);
