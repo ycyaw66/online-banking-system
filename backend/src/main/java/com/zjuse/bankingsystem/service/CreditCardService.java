@@ -64,6 +64,7 @@ public class CreditCardService {
             return new ApiResult(false, "Wrong password");
         }
         creditCardMapper.setCreditCardLost(cardId);
+        creditCardMapper.insertCreditCard(creditCard);
         return new ApiResult(true, "挂失成功");
     }
 
