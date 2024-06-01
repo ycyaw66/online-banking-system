@@ -73,8 +73,9 @@ CREATE TABLE `history`
 CREATE TABLE `admin`
 (
     `id` int not null auto_increment,
-    `name` varchar(50) not null,
+    `username` varchar(50) not null,
     `password` varchar(64) not null,
+    `role` varchar(64) not null, 
     primary key (`id`)
 );
 
@@ -114,7 +115,7 @@ create table `credit_card_bill` (
 create table `credit_card_admin` (
   `id` int not null auto_increment,
   `name` varchar(50) not null,
-  `password` varchar(50) not null,
+  `password` varchar(64) not null,
   primary key (`id`)
 ) engine=innodb charset=utf8mb4;
 

@@ -74,7 +74,7 @@ public class InspectorService {
         }
     }
 
-    public ApiResult rejectRequest(Integer id) {
+    public ApiResult rejectRequest(Long id) {
         inspectorMapper.rejectRequest(id);
         return new ApiResult(true, null);
     }

@@ -32,5 +32,5 @@ public interface InspectorMapper extends BaseMapper<CreditCardInspector> {
     public void acceptRequest(Long id);
 
     @Update("update credit_card_application set status = 3 where id = #{id}")
-    public void rejectRequest(Integer id);
+    public void rejectRequest(Long id);
 }

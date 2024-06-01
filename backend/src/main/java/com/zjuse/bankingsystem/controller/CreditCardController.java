@@ -56,8 +56,13 @@ public class CreditCardController {
     }
 
     @PostMapping("/modify-password")
-    public RespResult modifyCreditCardPassword(@RequestParam Long card_id, @RequestParam String password) {
-        ApiResult apiResult = creditCardService.modifyCreditCardPassword(card_id, password);
+    public RespResult modifyCreditCardPassword(@RequestParam Long card_id, @RequestParam String old_password, @RequestParam String new_password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, old_password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        apiResult = creditCardService.modifyCreditCardPassword(card_id, new_password);
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
@@ -65,8 +70,13 @@ public class CreditCardController {
     }
 
     @PostMapping("/update-limit")
-    public RespResult addModifyLimitRequest(@RequestParam Long card_id, @RequestParam BigDecimal limit) {
-        ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
+    public RespResult addModifyLimitRequest(@RequestParam Long card_id, @RequestParam BigDecimal limit, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        apiResult = currentUserService.getCurrentUserIdNumber();
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
@@ -79,8 +89,13 @@ public class CreditCardController {
     }
 
     @PostMapping("/return")
-    public RespResult returnMoney(@RequestParam Long card_id, @RequestParam BigDecimal amount) {
-        ApiResult apiResult = creditCardService.returnMoney(card_id, amount);
+    public RespResult returnMoney(@RequestParam Long card_id, @RequestParam BigDecimal amount, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        apiResult = creditCardService.returnMoney(card_id, amount);
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
@@ -89,7 +104,11 @@ public class CreditCardController {
 
     @GetMapping("/lost")
     public RespResult makeCreditCardLost(@RequestParam Long card_id, @RequestParam String password) {
-        ApiResult apiResult = creditCardService.makeCreditCardLost(card_id, password); 
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        apiResult = creditCardService.makeCreditCardLost(card_id, password); 
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
@@ -97,8 +116,12 @@ public class CreditCardController {
     }
 
     @GetMapping("/delete")
-    public RespResult deleteCreditCard(@RequestParam Long card_id) {
-        ApiResult apiResult = creditCardService.deleteCreditCard(card_id); 
+    public RespResult deleteCreditCard(@RequestParam Long card_id, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        apiResult = creditCardService.deleteCreditCard(card_id); 
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }

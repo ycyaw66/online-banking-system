@@ -18,6 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -81,5 +83,28 @@ public class UserLoginControllerTest {
             .andDo(print());
         result = tryProfile(token);
         assert result == false; 
+    }
+
+    @Test
+    void updateUserProfileTest() throws Exception {
+        String token = tryLogin(); 
+        
+        Map<String, String> map = new HashMap<>();
+        map.put("username", "zxy"); 
+        map.put("password", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92");
+        map.put("new_password", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c96");
+
+        JSONObject json = new JSONObject(map);
+        String jsonString = json.toString();
+
+        RequestBuilder request = post("/user/profile/update")
+            .header("Authorization", token)
+            .content(jsonString)
+            .contentType(MediaType.APPLICATION_JSON);
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value(0))
+            .andDo(print());
+
     }
 }

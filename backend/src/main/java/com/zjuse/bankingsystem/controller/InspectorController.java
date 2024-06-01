@@ -41,7 +41,7 @@ public class InspectorController {
     }
 
     @GetMapping("/request/reject")
-    public RespResult rejectRequest(@RequestParam Integer id) {
+    public RespResult rejectRequest(@RequestParam Long id) {
         ApiResult apiResult = inspectorService.rejectRequest(id);
         return RespResult.success(apiResult.payload);
     }

@@ -1,13 +1,17 @@
 package com.zjuse.bankingsystem.security.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
+import com.zjuse.bankingsystem.service.AdminService;
 import com.zjuse.bankingsystem.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserCacheManager userCacheManager; 
     @Autowired
     private UserService userService; 
+    @Autowired 
+    private AdminService adminService; 
 
     @Override
     public JwtUserDto loadUserByUsername(String username) {
@@ -37,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 jwtUserDto = new JwtUserDto(
                     user, 
                     // TODO add role
-                    null
+                    null 
                 );
                 userCacheManager.addUserCache(username, jwtUserDto);
             }

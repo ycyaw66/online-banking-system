@@ -23,6 +23,14 @@ public class CreditCardService {
     @Autowired
     private CardService cardService;
 
+    public ApiResult checkCreditCardPassword(Long cardId, String password) {
+        CreditCard card = creditCardMapper.selectById(cardId);
+        if (!password.equals(card.getPassword())) {
+            return new ApiResult(false, "密码错误");
+        }
+        return new ApiResult(true, null);
+    }
+
     public ApiResult getCardsByIdNumber(String idNumber) {
         return new ApiResult(true, null, creditCardMapper.queryCards(idNumber));
     }

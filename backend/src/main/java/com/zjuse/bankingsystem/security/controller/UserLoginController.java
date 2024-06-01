@@ -19,6 +19,7 @@ import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.controller.dto.ForgetReq;
 import com.zjuse.bankingsystem.security.controller.dto.SendMailReq;
+import com.zjuse.bankingsystem.security.controller.dto.UpdateProfileDto;
 import com.zjuse.bankingsystem.security.controller.dto.UserLoginReq;
 import com.zjuse.bankingsystem.security.controller.dto.UserRegisterReq;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
@@ -119,7 +120,6 @@ public class UserLoginController {
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
-    
 
         apiResult = userService.updatePasswordByEmail(req.getEmail(), req.getPassword());
         if (!apiResult.ok) {
@@ -129,6 +129,24 @@ public class UserLoginController {
         return RespResult.success();
     }
     
+    @PostMapping("/profile/update")
+    public RespResult updateProfile(@RequestBody UpdateProfileDto req) {
+        ApiResult apiResult = currentUserService.getCurrentUser(); 
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message); 
+        }
+        User user = (User) apiResult.payload; 
+        if (!user.getPassword().equals(req.getPassword())) {
+            return RespResult.fail("密码错误");
+        }
+
+        apiResult = userService.updateUserByUsername(req.getUsername(), req.getPhoneNumber(), req.getNewPassword());
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        return RespResult.success(); 
+    }
 
     @GetMapping("/profile")
     public RespResult getProfile() {
