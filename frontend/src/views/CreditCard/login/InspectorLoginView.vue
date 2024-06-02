@@ -61,6 +61,7 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
 export default {
   data() {
@@ -83,21 +84,26 @@ export default {
         return;
       }
 
-      axios.post("/creditCard/inspector/login/log",null,{
-        params:{
-          name:this.inspector.name,
-          password:this.inspector.password
+      const encrypted_password = CryptoJS.SHA256(this.inspector.password).toString();
+
+      axios.post("/credit-card/inspector/login", null, {
+        params: {
+          name: this.inspector.name,
+          password: encrypted_password
         }
-      }).then(response =>{
-        if(response.data.code === 1){
-          this.$message.error('用户名或密码错误');
+      }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error(response.data.err);
           return;
-        }else{
-          Cookies.set('credit_card_inspector_permission',response.data.payload.permission);
-          this.$store.state.creditCardInspector.permission = response.data.payload.permission;
-          console.log(this.$store.state.creditCardInspector.permission);
+        } else {
+          Cookies.set('token', response.data.payload.token);
+          Cookies.set('credit_card_inspector_permission', response.data.payload.permission);
+          // this.$store.state.creditCardInspector.permission = response.data.payload.permission;
+          // console.log(this.$store.state.creditCardInspector.permission);
           this.$router.push('/creditCard/inspector/request');
         }
+      }).catch(error => {
+        console.error('login error:', error);
       })
     },
   },

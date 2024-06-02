@@ -115,10 +115,6 @@ const routes = [
         path:'/creditCard/inspector/request',
         name:'responseToRequests',
         component:()=>import('../views/CreditCard/inspector/CustomerRequestView.vue')
-    },
-    {
-        path: '/',
-        redirect: '/creditCard/customer/login'
     }
 ];
 

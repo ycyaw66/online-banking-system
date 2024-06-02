@@ -75,10 +75,10 @@
             <div class="demo-date-picker">
               <div class="block">
                 <el-date-picker v-model="start_date" type="date" placeholder="请选择您的开始日期"
-                                :default-value="new Date(2010, 9, 1)"/>
+                                :default-value="new Date(2024, 5, 1)"/>
                 -----
                 <el-date-picker v-model="end_date" type="date" placeholder="请选择您的结束日期"
-                                :default-value="new Date(2010, 9, 1)"/>
+                                :default-value="new Date(2024, 5, 1)"/>
               </div>
             </div>
             <div class="mb-4" style="text-align: center;">
@@ -93,12 +93,12 @@
                 <el-table-column prop="creditCardId" label="信用卡id" width="200px"/>
                 <el-table-column label="交易金额：单位(元)" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span>{{ row.amount / 100 }}</span>
+                    <span>{{ row.amount }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="billDate" label="交易日期" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span>{{ formatDate(row.billDate) }}</span>
+                    <span>{{ formatDate(row.bill_date) }}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -118,6 +118,17 @@ import axios from "axios";
 import {format} from "date-fns";
 import Cookies from "js-cookie";
 
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
 export default {
   data() {
     return {
@@ -132,7 +143,7 @@ export default {
       return format(new Date(date), 'yyyy年MM月dd日')
     },
     exit() {
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
     query() {
       // 检查开始日期或结束日期是否为空
@@ -147,11 +158,10 @@ export default {
       }
 
       //alert(this.start_date + ' ' + this.end_date);
-      axios.post("/creditCard/customer/simulation/query",null,{
+      axiosInstance.post("/credit-card/bills/query",null,{
         params:{
           start_date: this.start_date,
           end_date: this.end_date,
-          id_number: Cookies.get('credit_card_user_id_card'),
         }
       }).then(response =>{
         this.bills = [];
@@ -159,7 +169,10 @@ export default {
         bills.forEach(bill => {
           this.bills.push(bill);
         })
+      }).catch(error => {
+        console.error('query bills error:',error);
       })
+
     },
   },
   mounted() {

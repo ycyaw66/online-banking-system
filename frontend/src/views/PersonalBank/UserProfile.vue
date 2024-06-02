@@ -1,6 +1,6 @@
 <template>
   <el-container style="width: 100%;">
-    <el-main style="display: flex-direction: column; margin-left: 30px; margin-top: 20px">
+    <el-main style="display: flex; flex-direction:column; flex: 1; margin-left: 30px; margin-top: 20px">
       <el-divider orientation="left" style="align-self: flex-start; width: 300px">用户信息</el-divider>
       <el-form label-width="80px">
         <el-form-item label="用户名" prop="username">

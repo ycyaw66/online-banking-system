@@ -78,10 +78,10 @@
             <div style="display: flex; justify-content: center;">
               <el-table :data="request_responses" stripe style="width: 1100px;">
                 <el-table-column prop="id" label="请求编号" width="200px"/>
-                <el-table-column prop="creditCardId" label="信用卡id" width="200px">
+                <el-table-column prop="credit_card_id" label="信用卡id" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.creditCardId === null || row.creditCardId === ''">暂未创建</span>
-                    <span v-else>{{ row.creditCardId }}</span>
+                    <span v-if="row.credit_card_id === null || row.credit_card_id === ''">暂未创建</span>
+                    <span v-else>{{ row.credit_card_id }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
@@ -125,30 +125,40 @@
 import axios from 'axios';
 import Cookies from "js-cookie";
 
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
     return {
       request_responses: [{
         id: '1',
-        idNumber: '',
-        creditCardId: '',
+        id_number: '',
+        credit_card_id: '',
         amount: '20000',
         type: '1',
         status: '1',
         password: ''
       }, {
         id: '2',
-        idNumber: '',
-        creditCardId: '1',
+        id_number: '',
+        credit_card_id: '1',
         amount: '10000',
         type: '2',
         status: '2',
         password: ''
       }, {
         id: '3',
-        idNumber: '',
-        creditCardId: '1',
+        id_number: '',
+        credit_card_id: '1',
         amount: '30000',
         type: '2',
         status: '3',
@@ -158,17 +168,20 @@ export default {
   },
   methods: {
     exit() {
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
     queryResponses() {
-      axios.get("/creditCard/customer/queryRequests", {params: {idNumber: Cookies.get('credit_card_user_id_card')}})
+      axiosInstance().get("/credit-card/query-request")
           .then(response => {
             this.request_responses = []
             let responses = response.data.payload
             responses.forEach(element => {
               this.request_responses.push(element)
             })
-          })
+          }).catch(error => {
+        console.error('query response error:', error);
+      })
+
     }
   },
   mounted() {

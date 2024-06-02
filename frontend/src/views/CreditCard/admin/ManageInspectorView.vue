@@ -172,6 +172,19 @@
 <script>
 
 import axios from "axios";
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -232,10 +245,13 @@ export default {
       }
       //this.$message.success('修改id为' + this.modify_password.id + '的审查员密码成功，新密码为' + this.modify_password.new_password);
       this.modify_password_visible = false;
-      axios.post("/creditCard/admin/inspector/modify", null, {
+
+      const encrypted_password = CryptoJS.SHA256(this.modify_password.new_password).toString();
+
+      axiosInstance.post("/admin/inspector/modify", null, {
         params: {
           id: this.modify_password.id,
-          password: this.modify_password.new_password
+          password: encrypted_password
         }
       }).then(response => {
         if (response.data.code === 1) {
@@ -243,12 +259,15 @@ export default {
         } else {
           this.$message.success('修改密码成功');
         }
+      }).catch(error => {
+        console.error('admin modify password error:', error);
+        this.$message.error('修改密码失败');
       })
     },
     modifyLevel() {
       //this.$message.success('修改id为' + this.modify_level.id + '的审查员权限等级至' + this.modify_level.new_level);
       this.modify_level_visible = false;
-      axios.post("/creditCard/admin/inspector/update", null, {
+      axiosInstance.post("/admin/inspector/update", null, {
         params: {
           id: this.modify_level.id,
           permission: this.modify_level.new_level
@@ -259,7 +278,10 @@ export default {
         } else {
           this.$message.success('修改权限等级成功')
         }
-      });
+      }).catch(error => {
+        console.error('admin update inspector level error:', error);
+        this.$message.error('修改权限等级失败');
+      })
       this.queryInspector();
     },
     addInspector() {
@@ -285,10 +307,12 @@ export default {
       //this.$message.success('创建成功，账号名为' + this.new_inspector.name + '；密码为：' + this.new_inspector.password + '；权限等级为:' + this.new_inspector.level)
       this.add_inspector_visible = false;
 
-      axios.post("/creditCard/admin/inspector/add", null, {
+      const encrypted_password = CryptoJS.SHA256(this.new_inspector.password).toString();
+
+      axiosInstance.post("/admin/inspector/add", null, {
         params: {
           name: this.new_inspector.name,
-          password: this.new_inspector.password,
+          password: encrypted_password,
           permission: this.new_inspector.level
         }
       }).then(response => {
@@ -298,12 +322,16 @@ export default {
           this.$message.success('添加成功');
         }
         this.queryInspector();
-      });
+      }).catch(error => {
+        console.error('admin add inspector error:', error);
+        this.$message.error('添加失败');
+      })
 
     },
     deleteInspector() {
       this.$message.error('删除编号为' + this.delete_inspector_id + '的审查员');
-      axios.get("/creditCard/admin/inspector/delete", {params: {id: this.delete_inspector_id}})
+      this.delete_inspector_visible = false;
+      axiosInstance.get("/creditCard/admin/inspector/delete", {params: {id: this.delete_inspector_id}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error('删除审查员失败')
@@ -311,17 +339,23 @@ export default {
               this.$message.success('删除审查员成功')
             }
             this.queryInspector();
-          });
-      this.delete_inspector_visible = false;
+          }).catch(error => {
+        console.error('admin delete inspector error:', error);
+        this.$message.error('删除审查员失败');
+      })
+
     },
     queryInspector() {
-      axios.get("/creditCard/admin/inspector").then(response => {
+      axiosInstance.get("/admin/inspector").then(response => {
         this.inspectors = [];
         let inspectors = response.data.payload;
         inspectors.forEach(inspector => {
           this.inspectors.push(inspector);
         })
-      });
+      }).catch(error => {
+        console.error('admin query inspectors error:', error);
+      })
+
     }
   },
   mounted() {

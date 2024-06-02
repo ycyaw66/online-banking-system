@@ -60,6 +60,8 @@
 <script>
 
 import axios from "axios";
+import CryptoJS from "crypto-js";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -82,18 +84,23 @@ export default {
         return;
       }
 
-      axios.post("/creditCard/admin/login/log",null,{
-        params:{
-          name:this.admin.name,
-          password:this.admin.password
+      const encrypted_password = CryptoJS.SHA256(this.admin.password).toString();
+      axios.post("admin/login", null, {
+        params: {
+          name: this.admin.name,
+          password: encrypted_password
         }
-      }).then(response =>{
-        if(response.data.code === 1){
-          this.$message.error('用户名或密码错误');
+      }).then(response => {
+        if (response.data.code === 1) {
+          this.$message.error(response.data.err);
           return;
-        }else{
+        } else {
+          // 登录成功
+          Cookies.set('token', response.data.payload.token);
           this.$router.push('/creditCard/admin/inspector');
         }
+      }).catch(error => {
+        console.error('login error:', error);
       })
     },
   },

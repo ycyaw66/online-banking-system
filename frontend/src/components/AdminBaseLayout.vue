@@ -11,7 +11,7 @@
         </div>
       </el-header>
       <el-container style="width: 100%;">
-        <el-aside class="aside" style="position: reletive;">
+        <el-aside class="aside" style="position: relative;">
           <el-menu active-text-color="#ffd04b" background-color="#0270c1" default-active="1" text-color="#fff" style="height:100%; width: 100%;" :router="true">
             <el-menu-item index="privilege">
               <el-icon>
