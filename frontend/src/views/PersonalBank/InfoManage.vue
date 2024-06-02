@@ -390,6 +390,9 @@ export default {
           console.log(error);
         })
     },
+  },
+  mounted() {
+    this.QueryAccount();
   }
 }
 </script>
