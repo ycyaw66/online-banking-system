@@ -80,7 +80,7 @@ export default {
       isCounting: false,
       // 倒计时定时器
       countDownTimeout: null,
-
+      uuid: 0,
       registerForm: {
         username: '',
         password: '',
@@ -149,15 +149,20 @@ export default {
           "id_number": this.registerForm.idCard,
           "phone_number": this.registerForm.phone,
           "email": this.registerForm.email,
-          "verificationCode": this.registerForm.verificationCode
+          "uuid": this.uuid,
+          "verification_code": this.registerForm.verificationCode
         })
         .then(response => {
-          ElMessage.success(response.data);
-          // handle successful login, redirect
-          this.jumpLogin();
+          if (response.data.code === 0) {
+            ElMessage.success("注册成功");
+            this.jumpLogin();
+          } else {
+            ElMessage.error(response.data.err);
+            return;
+          }
         })
         .catch(error => {
-          ElMessage.error(error.response.data);
+          console.log(error);
         })
       },
       getVerificationCode() {
@@ -171,13 +176,17 @@ export default {
         this.doCountdown();
         axios.post("/user/register/sendMail",
         {
-          "email": this.registerForm.email
+          "email": this.forgetForm.email
         })
         .then(response => {
-          ElMessage.success(response.data);
+          if (response.data.code === 0) {
+            this.uuid = response.data.payload.uuid;
+          } else {
+            ElMessage.error(response.data.err);
+          }
         })
         .catch(error => {
-          ElMessage.error(error.response.data);
+          console.log(error);
         })
       },
       doCountdown() {

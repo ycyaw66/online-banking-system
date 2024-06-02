@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default {
   data() {
@@ -76,7 +78,15 @@ export default {
   },
   methods: {
     handleLogout() {
-      // TODO: post一个logout
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
+      Cookies.remove('token');
+      axios.delete('/user/logout')
+        .then(() => {
+          this.$router.push('/personalBank/user/login');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       this.$router.push('/personalBank/user/login');
     },
   },

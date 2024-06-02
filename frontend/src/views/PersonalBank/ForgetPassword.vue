@@ -61,12 +61,12 @@ export default {
     };
     return {
       // 邮件发送验证码倒计时
-      countDown: 60,
+      countDown: 30,
       // 是否正在倒计时
       isCounting: false,
       // 倒计时定时器
       countDownTimeout: null,
-
+      uuid: 0,
       forgetForm: {
         email: '',
         verificationCode: '',
@@ -103,16 +103,19 @@ export default {
       axios.post("/user/forget",
         {
           "email": this.forgetForm.email,
+          "uuid": this.uuid,
           "password": encrypted,
-          "verificationCode": this.forgetForm.verificationCode
+          "verification_code": this.forgetForm.verificationCode
         })
         .then(response => {
-          ElMessage.success(response.data);
-          // handle successful login, redirect
-          this.jumpLogin();
+          if (response.data.code === 0) {
+            this.jumpLogin();
+          } else {
+            ElMessage.error(response.data.err);
+          }
         })
         .catch(error => {
-          ElMessage.error(error.response.data);
+          console.log(error);
         })
     },
     getVerificationCode() {
@@ -129,10 +132,14 @@ export default {
           "email": this.forgetForm.email
         })
         .then(response => {
-          ElMessage.success(response.data);
+          if (response.data.code === 0) {
+            this.uuid = response.data.payload.uuid;
+          } else {
+            ElMessage.error(response.data.err);
+          }
         })
         .catch(error => {
-          ElMessage.error(error.response.data);
+          console.error('login error:', error);
         })
     },
     doCountdown() {
