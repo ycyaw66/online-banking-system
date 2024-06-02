@@ -38,8 +38,8 @@ public interface CreditCardMapper extends BaseMapper<CreditCard>{
     @Select("select * from credit_card where id = #{card_id} and password = #{password} and is_lost = 0")
     public CreditCard findMatchCard(Long card_id, String password);
 
-    @Update("insert into credit_card_bill (credit_card_id, amount, bill_date) VALUES ( #{credit_card_id}, #{amount}, #{bill_date})")
-    public void addPayment(Long credit_card_id, BigDecimal amount, Date bill_date);
+    @Update("insert into credit_card_bill (credit_card_id, id_number, amount, bill_date) VALUES ( #{credit_card_id}, #{idNumber}, #{amount}, #{bill_date})")
+    public void addPayment(Long credit_card_id, String idNumber, BigDecimal amount, Date bill_date);
 
     @Update("update credit_card set loan = loan + #{account} where id = #{card_id}")
     public void updateLoan(Long card_id, BigDecimal account);

@@ -3,6 +3,7 @@ package com.zjuse.bankingsystem.service;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
 import com.zjuse.bankingsystem.mapper.*;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -36,6 +37,8 @@ public class UserAndCardService {
     DebitcardService debitcardService;
     @Autowired
     BlacklistService blacklistService;
+    @Autowired 
+    CurrentUserService currentUserService; 
 
     @Autowired
     CardService cardService;
@@ -56,7 +59,12 @@ public class UserAndCardService {
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 Date date = new Date();
-                apiResult = creditcardService.bankPay(cardId, password, amount, date);
+                apiResult = currentUserService.getCurrentUser();
+                if (!apiResult.ok) {
+                    return apiResult; 
+                }
+                String idNumber = (String)apiResult.payload;
+                apiResult = creditcardService.bankPay(cardId, idNumber, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -217,7 +225,12 @@ public class UserAndCardService {
             // check priviledge? I don't know
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
                 Date date = new Date();
-                apiResult = creditcardService.bankPay(cardId, password, amount, date);
+                apiResult = currentUserService.getCurrentUser();
+                if (!apiResult.ok) {
+                    return apiResult; 
+                }
+                String idNumber = (String)apiResult.payload;
+                apiResult = creditcardService.bankPay(cardId, idNumber, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }

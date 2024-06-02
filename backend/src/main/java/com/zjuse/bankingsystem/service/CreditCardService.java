@@ -87,7 +87,7 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
+    public ApiResult bankPay(Long cardId, String idNumber, String password, BigDecimal account, Date date) {
         try {
             CreditCard matchCard = creditCardMapper.findCreditCard(cardId);
             if (matchCard == null) {
@@ -103,7 +103,7 @@ public class CreditCardService {
             if (result < 0) {
                 return new ApiResult(false, "信用卡可用额度不足");
             }
-            creditCardMapper.addPayment(cardId, account, date);
+            creditCardMapper.addPayment(cardId, idNumber, account, date);
             creditCardMapper.updateLoan(cardId, account);
             return new ApiResult(true, null);
         }
