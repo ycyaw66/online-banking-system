@@ -45,6 +45,7 @@
 <script>
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { ElMessage } from 'element-plus';
 
 export default {
   data() {
@@ -94,7 +95,7 @@ export default {
         let response = await axios.get("/account/trans", 
           {
             params: {
-              "card_id" : Number(this.accountNumber),
+              "card_id": Number(this.accountNumber),
               "target_card_id": tg,
               "transfer_card_id": cd,
               "MinAmount": ia,
@@ -105,15 +106,20 @@ export default {
             }
           })
         let querydata = response.data
-        querydata.forEach(item => {
-          this.Date.push({
-            card_id: item.card_id,
-            target_id: item.target_id,
-            amout: parseFloat(item.amout).toFixed(2),
-            date: item.time,
-            message: item.remark
+        if (querydata.code === 0) {
+          querydata.payload.forEach(item => {
+            this.Date.push({
+              card_id: item.card_id,
+              target_id: item.target_id,
+              amout: parseFloat(item.amout).toFixed(2),
+              date: item.time,
+              message: item.remark
+            });
           });
-        });
+        } else {
+          ElMessage.error(querydata.err);
+          return;
+        }
       } catch (error) {
         console.log(error);
       }
