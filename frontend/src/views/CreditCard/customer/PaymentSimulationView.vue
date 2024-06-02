@@ -98,7 +98,7 @@
                 </el-table-column>
                 <el-table-column prop="billDate" label="交易日期" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span>{{ formatDate(row.bill_date) }}</span>
+                    <span>{{ formatDate(row.billDate) }}</span>
                   </template>
                 </el-table-column>
               </el-table>
