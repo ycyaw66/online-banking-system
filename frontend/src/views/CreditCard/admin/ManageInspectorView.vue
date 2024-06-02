@@ -230,6 +230,7 @@ export default {
   },
   methods: {
     exit() {
+      Cookies.remove('token');
       this.$router.push('/creditCard/admin/login');
     },
     modifyPassword() {

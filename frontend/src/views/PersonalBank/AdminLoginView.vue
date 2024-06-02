@@ -45,6 +45,7 @@
 import CryptoJS from 'crypto-js';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -68,7 +69,7 @@ export default {
       this.$router.push('/personalBank/user/login');
     },
     jumpInfo() {
-      this.$router.push('/personalBank/admin/privilage');
+      this.$router.push('/personalBank/admin/privilege');
     },
     handleLogin() {
       // 加密后传给后端
@@ -81,6 +82,7 @@ export default {
         .then(response => {
           ElMessage.success(response.data);
           // handle successful login, redirect
+          Cookies.set('token', response.data.payload.token);
           this.jumpInfo();
         })
         .catch(error => {

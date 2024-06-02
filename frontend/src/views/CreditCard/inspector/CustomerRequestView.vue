@@ -140,6 +140,7 @@ export default {
   },
   methods: {
     exit() {
+      Cookies.remove('token');
       this.$router.push('/creditCard/inspector/login');
     },
     accept(id) {

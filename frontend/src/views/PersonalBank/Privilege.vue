@@ -45,6 +45,7 @@ import { ElMessage } from 'element-plus';
 import 'element-plus/dist/index.css';
 import { Search } from '@element-plus/icons-vue';
 import axios from "axios";
+import Cookies from "js-cookie";
 //import axios from 'axios';
 
 export default {
