@@ -105,6 +105,7 @@ create table `credit_card_application` (
 
 create table `credit_card_bill` (
     `id` int not null auto_increment,
+    `id_number` varchar(50) not null, 
     `credit_card_id` bigint not null,
     `amount` DECIMAL(15, 2) not null default 0,
     `bill_date` DATE,
