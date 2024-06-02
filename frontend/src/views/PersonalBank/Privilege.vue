@@ -163,18 +163,20 @@ export default {
   methods: {
     fetchPermission() {
       // this.users = []
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.get('/administrator/get')
-          .then(response => {
-            this.users = response.data;
-          })
-          .catch(error => {
-            console.error('Error fetching users permission:', error);
-          });
+        .then(response => {
+          this.users = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching users permission:', error);
+        });
     },
     togglePermission(user, permissionName) {
       const permission = user.permissions.find(perm => perm.name === permissionName);
       if (permission) {
         permission.enabled = !permission.enabled;
+        axios.defaults.headers.common['Authorization'] = Cookies.get('token');
         axios.post('/administrator/privilege/update', {
           user_id: user.user_id,
           permission_name: permission.name,

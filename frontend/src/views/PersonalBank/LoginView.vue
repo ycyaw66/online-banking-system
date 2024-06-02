@@ -46,6 +46,7 @@
  
 <script>
 import CryptoJS from 'crypto-js';
+import Cookies from "js-cookie";
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 
@@ -88,12 +89,17 @@ export default {
           "password": encrypted
         })
         .then(response => {
-          ElMessage.success(response.data);
-          // handle successful login, redirect
-          this.jumpProfile();
+          if (response.data.code === 0) {
+            ElMessage.success("登录成功");
+            Cookies.set('token', response.data.payload.token);
+            this.jumpProfile();
+          } else {
+            ElMessage.error(response.data.err);
+            return;
+          }
         })
         .catch(error => {
-          ElMessage.error(error.response.data);
+          console.log(error);
         })
     },
   }

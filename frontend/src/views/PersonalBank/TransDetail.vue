@@ -43,75 +43,87 @@
 </template>
 
 <script>
-import { ElMessage } from 'element-plus'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { ElMessage } from 'element-plus';
 
 export default {
-    data() {
-        return {
-            token : '',
-            accountNumber: this.$route.query.account_number || '',
-            Data: [
-                {card_id : '1123213', date: '2024.05.12', amount: '100.00', target_id: '111', message: 'aaa'},
-                {card_id : '1123213', date: '2025.05.20', amount: '100.00', target_id: '111', message: 'aaa'}
-            ],
-            Cond:{
-                cardID: '',
-                target_id: '',
-                MinAmount: '',
-                MaxAmount: '',
-                MinDate: '',
-                MaxDate: '',
-                Remark: ''
-            }
-        };
+  data() {
+    return {
+      accountNumber: this.$route.query.account_number || '',
+      Data: [
+        {card_id : '1123213', date: '2024.05.12', amount: '100.00', target_id: '111', message: 'aaa'},
+        {card_id : '1123213', date: '2025.05.20', amount: '100.00', target_id: '111', message: 'aaa'}
+      ],
+      Cond:{
+        cardID: '',
+        target_id: '',
+        MinAmount: '',
+        MaxAmount: '',
+        MinDate: '',
+        MaxDate: '',
+        Remark: ''
+      }
+    };
+  },
+  methods:{
+    QueryData(){
+      this.Cond = {
+        cardID: '',
+        target_id: '',
+        MinAmount: '',
+        MaxAmount: '',
+        MinDate: '',
+        MaxDate: '',
+        Remark: ''
+      },
+      this.QueryCond()
     },
-    methods:{
-        QueryData(){
-            this.Cond = {
-                cardID: '',
-                target_id: '',
-                MinAmount: '',
-                MaxAmount: '',
-                MinDate: '',
-                MaxDate: '',
-                Remark: ''
-            },
-            this.QueryCond()
-        },
-        ReturnAcc(){
-            this.$router.push('/personalBank/user/account',);
-        },
-        async QueryCond(){
-            this.Data = []
-            try {
-                const tg = this.Cond.target_card_id ? Number(this.Cond.target_card_id) : this.Cond.target_card_id ;
-                const cd = this.Cond.cardID ? Number(this.Cond.cardID) : this.Cond.cardID ;
-                const ia = this.Cond.MinAmount ? Number(this.Cond.MinAmount) : this.Cond.MinAmount ;
-                const xa = this.Cond.MaxAmount ? Number(this.Cond.MaxAmount) : this.Cond.MaxAmount ;
-                const st = this.Cond.MinDate;
-                const et = this.Cond.MaxDate;
-                let response = await axios.get("/account/trans", { params: { "card_id" : Number(this.accountNumber), "target_card_id" : tg, "transfer_card_id" : cd, "MinAmount": ia, "MaxAmount": xa, "start_time": st, "end_time" : et, "Remark": this.Cond.Remark} }, {headers: { 'Authorization': this.token.toString() } })
-                let querydata = response.data 
-                querydata.forEach(item => {
-                    this.Date.push({
-                        card_id: item.card_id,
-                        target_id: item.target_id,
-                        amout: parseFloat(item.amout).toFixed(2),
-                        date: item.time,
-                        message: item.remark
-                    });
-                });
-            } catch (error) {
-                ElMessage.error(error.response.data);
+    ReturnAcc(){
+      this.$router.push('/personalBank/user/account',);
+    },
+    async QueryCond(){
+      this.Data = []
+      try {
+        const tg = this.Cond.target_card_id ? Number(this.Cond.target_card_id) : this.Cond.target_card_id ;
+        const cd = this.Cond.cardID ? Number(this.Cond.cardID) : this.Cond.cardID ;
+        const ia = this.Cond.MinAmount ? Number(this.Cond.MinAmount) : this.Cond.MinAmount ;
+        const xa = this.Cond.MaxAmount ? Number(this.Cond.MaxAmount) : this.Cond.MaxAmount ;
+        const st = this.Cond.MinDate;
+        const et = this.Cond.MaxDate;
+        axios.defaults.headers.common['Authorization'] = Cookies.get('token');
+        let response = await axios.get("/account/trans", 
+          {
+            params: {
+              "target_card_id": tg,
+              "transfer_card_id": cd,
+              "MinAmount": ia,
+              "MaxAmount": xa,
+              "start_time": st,
+              "end_time" : et,
+              "Remark": this.Cond.Remark
             }
+          })
+        let querydata = response.data
+        if (querydata.code === 0) {
+          querydata.payload.forEach(item => {
+            this.Date.push({
+              card_id: item.card_id,
+              target_id: item.target_id,
+              amout: parseFloat(item.amout).toFixed(2),
+              date: item.time,
+              message: item.remark
+            });
+          });
+        } else {
+          ElMessage.error(querydata.err);
+          return;
         }
-    },
-    mounted() {
-        this.token = Cookies.get('token')
-         //this.QueryData() // 查询账户信息
+      } catch (error) {
+        console.log(error);
+      }
     }
+  }
 }
 </script>
 

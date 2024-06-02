@@ -27,12 +27,6 @@
     <!-- 编辑资料对话框 -->
     <el-dialog title="编辑资料" v-model="modifyInfoVisible" width="30%" align-center>
       <el-form :model="modifyForm" :rules="modifyRules" ref="modifyForm"  label-width="80px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="modifyForm.username" placeholder="3-10位，仅包含大小写字母和数字" style="width: 300px"></el-input>
-        </el-form-item>
-        <el-form-item label="身份证号" prop="id_number" style="margin-top: 20px">
-          <el-input v-model="modifyForm.id_number" placeholder="身份证号" style="width: 300px"></el-input>
-        </el-form-item>
         <el-form-item label="手机号" prop="phone_number" style="margin-top: 20px">
           <el-input v-model="modifyForm.phone_number" placeholder="手机号" style="width: 300px"></el-input>
         </el-form-item>
@@ -76,6 +70,7 @@
 import CryptoJS from 'crypto-js';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import Cookies from 'js-cookie';
 
 export default {
   data() {
@@ -106,14 +101,6 @@ export default {
         email: '',
       },
       modifyRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'change' },
-          { pattern: /^[a-zA-Z0-9]{3,10}$/, message: '用户名必须为3-10位，仅包含大小写字母和数字', trigger: 'blur' }
-        ],
-        id_number: [
-          { required: true, message: '请输入身份证号', trigger: 'change' },
-          { pattern: /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(([0-2][1-9])|10|20|30|31)\d{3}(\d|X)$/, message: '请输入有效的身份证号', trigger: 'blur' }
-        ],
         phone_number: [
           { required: true, message: '请输入手机号', trigger: 'change' },
           { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号', trigger: 'blur' }
@@ -155,40 +142,49 @@ export default {
       }
       const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
       const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.put("/user/profile",
         {
-          headers: {
-            'Authorization': 'token',
-          }
-        },
-        {
-          data: {
-            "username": this.modifyForm.username,
-            "password": encryptedOld,
-            "id_number": this.modifyForm.id_number,
-            "phone_number": this.modifyForm.phone_number,
-            "email": this.modifyForm.email,
-            "new_password": encryptedNew
-          }
+          "username": this.modifyForm.username,
+          "password": encryptedOld,
+          "id_number": this.modifyForm.id_number,
+          "phone_number": this.modifyForm.phone_number,
+          "email": this.modifyForm.email,
+          "new_password": encryptedNew
         }
       )
       .then(response => {
-        ElMessage.success(response.data);
-        this.modifyInfoVisible = false;
-        this.modifyPasswordVisible = false;
-        this.queryInfo();
+        if (response.data.code === 0) {
+          ElMessage.success("修改成功");
+          this.modifyInfoVisible = false;
+          this.modifyPasswordVisible = false;
+          this.queryInfo();
+        } else {
+          ElMessage.error(response.data.err);
+          return;
+        }
       })
       .catch(error => {
-        ElMessage.error(error.response.data);
+        console.log(error);
       })
     },
     async queryInfo() {
-      // let response = await axios.get("user/profile", {
-      //   headers: {
-      //     'Authorization': 'token',
-      //   }
-      // });
-      // this.userInfo = response.data;
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
+      await axios.get("/user/profile")
+        .then(response => {
+          if (response.data.code === 0) {
+            this.userInfo.username = response.data.payload.username;
+            this.userInfo.id_number = response.data.payload.id_number;
+            this.userInfo.phone_number = response.data.payload.phone_number;
+            this.userInfo.email = response.data.payload.email;
+          } else {
+            ElMessage.error(response.data.err);
+            return;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
 
       // for debug
       this.userInfo = {
