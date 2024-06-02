@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("credit-card")
 public class CreditCard {
     private Long id;
     @JsonProperty("id_number")

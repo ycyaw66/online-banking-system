@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.zjuse.bankingsystem.entity.Admin;
 import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.dto.AuthorityDto;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
+import com.zjuse.bankingsystem.service.InspectorService;
 import com.zjuse.bankingsystem.service.UserService;
+import com.zjuse.bankingsystem.utils.ApiResult;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +28,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserService userService; 
     @Autowired 
     private AdminService adminService; 
+    @Autowired
+    private InspectorService inspectorService; 
 
     @Override
     public JwtUserDto loadUserByUsername(String username) {
@@ -57,8 +62,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             );
                         }
                         break ; 
-                    default:
+                    case INSPECTOR:
+                        CreditCardInspector creditCardInspector = (CreditCardInspector) inspectorService.getInspectorByUsername(username.split("-")[1]).payload;
+                        if (creditCardInspector == null) {
+                            return null; 
+                        } else {
+                            jwtUserDto = new JwtUserDto(
+                                creditCardInspector.getName(), 
+                                creditCardInspector.getPassword(), 
+                                Collections.singletonList(new AuthorityDto("INSPECTOR"))
+                            );
+                        }
                         break;
+                    default:
+                        return null; 
                 }
                 
             } catch(Exception e) {

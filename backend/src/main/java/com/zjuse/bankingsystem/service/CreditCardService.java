@@ -1,6 +1,7 @@
 package com.zjuse.bankingsystem.service;
 
 import com.zjuse.bankingsystem.entity.creditCard.*;
+import com.zjuse.bankingsystem.mapper.CreditCardApplicationMapper;
 import com.zjuse.bankingsystem.mapper.CreditCardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
@@ -21,6 +22,9 @@ public class CreditCardService {
     private CreditCardMapper creditCardMapper;
 
     @Autowired
+    private CreditCardApplicationMapper creditCardApplicationMapper; 
+
+    @Autowired
     private CardService cardService;
 
     public ApiResult checkCreditCardPassword(Long cardId, String password) {
@@ -36,7 +40,7 @@ public class CreditCardService {
     }
 
     public ApiResult addNewCreditCardRequest(String idNumber, BigDecimal cardLimit, String password) {
-        creditCardMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
+        creditCardApplicationMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
         return new ApiResult(true, null, null);
     }
 
@@ -46,7 +50,7 @@ public class CreditCardService {
     }
 
     public ApiResult addModifyLimitRequest(String idNumber, Long cardId, BigDecimal limit) {
-        creditCardMapper.addModifyLimitRequest(idNumber, cardId, limit);
+        creditCardApplicationMapper.addModifyLimitRequest(idNumber, cardId, limit);
         return new ApiResult(true, null, null);
     }
 
@@ -75,7 +79,7 @@ public class CreditCardService {
 
 
     public ApiResult queryRequestsByCustomer(String idNumber) {
-        List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestsByCustomer(idNumber);
+        List<CreditCardApplication> creditCardApplications = creditCardApplicationMapper.queryAllRequestsByCustomer(idNumber);
         if (creditCardApplications == null) {
             return new ApiResult(false, "查询失败");
         } else {
