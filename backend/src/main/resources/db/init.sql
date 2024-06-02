@@ -122,7 +122,7 @@ create table `credit_card_admin` (
 create table `credit_card_inspector` (
     `id` int not null auto_increment,
     `name` varchar(50) not null,
-    `password` varchar (50) not null,
+    `password` varchar (64) not null,
     `permission` int not null,
     primary key(`id`),
     check(`permission` in (1, 2))

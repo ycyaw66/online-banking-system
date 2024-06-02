@@ -102,7 +102,7 @@ public class CreditCardController {
         return RespResult.success();
     }
 
-    @GetMapping("/lost")
+    @PostMapping("/lost")
     public RespResult makeCreditCardLost(@RequestParam Long card_id, @RequestParam String password) {
         ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
         if (!apiResult.ok) {
@@ -115,7 +115,7 @@ public class CreditCardController {
         return RespResult.success();
     }
 
-    @GetMapping("/delete")
+    @PostMapping("/delete")
     public RespResult deleteCreditCard(@RequestParam Long card_id, @RequestParam String password) {
         ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
         if (!apiResult.ok) {

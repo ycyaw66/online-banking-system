@@ -28,19 +28,19 @@ public class InspectorController {
         }
     }
 
-    @GetMapping("/request")
+    @PostMapping("/request")
     public RespResult queryRequestsByInspector(@RequestParam Integer permission) {
         ApiResult apiResult = inspectorService.queryRequestsByInspector(permission);
         return RespResult.success(apiResult.payload);
     }
 
-    @GetMapping("/request/accept")
+    @PostMapping("/request/accept")
     public RespResult acceptRequest(@RequestParam Long id) {
         ApiResult apiResult = inspectorService.acceptRequest(id);
         return RespResult.success(apiResult.payload);
     }
 
-    @GetMapping("/request/reject")
+    @PostMapping("/request/reject")
     public RespResult rejectRequest(@RequestParam Long id) {
         ApiResult apiResult = inspectorService.rejectRequest(id);
         return RespResult.success(apiResult.payload);
