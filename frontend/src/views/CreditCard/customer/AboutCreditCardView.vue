@@ -502,7 +502,7 @@ export default {
 
       const encrypted_password = CryptoJS.SHA256(this.lost_card.password).toString();
 
-      axiosInstance.get("/credit-card/lost", {params: {card_id: card_id, password: encrypted_password}})
+      axiosInstance.post("/credit-card/lost", null, {params: {card_id: card_id, password: encrypted_password}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error(response.data.err);
@@ -531,7 +531,7 @@ export default {
 
       const encrypted_password = CryptoJS.SHA256(this.cancel_card.password).toString();
 
-      axiosInstance.get("/credit-card/delete", {params: {card_id: card_id, password: encrypted_password}})
+      axiosInstance.post("/credit-card/delete", null, {params: {card_id: card_id, password: encrypted_password}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error(response.data.err);

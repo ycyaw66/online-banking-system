@@ -279,11 +279,11 @@ export default {
         } else {
           this.$message.success('修改权限等级成功')
         }
+        this.queryInspector();
       }).catch(error => {
         console.error('admin update inspector level error:', error);
         this.$message.error('修改权限等级失败');
       })
-      this.queryInspector();
     },
     addInspector() {
       // 判断账号名是否为空
@@ -332,7 +332,7 @@ export default {
     deleteInspector() {
       this.$message.error('删除编号为' + this.delete_inspector_id + '的审查员');
       this.delete_inspector_visible = false;
-      axiosInstance.get("/creditCard/admin/inspector/delete", {params: {id: this.delete_inspector_id}})
+      axiosInstance.post("/admin/inspector/delete", null, {params: {id: this.delete_inspector_id}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error('删除审查员失败')

@@ -85,11 +85,9 @@ export default {
       }
 
       const encrypted_password = CryptoJS.SHA256(this.admin.password).toString();
-      axios.post("admin/login", null, {
-        params: {
-          name: this.admin.name,
+      axios.post("admin/login",{
+          username: this.admin.name,
           password: encrypted_password
-        }
       }).then(response => {
         if (response.data.code === 1) {
           this.$message.error(response.data.err);

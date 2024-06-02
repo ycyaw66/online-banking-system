@@ -144,7 +144,7 @@ export default {
       this.$router.push('/creditCard/inspector/login');
     },
     accept(id) {
-      axiosInstance().get("/credit-card/inspector/request/accept", {params: {id: id}})
+      axiosInstance.post("/credit-card/inspector/request/accept", null, {params: {id: id}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error('允许请求失败');
@@ -160,7 +160,7 @@ export default {
     },
     reject(id) {
       //this.$message.error('拒绝了id为' + id + '的请求');
-      axios.get("/credit-card/inspector/request/reject", {params: {id: id}})
+      axiosInstance.post("/credit-card/inspector/request/reject", null, {params: {id: id}})
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error('驳回请求失败');
@@ -172,10 +172,9 @@ export default {
         console.error('inspector reject error:', error);
         this.$message.error('驳回请求失败');
       });
-
     },
     queryRequest() {
-      axiosInstance.get("/credit-card/inspector/request", {params: {permission: Cookies.get('credit_card_inspector_permission')}})
+      axiosInstance.post("/credit-card/inspector/request", null,{params: {permission: Cookies.get('credit_card_inspector_permission')}})
           .then(response => {
             this.request = [];
             let requests = response.data.payload;
