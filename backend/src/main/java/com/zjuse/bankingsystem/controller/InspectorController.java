@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
@@ -53,9 +54,15 @@ public class InspectorController {
 
         String token = jwtTokenProvider.createToken(authentication, LoginType.INSPECTOR);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
+        ApiResult apiResult = inspectorService.getInspectorByUsername(name);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        CreditCardInspector inspector = (CreditCardInspector) apiResult.payload; 
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", jwtConfig.getTokenStartWith() + " " + token);
             put("username", jwtUserDto.getUsername());
+            put("permission", inspector.getPermission()); 
         }}; 
         return RespResult.success(authInfo);
     }
