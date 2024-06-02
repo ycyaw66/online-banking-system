@@ -171,7 +171,7 @@
                   <template #footer>
                     <el-button @click="modify_password_visible = false">取 消</el-button>
                     <el-button type="primary"
-                               @click="modifyPassword(modify_password_card_id, modify_password_old_password)">确 定
+                               @click="modifyPassword(modify_password_card_id)">确 定
                     </el-button>
                   </template>
                 </el-dialog>
@@ -395,7 +395,7 @@ export default {
       });
 
     },
-    modifyPassword(card_id, password) {// 修改信用卡密码
+    modifyPassword(card_id) {// 修改信用卡密码
       // 检查新密码是否为空
       if (this.modify_password.new_password === '') {
         this.$message.error('新密码不能为空');
@@ -420,7 +420,8 @@ export default {
       // this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
 
       const encrypted_new_password = CryptoJS.SHA256(this.modify_password.new_password).toString();
-      const encrypted_old_password = CryptoJS.SHA256(password).toString();
+      const encrypted_old_password = CryptoJS.SHA256(this.modify_password.old_password).toString();
+
 
       axiosInstance.post("/credit-card/modify-password", null, {
         params: {
@@ -469,7 +470,7 @@ export default {
       // }
       //this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
 
-      const encrypted_old_password = CryptoJS.SHA256(password).toString();
+      const encrypted_old_password = CryptoJS.SHA256(this.modify_limit.password).toString();
 
       axiosInstance.post("/credit-card/update-limit", null, {
         params: {
@@ -614,7 +615,7 @@ export default {
     },
     queryCards() {
       this.credit_cards = [];
-      axios.get('/credit-card/getAllCard')
+      axiosInstance.get('/credit-card/getAllCard')
           .then(response => {
             let cards = response.data.payload;
             // console.log(cards);

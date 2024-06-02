@@ -57,8 +57,8 @@
                 <el-table-column prop="id" label="请求编号" width="200px"/>
                 <el-table-column prop="credit_card_id" label="信用卡id" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.credit_card_id === null || row.credit_card_id === ''">暂未创建</span>
-                    <span v-else>{{ row.credit_card_id }}</span>
+                    <span v-if="row.creditCardId === null || row.creditCardId === ''">暂未创建</span>
+                    <span v-else>{{ row.creditCardId }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
@@ -69,8 +69,8 @@
                 </el-table-column>
                 <el-table-column label="具体请求内容" width="300px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.type === 1">创建一张新的信用卡,额度为{{ row.amount / 100 }}元</span>
-                    <span v-else-if="row.type === 2">更新信用卡的额度为{{ row.amount / 100 }}元</span>
+                    <span v-if="row.type === 1">创建一张新的信用卡,额度为{{ row.amount }}元</span>
+                    <span v-else-if="row.type === 2">更新信用卡的额度为{{ row.amount }}元</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="处理结果" width="200px">
@@ -174,7 +174,7 @@ export default {
       });
     },
     queryRequest() {
-      axiosInstance.post("/credit-card/inspector/request", null,{params: {permission: Cookies.get('credit_card_inspector_permission')}})
+      axiosInstance.post("/credit-card/inspector/request", null, {params: {permission: Cookies.get('credit_card_inspector_permission')}})
           .then(response => {
             this.request = [];
             let requests = response.data.payload;

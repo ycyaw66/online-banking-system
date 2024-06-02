@@ -80,8 +80,8 @@
                 <el-table-column prop="id" label="请求编号" width="200px"/>
                 <el-table-column prop="credit_card_id" label="信用卡id" width="200px">
                   <template v-slot="{ row = {} }">
-                    <span v-if="row.credit_card_id === null || row.credit_card_id === ''">暂未创建</span>
-                    <span v-else>{{ row.credit_card_id }}</span>
+                    <span v-if="row.creditCardId === null || row.creditCardId === ''">暂未创建</span>
+                    <span v-else>{{ row.creditCardId }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="请求类型" width="200px">
@@ -169,10 +169,11 @@ export default {
       this.$router.push('/personalBank/user/account');
     },
     queryResponses() {
-      axiosInstance().get("/credit-card/query-request")
+      axiosInstance.get("/credit-card/query-request")
           .then(response => {
             this.request_responses = []
             let responses = response.data.payload
+            // console.log(responses);
             responses.forEach(element => {
               this.request_responses.push(element)
             })

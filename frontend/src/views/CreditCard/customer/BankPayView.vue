@@ -74,7 +74,7 @@
           <el-main style="background-color: #f1f1f1; display: flex; justify-content: center; align-items: center;">
 
             <div class="flex gap-4 mb-4"
-              style="background-color: white; width: 60%; max-width: 800px; min-height: 40%; border: 3px solid lightblue; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                 style="background-color: white; width: 60%; max-width: 800px; min-height: 40%; border: 3px solid lightblue; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
               <br>
               <div>
                 <span>信用卡编号：&nbsp;&nbsp;&nbsp;</span>
@@ -177,7 +177,7 @@ export default {
       axiosInstance.post("/credit-card/pay",null,{
         params:{
           card_id: this.credit_card_id,
-          account: this.account,
+          amount: this.account,
           date: this.date,
           password: encrypted_password
         }
