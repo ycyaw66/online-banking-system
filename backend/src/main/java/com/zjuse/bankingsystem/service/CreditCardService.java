@@ -112,8 +112,8 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult queryBills(Date startDate, Date endDate, String idNumber, Long cardId) {
-        List<CreditCardBill> creditCardBills = creditCardMapper.queryBills(startDate, endDate, idNumber, cardId);
+    public ApiResult queryBills(Date startDate, Date endDate, String idNumber) {
+        List<CreditCardBill> creditCardBills = creditCardMapper.queryBills(startDate, endDate, idNumber);
         return new ApiResult(true, creditCardBills);
     }
 }

@@ -156,13 +156,13 @@ public class CreditCardController {
     }
 
     @PostMapping("/bills/query")
-    public RespResult queryBills(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start_date, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, @RequestParam Long card_id) {
+    public RespResult queryBills(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start_date, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
         ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
         String idNumber = (String) apiResult.payload;
-        apiResult = creditCardService.queryBills(start_date, end_date, idNumber, card_id);
+        apiResult = creditCardService.queryBills(start_date, end_date, idNumber);
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }

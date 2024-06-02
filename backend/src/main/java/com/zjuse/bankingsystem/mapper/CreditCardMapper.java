@@ -44,8 +44,8 @@ public interface CreditCardMapper extends BaseMapper<CreditCard>{
     @Update("update credit_card set loan = loan + #{account} where id = #{card_id}")
     public void updateLoan(Long card_id, BigDecimal account);
 
-    @Select("select * from credit_card_bill where credit_card_id = #{cardId} and id_number = #{idNumber} and bill_date >= #{start_date} and bill_date <= #{end_date}")
-    public List<CreditCardBill> queryBills(Date start_date, Date end_date, String idNumber, Long cardId);
+    @Select("select * from credit_card_bill where id_number = #{idNumber} and bill_date >= #{start_date} and bill_date <= #{end_date}")
+    public List<CreditCardBill> queryBills(Date start_date, Date end_date, String idNumber);
 
     @Update("update credit_card set card_limit = #{card_limit} where id = #{id}")
     public void updateCardLimit(BigDecimal card_limit, Long id);
