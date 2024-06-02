@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("credit-card")
+@TableName("credit_card")
 public class CreditCard {
     private Long id;
     @JsonProperty("id_number")
