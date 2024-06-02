@@ -142,40 +142,49 @@ export default {
       }
       const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
       const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.put("/user/profile",
         {
-          headers: {
-            'Authorization': 'token',
-          }
-        },
-        {
-          data: {
-            "username": this.modifyForm.username,
-            "password": encryptedOld,
-            "id_number": this.modifyForm.id_number,
-            "phone_number": this.modifyForm.phone_number,
-            "email": this.modifyForm.email,
-            "new_password": encryptedNew
-          }
+          "username": this.modifyForm.username,
+          "password": encryptedOld,
+          "id_number": this.modifyForm.id_number,
+          "phone_number": this.modifyForm.phone_number,
+          "email": this.modifyForm.email,
+          "new_password": encryptedNew
         }
       )
       .then(response => {
-        ElMessage.success(response.data);
-        this.modifyInfoVisible = false;
-        this.modifyPasswordVisible = false;
-        this.queryInfo();
+        if (response.data.code === 0) {
+          ElMessage.success("修改成功");
+          this.modifyInfoVisible = false;
+          this.modifyPasswordVisible = false;
+          this.queryInfo();
+        } else {
+          ElMessage.error(response.data.err);
+          return;
+        }
       })
       .catch(error => {
-        ElMessage.error(error.response.data);
+        console.log(error);
       })
     },
     async queryInfo() {
-      // let response = await axios.get("user/profile", {
-      //   headers: {
-      //     'Authorization': 'token',
-      //   }
-      // });
-      // this.userInfo = response.data;
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
+      await axios.get("/user/profile")
+        .then(response => {
+          if (response.data.code === 0) {
+            this.userInfo.username = response.data.payload.username;
+            this.userInfo.id_number = response.data.payload.id_number;
+            this.userInfo.phone_number = response.data.payload.phone_number;
+            this.userInfo.email = response.data.payload.email;
+          } else {
+            ElMessage.error(response.data.err);
+            return;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        })
 
       // for debug
       this.userInfo = {
@@ -188,8 +197,6 @@ export default {
   },
   mounted() {
     this.queryInfo();
-    this.token = Cookies.get('token');
-    if (this.token) this.token = this.token.toString();
   }
 }
 </script>

@@ -109,6 +109,7 @@ export default {
         })
         .then(response => {
           if (response.data.code === 0) {
+            ElMessage.success("重置密码成功");
             this.jumpLogin();
           } else {
             ElMessage.error(response.data.err);
@@ -139,7 +140,7 @@ export default {
           }
         })
         .catch(error => {
-          console.error('login error:', error);
+          console.log(error);
         })
     },
     doCountdown() {
