@@ -18,6 +18,7 @@ import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
+import com.zjuse.bankingsystem.security.service.OnlineUserService;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.service.CreditCardService;
 import com.zjuse.bankingsystem.service.InspectorService;
@@ -38,6 +39,8 @@ public class InspectorController {
     private JwtTokenProvider jwtTokenProvider;  
     @Autowired
     private JwtConfig jwtConfig; 
+    @Autowired
+    private OnlineUserService onlineUserService;
 
     @PostMapping("/login")
     public RespResult loginInspector(@RequestParam String name, @RequestParam String password) {
@@ -64,6 +67,7 @@ public class InspectorController {
             put("username", jwtUserDto.getUsername());
             put("permission", inspector.getPermission()); 
         }}; 
+        onlineUserService.save(jwtUserDto, token);
         return RespResult.success(authInfo);
     }
 
