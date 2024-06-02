@@ -46,6 +46,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/user/forget").permitAll()
                 // admin 登陆
                 .requestMatchers("/admin/login").permitAll()
+                // 审查员登陆
+                .requestMatchers("/credit-card/inspector/login").permitAll()
                 // 跨域的一次 OPTION 预检
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
