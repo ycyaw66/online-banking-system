@@ -63,8 +63,15 @@ export default {
   },
   methods: {
     handleLogout() {
-      // TODO: post一个logout
-      this.$router.push('/personalBank/admin/login');
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
+      Cookies.remove('token');
+      axios.delete('/admin/logout')
+        .then(() => {
+          this.$router.push('/personalBank/admin/login');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };

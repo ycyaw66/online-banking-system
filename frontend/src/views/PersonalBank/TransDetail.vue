@@ -95,7 +95,6 @@ export default {
         let response = await axios.get("/account/trans", 
           {
             params: {
-              "card_id": Number(this.accountNumber),
               "target_card_id": tg,
               "transfer_card_id": cd,
               "MinAmount": ia,

@@ -127,16 +127,17 @@ export default {
     fetchBlacklist() {
       // 获取黑名单目录
       // this.blacklist = [] // 清空列表
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.get('/administrator/blacklist/get') // 向黑名单发出GET请求
-          .then(response => {
-            let blacklist = response.data // 接收响应负载
-            blacklist.forEach(account => { // 对于每个账号
-              this.blacklist.push(account);// 将其加入到列表中
-            })
+        .then(response => {
+          let blacklist = response.data // 接收响应负载
+          blacklist.forEach(account => { // 对于每个账号
+            this.blacklist.push(account);// 将其加入到列表中
           })
-          .catch(error => {
-            console.error('Error fetching blacklist:', error);
-          });
+        })
+        .catch(error => {
+          console.error('Error fetching blacklist:', error);
+        });
     },
     // 切换页码
     handlePageChange(page) {
@@ -145,24 +146,25 @@ export default {
     // 添加黑名单
     confirmAddBlacklist() {
       // 发POST
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.post("/administrator/blacklist/add", {
         user_id: this.newBlacklistInfo.user_id,
         username: this.newBlacklistInfo.username,
         phone: this.newBlacklistInfo.phone
       })
-          .then(response => {
-            if (response.status === 200) {
-              // 响应成功
-              this.$message.success('已添加到黑名单');
-              this.addBlacklistVisible = false;
-              this.newBlacklistInfo = { user_id: '', username: '', phone: '' };
-              this.fetchBlacklist(); // 重新查询黑名单以刷新页面
-            }
-          })
-          .catch(error => {
-            // 响应失败
-            this.$message.error('添加黑名单失败：' + error.response.data); // 显示错误消息
-          });
+        .then(response => {
+          if (response.status === 200) {
+            // 响应成功
+            this.$message.success('已添加到黑名单');
+            this.addBlacklistVisible = false;
+            this.newBlacklistInfo = { user_id: '', username: '', phone: '' };
+            this.fetchBlacklist(); // 重新查询黑名单以刷新页面
+          }
+        })
+        .catch(error => {
+          // 响应失败
+          this.$message.error('添加黑名单失败：' + error.response.data); // 显示错误消息
+        });
     },
     confirmRemoveBlacklist(row) {
       this.rowToRemove = row;
