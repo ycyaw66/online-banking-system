@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zjuse.bankingsystem.service.AdminService;
+import com.zjuse.bankingsystem.service.CreditCardAdminService;
 import com.zjuse.bankingsystem.service.CreditCardService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
@@ -16,18 +16,8 @@ import com.zjuse.bankingsystem.utils.RespResult;
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
-    private AdminService adminService;
+    private CreditCardAdminService adminService;
 
-
-    @PostMapping("/login")
-    public RespResult loginAdmin(@RequestParam String name, @RequestParam String password) {
-        ApiResult apiResult = adminService.loginAdmin(name, password);
-        if (apiResult.ok) {
-            return RespResult.success(null);
-        } else {
-            return RespResult.fail("登录失败");
-        }
-    }
 
     @GetMapping("/inspector")
     public RespResult queryInspectors() {

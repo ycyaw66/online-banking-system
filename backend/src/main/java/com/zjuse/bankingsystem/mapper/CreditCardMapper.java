@@ -53,4 +53,6 @@ public interface CreditCardMapper extends BaseMapper<CreditCard>{
 
     @Select("select * from credit_card_bill where credit_card_id = #{cardId} and bill_date >= #{start_date} and bill_date <= #{end_date}")
     public List<CreditCardBill> queryBills(Date start_date, Date end_date, Long cardId);
+
+    
 }

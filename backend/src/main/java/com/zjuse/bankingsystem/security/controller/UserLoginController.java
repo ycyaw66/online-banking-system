@@ -23,6 +23,7 @@ import com.zjuse.bankingsystem.security.controller.dto.UpdateProfileDto;
 import com.zjuse.bankingsystem.security.controller.dto.UserLoginReq;
 import com.zjuse.bankingsystem.security.controller.dto.UserRegisterReq;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
+import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.security.service.OnlineUserService;
@@ -60,7 +61,7 @@ public class UserLoginController {
         String password = req.getPassword();
         
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-            new UsernamePasswordAuthenticationToken(username, password);
+            new UsernamePasswordAuthenticationToken(LoginType.USER + "-" + username, password);
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
@@ -70,12 +71,12 @@ public class UserLoginController {
         }
 
 
-        String token = jwtTokenProvider.createToken(authentication);
+        String token = jwtTokenProvider.createToken(authentication, LoginType.USER);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
         
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", jwtConfig.getTokenStartWith() + " " + token);
-            put("user", jwtUserDto.getUser());
+            put("username", jwtUserDto.getUsername());
         }}; 
         onlineUserService.save(jwtUserDto, token);
 

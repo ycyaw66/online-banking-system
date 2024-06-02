@@ -34,3 +34,10 @@ INSERT INTO `cardofperson` (user_id, card_id) VALUES
 INSERT INTO `credit_card` (id, id_number, password, card_limit, loan, is_lost) VALUES
 (1, "134015851838831650", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", 
 1000.00, 0.00, 0);
+
+--end of credit card
+
+INSERT INTO `admin` (id, username, password, role) VALUES
+(1, "fbz", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", "ADMIN"); 
+
+--end of admin

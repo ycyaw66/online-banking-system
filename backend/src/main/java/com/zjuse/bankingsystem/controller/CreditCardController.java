@@ -128,7 +128,7 @@ public class CreditCardController {
         return RespResult.success();
     };
 
-    @GetMapping("/queryRequests")
+    @GetMapping("/query-request")
     public RespResult queryRequestsByCustomer() {
         ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
         if (!apiResult.ok) {

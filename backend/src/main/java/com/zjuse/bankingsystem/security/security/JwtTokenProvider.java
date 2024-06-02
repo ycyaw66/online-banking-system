@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.zjuse.bankingsystem.security.config.JwtConfig;
+import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.utils.RedisUtils;
 
 import cn.hutool.core.date.DateField;
@@ -28,10 +29,10 @@ public class JwtTokenProvider {
     @Autowired
     private RedisUtils redisUtils; 
     
-    public String createToken(Authentication authentication) {
+    public String createToken(Authentication authentication, LoginType loginType) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return JWT.create()
-            .setPayload("username", userDetails.getUsername())
+            .setPayload("username", loginType.getRole() + "-" + userDetails.getUsername())
             .setKey(jwtConfig.getTokenSignKey().getBytes(StandardCharsets.UTF_8))
             .sign(); 
     }

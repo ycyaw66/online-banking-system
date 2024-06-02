@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
-import com.zjuse.bankingsystem.mapper.AdminMapper;
+import com.zjuse.bankingsystem.mapper.CreditCardAdminMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 @Service
-public class AdminService {
+public class CreditCardAdminService {
     @Autowired
-    private AdminMapper adminMapper;  
+    private CreditCardAdminMapper adminMapper;  
 
     public ApiResult loginAdmin(String name, String password) {
         CreditCardAdmin creditCardAdmin = adminMapper.loginAdmin(name, password);
