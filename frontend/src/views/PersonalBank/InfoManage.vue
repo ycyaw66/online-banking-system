@@ -3,7 +3,7 @@
     <el-main style="height: 100%; width: 100%; position: relative;">
       <div style="background-color: white; width: 100%; height: auto; padding: 20px; margin-bottom: 20px;">
         <div style="font-size: 24px;">账户信息管理</div>
-        <button @click="JumpToCreditCard" style="position: absolute; top: 40px; right: 160px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">添加新账户</button>
+        <button @click="JumpToCreditCard" style="position: absolute; top: 40px; right: 160px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">信用卡相关</button>
         <button @click="OpenAddAccount" style="position: absolute; top: 40px; right: 20px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">添加新账户</button>
 
         <el-table :data="AccountData" height="600" 

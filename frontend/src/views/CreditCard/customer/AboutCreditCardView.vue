@@ -373,7 +373,6 @@ export default {
       }
 
       // 如果密码一致，就关闭模态框并弹出成功提示
-      this.add_new_card_visible = false;
       //this.$message.success('添加信用卡额度为' + this.new_card.limit)
       const encrypted_password = CryptoJS.SHA256(this.new_card.first_password).toString();
 
@@ -388,6 +387,7 @@ export default {
         } else {
           this.$message.success("申请成功")
         }
+        this.add_new_card_visible = false;
         this.queryCards();
       }).catch(error => {
         console.error('POST error:', error);
@@ -419,8 +419,6 @@ export default {
       }
       // this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
 
-      this.modify_password_visible = false;
-
       const encrypted_new_password = CryptoJS.SHA256(this.modify_password.new_password).toString();
       const encrypted_old_password = CryptoJS.SHA256(password).toString();
 
@@ -433,9 +431,11 @@ export default {
       }).then(response => {
         if (response.data.code === 1) {
           this.$message.error(response.data.err);
+          return;
         } else {
           this.$message.success("修改成功")
         }
+        this.modify_password_visible = false;
         this.queryCards();
       }).catch(error => {
         console.error('POST error:', error);
@@ -468,7 +468,6 @@ export default {
       //   return;
       // }
       //this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
-      this.modify_card_limit_visible = false;
 
       const encrypted_old_password = CryptoJS.SHA256(password).toString();
 
@@ -481,9 +480,11 @@ export default {
       }).then(response => {
         if (response.data.code === 1) {
           this.$message.error(response.data.err);
+          return;
         } else {
           this.$message.success('申请成功')
         }
+        this.modify_card_limit_visible = false;
         this.queryCards();
       }).catch(error => {
         console.error('POST error:', error);
@@ -498,7 +499,6 @@ export default {
       //   return;
       // }
       // this.$message.success('挂失信用卡id为' + card_id)
-      this.card_lost_visible = false;
 
       const encrypted_password = CryptoJS.SHA256(this.lost_card.password).toString();
 
@@ -506,9 +506,11 @@ export default {
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error(response.data.err);
+              return;
             } else {
               this.$message.success('挂失成功');
             }
+            this.card_lost_visible = false;
             this.queryCards();
           }).catch(error => {
         console.error('GET error:', error);
@@ -527,7 +529,6 @@ export default {
       //   return;
       // }
       // this.$message.success('注销信用卡id为' + card_id)
-      this.card_cancel_visible = false;
 
       const encrypted_password = CryptoJS.SHA256(this.cancel_card.password).toString();
 
@@ -535,9 +536,11 @@ export default {
           .then(response => {
             if (response.data.code === 1) {
               this.$message.error(response.data.err);
+              return;
             } else {
               this.$message.success('注销成功')
             }
+            this.card_cancel_visible = false;
             this.queryCards();
           }).catch(error => {
         console.error('GET error:', error);
@@ -585,7 +588,6 @@ export default {
       }
 
       //this.$message.success('还款信用卡id为' + this.return_money.card_id + '成功，还款金额为' + this.return_money.amount);
-      this.return_money_visible = false;
 
       const encrypted_password = CryptoJS.SHA256(this.return_money.password).toString();
       // 如果所有验证都通过，执行后续还款操作
@@ -598,9 +600,11 @@ export default {
       }).then(response => {
         if (response.data.code === 1) {
           this.$message.error(response.data.err);
+          return;
         } else {
           this.$message.success('还款成功');
         }
+        this.return_money_visible = false;
         this.queryCards();
       }).catch(error => {
         console.error('POST error:', error);
