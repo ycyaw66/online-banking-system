@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/transfer")
-public class TransferController {
+public class DepositeTransferController {
     @Autowired
     private DemandDepositService depositService;
     @Autowired

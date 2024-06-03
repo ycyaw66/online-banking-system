@@ -26,6 +26,6 @@ public interface AdminMapper {
     public void updateAdministrator(@Param("id")Long id, @Param("username")String username, @Param("password")String password, @Param("salt")String salt);
 }*/
 
-public interface AdminMapper extends BaseMapper<Administrator> {
+public interface DepositeAdminMapper extends BaseMapper<Administrator> {
 
 }

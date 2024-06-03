@@ -6,7 +6,7 @@ import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.Card;
 import com.zjuse.bankingsystem.entity.deposite.Property;
 import com.zjuse.bankingsystem.mapper.deposite.AccountMapper;
-import com.zjuse.bankingsystem.mapper.deposite.CardMapper;
+import com.zjuse.bankingsystem.mapper.deposite.DepositeCardMapper;
 import com.zjuse.bankingsystem.mapper.deposite.PropertyMapper;
 import com.zjuse.bankingsystem.utils.AccountStatus;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -25,7 +25,7 @@ public class AccountService {
     @Autowired
     AccountMapper accountMapper;
     @Autowired
-    CardMapper cardMapper;
+    DepositeCardMapper cardMapper;
     @Autowired
     PropertyMapper propertyMapper;
     @Autowired

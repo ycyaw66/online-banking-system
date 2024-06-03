@@ -22,6 +22,6 @@ public interface CardMapper {
     public void deleteCardById(Long id);
 }*/
 
-public interface CardMapper extends BaseMapper<Card>{
+public interface DepositeCardMapper extends BaseMapper<Card>{
 
 }

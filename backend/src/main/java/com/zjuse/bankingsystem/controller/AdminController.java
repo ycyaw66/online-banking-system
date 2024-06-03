@@ -105,42 +105,4 @@ public class AdminController {
             return RespResult.fail(apiResult.message);
     }
 
-    @GetMapping("/counter/admin/cashier")
-    public RespResult queryCashier() {
-        ApiResult apiResult  = cashierService.getAllCashier();
-        if(apiResult.ok)
-            return RespResult.success(apiResult.payload);
-        else
-            return RespResult.fail(apiResult.message);
-    }
-
-    @DeleteMapping("/counter/admin/cashier/delete")
-    public RespResult deleteCashier(@RequestParam("id") Long id) {
-        System.out.println("deleteCashier where id = '" + id + "'");
-        ApiResult apiResult = cashierService.deleteCashierById(id);
-        if(apiResult.ok)
-            return RespResult.success(apiResult.message);
-        else
-            return RespResult.fail(apiResult.message);
-    }
-
-    @PostMapping("/counter/admin/cashier/add")
-    public RespResult addCashier(@RequestParam("password") String password, @RequestParam("username")String username,@RequestParam("authority")int authority) {
-        System.out.println("addCashier where password = '" + password + "' and username = '" + username + "'");
-        ApiResult apiResult = cashierService.addCashier(username,password,authority);
-        if(apiResult.ok)
-            return RespResult.success(apiResult.payload);
-        else
-            return RespResult.fail(apiResult.message);
-    }
-
-    @PostMapping("/counter/admin/cashier/authority")
-    public RespResult addAuthority(@RequestParam("id") Long id, @RequestParam("authority")int authority) {
-        System.out.println("addAuthority where id = '" + id + "' and authority = '" + authority + "'");
-        ApiResult apiResult = cashierService.changeAuthority(id, authority);
-        if(apiResult.ok)
-            return RespResult.success(apiResult.message);
-        else
-            return RespResult.fail(apiResult.message);
-    }
 }

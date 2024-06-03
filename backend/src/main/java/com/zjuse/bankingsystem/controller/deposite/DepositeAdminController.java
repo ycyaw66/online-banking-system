@@ -1,6 +1,6 @@
 package com.zjuse.bankingsystem.controller.deposite;
 
-import com.zjuse.bankingsystem.service.deposite.AdminService;
+import com.zjuse.bankingsystem.service.deposite.DepositeAdminService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
-public class AdminController {
+public class DepositeAdminController {
     @Autowired
-    private AdminService adminService;
+    private DepositeAdminService adminService;
 
     @Autowired
     private CashierService cashierService;

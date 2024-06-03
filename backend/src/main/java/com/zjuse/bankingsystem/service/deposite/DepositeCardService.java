@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.Card;
 import com.zjuse.bankingsystem.mapper.deposite.AccountMapper;
-import com.zjuse.bankingsystem.mapper.deposite.CardMapper;
+import com.zjuse.bankingsystem.mapper.deposite.DepositeCardMapper;
 import com.zjuse.bankingsystem.mapper.deposite.PropertyMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.DepositCardType;
@@ -16,12 +16,12 @@ import java.util.List;
 
 //负责
 @Service
-public class CardService {
+public class DepositeCardService {
 
     @Autowired
     AccountMapper accountMapper;
     @Autowired
-    CardMapper cardMapper;
+    DepositeCardMapper cardMapper;
     @Autowired
     PropertyMapper propertyMapper;
     public ApiResult newCard(DepositCardType cardType, Long accountid){

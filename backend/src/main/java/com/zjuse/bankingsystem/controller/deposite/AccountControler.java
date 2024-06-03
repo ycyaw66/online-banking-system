@@ -3,7 +3,7 @@ package com.zjuse.bankingsystem.controller.deposite;
 import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.Card;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
-import com.zjuse.bankingsystem.service.deposite.CardService;
+import com.zjuse.bankingsystem.service.deposite.DepositeCardService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.deposite.PropertyService;
 import com.zjuse.bankingsystem.utils.AccountStatus;
@@ -24,7 +24,7 @@ public class AccountControler {
     private PropertyService propertyService;
 
     @Autowired
-    private CardService cardService;
+    private DepositeCardService cardService;
 
     @Autowired
     private CashierService cashierService;

@@ -4,7 +4,7 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zjuse.bankingsystem.entity.deposite.Administrator;
-import com.zjuse.bankingsystem.mapper.deposite.AdminMapper;
+import com.zjuse.bankingsystem.mapper.deposite.DepositeAdminMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class AdminService {
+public class DepositeAdminService {
     @Autowired
-    private AdminMapper adminMapper;
+    private DepositeAdminMapper adminMapper;
 
     public ApiResult getAllAdmin(){
         try{
