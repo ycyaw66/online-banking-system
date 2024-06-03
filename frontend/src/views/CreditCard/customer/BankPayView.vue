@@ -66,7 +66,7 @@
                 </el-sub-menu>
               </el-menu>
             </el-scrollbar>
-            <el-button type="danger" @click="exit" style="display: block; margin: auto;">
+            <el-button type="danger" @click="exit" style="display: block; margin: auto; margin-bottom: 10%;">
               退出信用卡页面
             </el-button>
           </el-aside>
