@@ -1,6 +1,7 @@
 package com.zjuse.bankingsystem.service;
 
 import com.zjuse.bankingsystem.entity.creditCard.*;
+import com.zjuse.bankingsystem.mapper.CreditCardApplicationMapper;
 import com.zjuse.bankingsystem.mapper.CreditCardMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
@@ -21,14 +22,25 @@ public class CreditCardService {
     private CreditCardMapper creditCardMapper;
 
     @Autowired
+    private CreditCardApplicationMapper creditCardApplicationMapper; 
+
+    @Autowired
     private CardService cardService;
+
+    public ApiResult checkCreditCardPassword(Long cardId, String password) {
+        CreditCard card = creditCardMapper.selectById(cardId);
+        if (!password.equals(card.getPassword())) {
+            return new ApiResult(false, "密码错误");
+        }
+        return new ApiResult(true, null);
+    }
 
     public ApiResult getCardsByIdNumber(String idNumber) {
         return new ApiResult(true, null, creditCardMapper.queryCards(idNumber));
     }
 
     public ApiResult addNewCreditCardRequest(String idNumber, BigDecimal cardLimit, String password) {
-        creditCardMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
+        creditCardApplicationMapper.addNewCreditCardRequest(idNumber, cardLimit, password);
         return new ApiResult(true, null, null);
     }
 
@@ -38,7 +50,7 @@ public class CreditCardService {
     }
 
     public ApiResult addModifyLimitRequest(String idNumber, Long cardId, BigDecimal limit) {
-        creditCardMapper.addModifyLimitRequest(idNumber, cardId, limit);
+        creditCardApplicationMapper.addModifyLimitRequest(idNumber, cardId, limit);
         return new ApiResult(true, null, null);
     }
 
@@ -56,6 +68,7 @@ public class CreditCardService {
             return new ApiResult(false, "Wrong password");
         }
         creditCardMapper.setCreditCardLost(cardId);
+        creditCardMapper.insertCreditCard(creditCard);
         return new ApiResult(true, "挂失成功");
     }
 
@@ -66,7 +79,7 @@ public class CreditCardService {
 
 
     public ApiResult queryRequestsByCustomer(String idNumber) {
-        List<CreditCardApplication> creditCardApplications = creditCardMapper.queryAllRequestsByCustomer(idNumber);
+        List<CreditCardApplication> creditCardApplications = creditCardApplicationMapper.queryAllRequestsByCustomer(idNumber);
         if (creditCardApplications == null) {
             return new ApiResult(false, "查询失败");
         } else {
@@ -74,7 +87,7 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
+    public ApiResult bankPay(Long cardId, String idNumber, String password, BigDecimal account, Date date) {
         try {
             CreditCard matchCard = creditCardMapper.findCreditCard(cardId);
             if (matchCard == null) {
@@ -90,7 +103,7 @@ public class CreditCardService {
             if (result < 0) {
                 return new ApiResult(false, "信用卡可用额度不足");
             }
-            creditCardMapper.addPayment(cardId, account, date);
+            creditCardMapper.addPayment(cardId, idNumber, account, date);
             creditCardMapper.updateLoan(cardId, account);
             return new ApiResult(true, null);
         }
@@ -99,8 +112,8 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult queryBills(Date startDate, Date endDate, Long cardId) {
-        List<CreditCardBill> creditCardBills = creditCardMapper.queryBills(startDate, endDate, cardId);
+    public ApiResult queryBills(Date startDate, Date endDate, String idNumber) {
+        List<CreditCardBill> creditCardBills = creditCardMapper.queryBills(startDate, endDate, idNumber);
         return new ApiResult(true, creditCardBills);
     }
 }

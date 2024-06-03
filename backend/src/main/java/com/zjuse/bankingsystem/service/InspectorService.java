@@ -2,13 +2,17 @@ package com.zjuse.bankingsystem.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zjuse.bankingsystem.entity.Admin;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
+import com.zjuse.bankingsystem.mapper.CreditCardApplicationMapper;
 import com.zjuse.bankingsystem.mapper.CreditCardMapper;
 import com.zjuse.bankingsystem.mapper.InspectorMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -18,6 +22,8 @@ import com.zjuse.bankingsystem.utils.CardType;
 public class InspectorService {
     @Autowired
     private InspectorMapper inspectorMapper; 
+    @Autowired
+    private CreditCardApplicationMapper creditCardApplicationMapper; 
     @Autowired
     private CardService cardService; 
     @Autowired 
@@ -32,19 +38,31 @@ public class InspectorService {
         }
     }
 
+    public ApiResult getInspectorByUsername(String username) {
+        try {
+
+            CreditCardInspector res = inspectorMapper.selectOne(new QueryWrapper<CreditCardInspector>().eq("name", username));
+            if (Objects.isNull(res))
+                return new ApiResult(false, "inspector username not found");
+            return new ApiResult(true, res);
+        } catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
     public ApiResult queryRequestsByInspector(Integer permission) {
         if (permission.equals(1)) {
-            List<CreditCardApplication> creditCardApplications = inspectorMapper.queryPartRequestByInspector();
+            List<CreditCardApplication> creditCardApplications = creditCardApplicationMapper.queryPartRequestByInspector();
             return new ApiResult(true, creditCardApplications);
         } else {
-            List<CreditCardApplication> creditCardApplications = inspectorMapper.queryAllRequestByInspector();
+            List<CreditCardApplication> creditCardApplications = creditCardApplicationMapper.queryAllRequestByInspector();
             return new ApiResult(true, creditCardApplications);
         }
     }
 
     public ApiResult acceptRequest(Long id) {
         try {
-            CreditCardApplication creditCardApplication = inspectorMapper.selectSingleRequest(id);
+            CreditCardApplication creditCardApplication = creditCardApplicationMapper.selectSingleRequest(id);
             Integer type = creditCardApplication.getType();
             Integer status = creditCardApplication.getStatus();
             if (status.equals(1)) {
@@ -61,9 +79,9 @@ public class InspectorService {
                     creditCardMapper.insertCreditCard(creditCard);
                     cardService.bindUserAndCard(cardId, creditCardApplication.getIdNumber());
                 } else {
-                    inspectorMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
+                    creditCardMapper.updateCardLimit(creditCardApplication.getAmount(), creditCardApplication.getCreditCardId());
                 }
-                inspectorMapper.acceptRequest(id);
+                creditCardApplicationMapper.acceptRequest(id);
                 return new ApiResult(true, null);
             } else {
                 return new ApiResult(false, "请求已被处理");
@@ -74,8 +92,8 @@ public class InspectorService {
         }
     }
 
-    public ApiResult rejectRequest(Integer id) {
-        inspectorMapper.rejectRequest(id);
+    public ApiResult rejectRequest(Long id) {
+        creditCardApplicationMapper.rejectRequest(id);
         return new ApiResult(true, null);
     }
 }

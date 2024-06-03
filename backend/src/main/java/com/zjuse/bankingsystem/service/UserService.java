@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.injector.methods.Update;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
 import com.zjuse.bankingsystem.mapper.UserMapper;
@@ -103,6 +104,19 @@ public class UserService {
             if (Objects.isNull(res))
                 return new ApiResult(false, "username not found");
             return new ApiResult(true, res);
+        } catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
+    public ApiResult updateUserByUsername(String username, String phoneNumber, String new_password) {
+        try {
+            UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+            wrapper.eq("username", username);
+            wrapper.set("phone_number", phoneNumber);
+            wrapper.set("password", new_password);
+            userMapper.update(wrapper);
+            return new ApiResult(true, "success");
         } catch(Exception e) {
             return new ApiResult(false, e.getMessage());
         }

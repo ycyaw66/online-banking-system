@@ -73,8 +73,9 @@ CREATE TABLE `history`
 CREATE TABLE `admin`
 (
     `id` int not null auto_increment,
-    `name` varchar(50) not null,
+    `username` varchar(50) not null,
     `password` varchar(64) not null,
+    `role` varchar(64) not null, 
     primary key (`id`)
 );
 
@@ -104,6 +105,7 @@ create table `credit_card_application` (
 
 create table `credit_card_bill` (
     `id` int not null auto_increment,
+    `id_number` varchar(50) not null, 
     `credit_card_id` bigint not null,
     `amount` DECIMAL(15, 2) not null default 0,
     `bill_date` DATE,
@@ -114,14 +116,14 @@ create table `credit_card_bill` (
 create table `credit_card_admin` (
   `id` int not null auto_increment,
   `name` varchar(50) not null,
-  `password` varchar(50) not null,
+  `password` varchar(64) not null,
   primary key (`id`)
 ) engine=innodb charset=utf8mb4;
 
 create table `credit_card_inspector` (
     `id` int not null auto_increment,
     `name` varchar(50) not null,
-    `password` varchar (50) not null,
+    `password` varchar (64) not null,
     `permission` int not null,
     primary key(`id`),
     check(`permission` in (1, 2))

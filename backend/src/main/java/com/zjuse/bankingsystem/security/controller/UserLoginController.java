@@ -19,9 +19,11 @@ import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.controller.dto.ForgetReq;
 import com.zjuse.bankingsystem.security.controller.dto.SendMailReq;
+import com.zjuse.bankingsystem.security.controller.dto.UpdateProfileDto;
 import com.zjuse.bankingsystem.security.controller.dto.UserLoginReq;
 import com.zjuse.bankingsystem.security.controller.dto.UserRegisterReq;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
+import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.security.service.OnlineUserService;
@@ -59,7 +61,7 @@ public class UserLoginController {
         String password = req.getPassword();
         
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-            new UsernamePasswordAuthenticationToken(username, password);
+            new UsernamePasswordAuthenticationToken(LoginType.USER + "-" + username, password);
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
@@ -69,12 +71,12 @@ public class UserLoginController {
         }
 
 
-        String token = jwtTokenProvider.createToken(authentication);
+        String token = jwtTokenProvider.createToken(authentication, LoginType.USER);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
         
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", jwtConfig.getTokenStartWith() + " " + token);
-            put("user", jwtUserDto.getUser());
+            put("username", jwtUserDto.getUsername());
         }}; 
         onlineUserService.save(jwtUserDto, token);
 
@@ -119,7 +121,6 @@ public class UserLoginController {
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
-    
 
         apiResult = userService.updatePasswordByEmail(req.getEmail(), req.getPassword());
         if (!apiResult.ok) {
@@ -129,6 +130,24 @@ public class UserLoginController {
         return RespResult.success();
     }
     
+    @PostMapping("/profile/update")
+    public RespResult updateProfile(@RequestBody UpdateProfileDto req) {
+        ApiResult apiResult = currentUserService.getCurrentUser(); 
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message); 
+        }
+        User user = (User) apiResult.payload; 
+        if (!user.getPassword().equals(req.getPassword())) {
+            return RespResult.fail("密码错误");
+        }
+
+        apiResult = userService.updateUserByUsername(req.getUsername(), req.getPhoneNumber(), req.getNewPassword());
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        return RespResult.success(); 
+    }
 
     @GetMapping("/profile")
     public RespResult getProfile() {

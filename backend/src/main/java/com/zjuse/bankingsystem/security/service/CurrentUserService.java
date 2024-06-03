@@ -22,7 +22,8 @@ public class CurrentUserService {
         if (authentication == null) {
             return new ApiResult(false, "登陆过期");
         }
-        ApiResult apiResult = userService.getUserByUsername((String) authentication.getPrincipal());
+        String username = (String) authentication.getPrincipal(); 
+        ApiResult apiResult = userService.getUserByUsername(username.split("-")[1]);
         return apiResult; 
     }
 
@@ -31,7 +32,8 @@ public class CurrentUserService {
         if (authentication == null) {
             return new ApiResult(false, "登陆过期");
         }
-        ApiResult apiResult = userService.getUserByUsername((String) authentication.getPrincipal());
+        String username = (String) authentication.getPrincipal(); 
+        ApiResult apiResult = userService.getUserByUsername(username.split("-")[1]);
         if (!apiResult.ok) {
             return new ApiResult(false, "登录状态错误");
         }

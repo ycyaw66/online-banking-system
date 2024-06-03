@@ -24,6 +24,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         String username = String.valueOf(authentication.getPrincipal());
         String password = String.valueOf(authentication.getCredentials());
 
+        log.info("login info: {}", username);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (Objects.isNull(userDetails)) {
             throw new AuthenticationCredentialsNotFoundException("username not found");

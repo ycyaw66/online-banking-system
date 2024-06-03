@@ -13,18 +13,20 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class JwtUserDto implements UserDetails {
-    private User user;
+    private String username;
+
+    private String password; 
 
     private Collection<AuthorityDto> authorities;
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override

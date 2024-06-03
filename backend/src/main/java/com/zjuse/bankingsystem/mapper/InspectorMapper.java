@@ -16,21 +16,18 @@ public interface InspectorMapper extends BaseMapper<CreditCardInspector> {
     @Select("select * from credit_card_inspector where name = #{name} and password = #{password}")
     public CreditCardInspector loginInspector(String name, String password);
 
-    @Select("select * from credit_card_application where status = 1")
-    public List<CreditCardApplication> queryAllRequestByInspector();
+    @Select("select * from credit_card_inspector")
+    public List<CreditCardInspector> queryInspectors();
 
-    @Select("select * from credit_card_application where status = 1 and type = 1")
-    public List<CreditCardApplication> queryPartRequestByInspector();
+    @Update("update credit_card_inspector set password = #{password} where id = #{id}")
+    public void modifyInspectorPassword(Integer id, String password);
 
-    @Select("select * from credit_card_application where id = #{id}")
-    public CreditCardApplication selectSingleRequest(Long id);
+    @Update("update credit_card_inspector set permission = #{permission} where id = #{id}")
+    public void modifyInspectorLevel(Integer id, Integer permission);
 
-    @Update("update credit_card set card_limit = #{card_limit} where id = #{id}")
-    public void updateCardLimit(BigDecimal card_limit, Long id);
+    @Update("delete from credit_card_inspector where id = #{id}")
+    public void deleteInspector(Integer id);
 
-    @Update("update credit_card_application set status = 2 where id = #{id}")
-    public void acceptRequest(Long id);
-
-    @Update("update credit_card_application set status = 3 where id = #{id}")
-    public void rejectRequest(Integer id);
+    @Update("insert into credit_card_inspector (name, password, permission) VALUES ( #{name}, #{password}, #{permission})")
+    public void addNewInspector(String name, String password, Integer permission);
 }

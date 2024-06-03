@@ -3,14 +3,14 @@ package com.zjuse.bankingsystem.entity.creditCard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("credit_card_application")
 public class CreditCardApplication {
     private Long id;
     private String idNumber;

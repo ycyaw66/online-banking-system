@@ -56,8 +56,13 @@ public class CreditCardController {
     }
 
     @PostMapping("/modify-password")
-    public RespResult modifyCreditCardPassword(@RequestParam Long card_id, @RequestParam String password) {
-        ApiResult apiResult = creditCardService.modifyCreditCardPassword(card_id, password);
+    public RespResult modifyCreditCardPassword(@RequestParam Long card_id, @RequestParam String old_password, @RequestParam String new_password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, old_password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        apiResult = creditCardService.modifyCreditCardPassword(card_id, new_password);
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
@@ -65,8 +70,13 @@ public class CreditCardController {
     }
 
     @PostMapping("/update-limit")
-    public RespResult addModifyLimitRequest(@RequestParam Long card_id, @RequestParam BigDecimal limit) {
-        ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
+    public RespResult addModifyLimitRequest(@RequestParam Long card_id, @RequestParam BigDecimal limit, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        apiResult = currentUserService.getCurrentUserIdNumber();
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
@@ -79,33 +89,46 @@ public class CreditCardController {
     }
 
     @PostMapping("/return")
-    public RespResult returnMoney(@RequestParam Long card_id, @RequestParam BigDecimal amount) {
-        ApiResult apiResult = creditCardService.returnMoney(card_id, amount);
+    public RespResult returnMoney(@RequestParam Long card_id, @RequestParam BigDecimal amount, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+
+        apiResult = creditCardService.returnMoney(card_id, amount);
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
         return RespResult.success();
     }
 
-    @GetMapping("/lost")
+    @PostMapping("/lost")
     public RespResult makeCreditCardLost(@RequestParam Long card_id, @RequestParam String password) {
-        ApiResult apiResult = creditCardService.makeCreditCardLost(card_id, password); 
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        apiResult = creditCardService.makeCreditCardLost(card_id, password); 
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
         return RespResult.success();
     }
 
-    @GetMapping("/delete")
-    public RespResult deleteCreditCard(@RequestParam Long card_id) {
-        ApiResult apiResult = creditCardService.deleteCreditCard(card_id); 
+    @PostMapping("/delete")
+    public RespResult deleteCreditCard(@RequestParam Long card_id, @RequestParam String password) {
+        ApiResult apiResult = creditCardService.checkCreditCardPassword(card_id, password);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        apiResult = creditCardService.deleteCreditCard(card_id); 
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
         return RespResult.success();
     };
 
-    @GetMapping("/queryRequests")
+    @GetMapping("/query-request")
     public RespResult queryRequestsByCustomer() {
         ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
         if (!apiResult.ok) {
@@ -118,8 +141,13 @@ public class CreditCardController {
 
 
     @PostMapping("/pay")
-    public RespResult bankPay(@RequestParam Long card_id, @RequestParam String id_number, @RequestParam BigDecimal amount, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam String password) {
-        ApiResult apiResult = creditCardService.bankPay(card_id, password, amount, date);
+    public RespResult bankPay(@RequestParam Long card_id, @RequestParam BigDecimal amount, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam String password) {
+        ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        String idNumber = (String) apiResult.payload;
+        apiResult = creditCardService.bankPay(card_id, idNumber, password, amount, date);
         if (apiResult.ok) {
             return RespResult.success(apiResult.payload);
         } else {
@@ -128,8 +156,16 @@ public class CreditCardController {
     }
 
     @PostMapping("/bills/query")
-    public RespResult queryBills(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start_date, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date, @RequestParam Long card_id) {
-        ApiResult apiResult = creditCardService.queryBills(start_date, end_date, card_id);
+    public RespResult queryBills(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start_date, @DateTimeFormat(pattern = "yyyy-MM-dd") Date end_date) {
+        ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        String idNumber = (String) apiResult.payload;
+        apiResult = creditCardService.queryBills(start_date, end_date, idNumber);
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
         return RespResult.success(apiResult.payload);
     }
 }
