@@ -129,6 +129,9 @@ public class UserAndCardService {
         try {
             QueryWrapper<History> wrapper = new QueryWrapper<>();
             // QueryWrapper<History> idWrapper = new QueryWrapper<>();
+            if (condition.getCardId() == null) {
+                return new ApiResult(false, "card id can't be null");
+            }
             if (condition.getTargetCardId() != null && condition.getTransferCardId() != null) {
                 return new ApiResult(false, "target card and transfer card can't be set at the same time");
             }
@@ -167,6 +170,82 @@ public class UserAndCardService {
             ApiResult apiResult = new ApiResult(true, "success");
             apiResult.payload = list;
             return apiResult;
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
+    public ApiResult historyAdmin(HistoryCondition condition) {
+        try {
+            QueryWrapper<History> wrapper = new QueryWrapper<>();
+            // QueryWrapper<History> idWrapper = new QueryWrapper<>();
+            if (condition.getTargetCardId() != null && condition.getTransferCardId() != null) {
+                return new ApiResult(false, "target card and transfer card can't be set at the same time");
+            }
+            if (condition.getTargetCardId() != null) {
+                wrapper.eq("target_card", condition.getTargetCardId());
+            }
+            if (condition.getTransferCardId() != null) {
+                wrapper.eq("card_id", condition.getTransferCardId());
+            }
+            if (condition.getLeastAmount() != null) {
+                wrapper.ge("amount", condition.getLeastAmount());
+            }
+            if (condition.getMostAmount() != null) {
+                wrapper.le("amount", condition.getMostAmount());
+            }
+            if (condition.getStartTime() != null) {
+                wrapper.ge("time", condition.getStartTime());
+            }
+            if (condition.getEndTime() != null) {
+                wrapper.le("time", condition.getEndTime());
+            }
+            if (condition.getRemark() != null) {
+                wrapper.like("remark", condition.getRemark());
+            }
+            List<History> list = historyMapper.selectList(wrapper);
+            if (list == null) {
+                return new ApiResult(false, "database error");
+            }
+            ApiResult apiResult = new ApiResult(true, "success");
+            apiResult.payload = list;
+            return apiResult;
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
+
+    public ApiResult loanHistory(Long userId) {
+        try {
+            ApiResult apiResult = cardService.getAllCardbyUserId(userId);
+            if (!apiResult.ok) {
+                return apiResult;
+            }
+            List<Card> cards = (List<Card>) apiResult.payload;
+            List<History> histories = new Vector<>();
+            for(Card card : cards) {
+                HistoryCondition historyCondition = new HistoryCondition();
+                historyCondition.setTargetCardId(card.getCardId());
+                Date date = new Date(System.currentTimeMillis()); // 获取90天前date
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, -90);
+                historyCondition.setStartTime(date);
+                apiResult = historyAdmin(historyCondition);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
+                apiResult = historyAdmin(historyCondition);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
+                List<History> histories_ = (List<History>) apiResult.payload;
+                histories.addAll(histories_);
+            }
+            return new ApiResult(true, "success", histories);
         }
         catch (Exception e) {
             return new ApiResult(false, e.getMessage());

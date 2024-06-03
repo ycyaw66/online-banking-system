@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class HistoryCondition {
     @JsonProperty("card_id")
-    @NonNull
     Long cardId;
     @JsonProperty("target_card_id")
     Long targetCardId;
