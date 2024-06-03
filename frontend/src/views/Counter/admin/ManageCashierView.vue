@@ -1,166 +1,124 @@
 <template>
   <div>
-    <div class="common-layout">
-      <el-container class="layout-container-demo" style="height: 700px">
-        <!--标题区域-->
-        <el-header
-            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
-          <div style="display: inline-block;">
-            <img src="../icons/logo.png"
-                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-          </div>
-          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">线上银行系统--柜台操作系统</span>
-        </el-header>
-        <el-container>
-          <!--侧边栏区域-->
-          <el-aside width="200px" style="height: 87vh; display: flex; flex-direction: column;">
-            <el-scrollbar style="flex: 1">
-              <el-menu :default-openeds="['1', '3']">
-                <el-sub-menu index="1">
-                  <template #title>
-                    <el-icon style="color: white;">
-                      <UserFilled/>
-                    </el-icon>
-                    <span style="color: white;">系统管理员功能</span>
-                  </template>
-                  <el-menu-item index="1-2">
-                    <router-link to="/counter/admin/cashier">
-                      <el-icon style="color: white;">
-                        <Avatar/>
-                      </el-icon>
-                      <span style="color: white;">管理出纳员</span>
-                    </router-link>
-                  </el-menu-item>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-            <el-button type="danger"
-                       @click="exit"
-                       style="display: block; margin: auto;">
-              退出登录
-            </el-button>
-          </el-aside>
-          <!--主展示区域-->
-          <el-main style="background-color: #f1f1f1;">
-            <br>
-            <br>
-            <div style="display: flex; justify-content: center;">
-              <el-table :data="cashiers" stripe style="width: 1200px;">
-                <el-table-column prop="id" label="出纳员id" width="200px"/>
-                <el-table-column prop="username" label="出纳员姓名" width="200px"/>
-                <el-table-column label="权限级别" width="200px">
-                  <template v-slot="{ row }">
-                    <span v-if="row.authority === 0">封禁</span>
-                    <span v-else-if="row.authority === 1">查询和存取款</span>
-                    <span v-else-if="row.authority === 2">账户相关操作除冻结解冻</span>
-                    <span v-else-if="row.authority === 3">全部</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="400px">
-                  <template v-slot="{ row }">
-                    <el-button type="primary" size="mini"
-                               @click="modify_password_visible=true, modify_password.new_password='', modify_password.new_password_again='', modify_password.id=row.id">
-                      修改密码
-                    </el-button>
-                    <el-button type="primary" size="mini"
-                               @click="modify_level_visible=true, modify_level.id=row.id, modify_level.new_level=row.permission">
-                      修改权限级别
-                    </el-button>
-                    <el-button type="primary" size="danger"
-                               @click="delete_cashier_id=row.id, delete_cashier_visible=true ">删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <br><br>
-            <div style="display: flex; justify-content: center; align-items: center;">
-              <el-button type="primary"
-                         @click="add_cashier_visible = true, new_cashier.name='', new_cashier.password='', new_cashier.password_again='', new_cashier.level=''">
-                新建出纳员
+    <el-main style="background-color: #f1f1f1;">
+      <br>
+      <br>
+      <div style="display: flex; justify-content: center;">
+        <el-table :data="cashiers" stripe style="width: 1200px;">
+          <el-table-column prop="id" label="出纳员id" width="200px"/>
+          <el-table-column prop="username" label="出纳员姓名" width="200px"/>
+          <el-table-column label="权限级别" width="200px">
+            <template v-slot="{ row }">
+              <span v-if="row.authority === 0">封禁</span>
+              <span v-else-if="row.authority === 1">查询和存取款</span>
+              <span v-else-if="row.authority === 2">账户相关操作除冻结解冻</span>
+              <span v-else-if="row.authority === 3">全部</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="400px">
+            <template v-slot="{ row }">
+              <el-button type="primary" size="mini"
+                         @click="modify_password_visible=true, modify_password.new_password='', modify_password.new_password_again='', modify_password.id=row.id">
+                修改密码
               </el-button>
-            </div>
+              <el-button type="primary" size="mini"
+                         @click="modify_level_visible=true, modify_level.id=row.id, modify_level.new_level=row.permission">
+                修改权限级别
+              </el-button>
+              <el-button type="primary" size="danger"
+                         @click="delete_cashier_id=row.id, delete_cashier_visible=true ">删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <br><br>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <el-button type="primary"
+                   @click="add_cashier_visible = true, new_cashier.name='', new_cashier.password='', new_cashier.password_again='', new_cashier.level=''">
+          新建出纳员
+        </el-button>
+      </div>
 
-            <!--接下来是表单区域-->
-            <el-dialog title="密码修改" v-model="modify_password_visible" style="width: 25vw;">
-              <el-form :model="modify_password">
-                <el-form-item label="请输入旧密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="modify_password.old_password" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请输入新密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-              </el-form>
-              <template #footer>
-                <el-button @click="modify_password_visible = false">取 消</el-button>
-                <el-button type="primary" @click="modifyPassword">确 定</el-button>
-              </template>
-            </el-dialog>
+      <!--接下来是表单区域-->
+      <el-dialog title="密码修改" v-model="modify_password_visible" style="width: 25vw;">
+        <el-form :model="modify_password">
+          <el-form-item label="请输入旧密码" :label-width="formLabelWidth">
+            <el-input type="password" v-model="modify_password.old_password" autocomplete="off"
+                      style="width: 12.5vw;"></el-input>
+          </el-form-item>
+          <el-form-item label="请输入新密码" :label-width="formLabelWidth">
+            <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
+                      style="width: 12.5vw;"></el-input>
+          </el-form-item>
+          <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
+            <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
+                      style="width: 12.5vw;"></el-input>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="modify_password_visible = false">取 消</el-button>
+          <el-button type="primary" @click="modifyPassword">确 定</el-button>
+        </template>
+      </el-dialog>
 
-            <el-dialog title="权限修改" v-model="modify_level_visible" style="width: 25vw;">
-              <el-form :model="modify_level">
-                <el-form-item label="请选择新的权限等级" :label-width="formLabelWidth">
-                  <el-select v-model="modify_level.new_level" style="width: 12.5vw;">
-                    <el-option label="封禁" value="0"></el-option>
-                    <el-option label="查询和存取款" value="1"></el-option>
-                    <el-option label="账户相关操作除冻结解冻" value="2"></el-option>
-                    <el-option label="全部" value="3"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-form>
-              <template #footer>
-                <el-button @click="modify_level_visible = false">取 消</el-button>
-                <el-button type="primary" @click="modifyLevel">确 定</el-button>
-              </template>
-            </el-dialog>
+      <el-dialog title="权限修改" v-model="modify_level_visible" style="width: 25vw;">
+        <el-form :model="modify_level">
+          <el-form-item label="请选择新的权限等级" :label-width="formLabelWidth">
+            <el-select v-model="modify_level.new_level" style="width: 12.5vw;">
+              <el-option label="封禁" value="0"></el-option>
+              <el-option label="查询和存取款" value="1"></el-option>
+              <el-option label="账户相关操作除冻结解冻" value="2"></el-option>
+              <el-option label="全部" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="modify_level_visible = false">取 消</el-button>
+          <el-button type="primary" @click="modifyLevel">确 定</el-button>
+        </template>
+      </el-dialog>
 
-            <el-dialog title="新的出纳员" v-model="add_cashier_visible" style="width: 25vw;">
-              <el-form :model="new_cashier">
-                <el-form-item label="请输入账号名" :label-width="formLabelWidth">
-                  <el-input v-model="new_cashier.name" autocomplete="off" style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请选择权限等级" :label-width="formLabelWidth">
-                  <el-select v-model="new_cashier.authority" style="width: 12.5vw;">
-                    <el-option label="封禁" value="0"></el-option>
-                    <el-option label="查询和存取款" value="1"></el-option>
-                    <el-option label="账户相关操作除冻结解冻" value="2"></el-option>
-                    <el-option label="全部" value="3"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="请输入密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="new_cashier.password" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="new_cashier.password_again" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-              </el-form>
-              <template #footer>
-                <el-button @click="add_cashier_visible = false">取 消</el-button>
-                <el-button type="primary" @click="addCashier">确 定</el-button>
-              </template>
-            </el-dialog>
+      <el-dialog title="新的出纳员" v-model="add_cashier_visible" style="width: 25vw;">
+        <el-form :model="new_cashier">
+          <el-form-item label="请输入账号名" :label-width="formLabelWidth">
+            <el-input v-model="new_cashier.name" autocomplete="off" style="width: 12.5vw;"></el-input>
+          </el-form-item>
+          <el-form-item label="请选择权限等级" :label-width="formLabelWidth">
+            <el-select v-model="new_cashier.authority" style="width: 12.5vw;">
+              <el-option label="封禁" value="0"></el-option>
+              <el-option label="查询和存取款" value="1"></el-option>
+              <el-option label="账户相关操作除冻结解冻" value="2"></el-option>
+              <el-option label="全部" value="3"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="请输入密码" :label-width="formLabelWidth">
+            <el-input type="password" v-model="new_cashier.password" autocomplete="off"
+                      style="width: 12.5vw;"></el-input>
+          </el-form-item>
+          <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
+            <el-input type="password" v-model="new_cashier.password_again" autocomplete="off"
+                      style="width: 12.5vw;"></el-input>
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <el-button @click="add_cashier_visible = false">取 消</el-button>
+          <el-button type="primary" @click="addCashier">确 定</el-button>
+        </template>
+      </el-dialog>
 
-            <el-dialog title="删除出纳员" v-model="delete_cashier_visible" style="width: 25vw;">
-              <span>确定删除编号为&nbsp;<span style="font-weight: bold;">{{ delete_cashier_id }}</span>&nbsp;的出纳员吗？</span>
-              <template #footer>
-                <el-button @click="delete_cashier_visible = false">取 消</el-button>
-                <el-button type="danger" @click="deleteCashier">确 定</el-button>
-              </template>
-            </el-dialog>
+      <el-dialog title="删除出纳员" v-model="delete_cashier_visible" style="width: 25vw;">
+        <span>确定删除编号为&nbsp;<span style="font-weight: bold;">{{
+            delete_cashier_id
+          }}</span>&nbsp;的出纳员吗？</span>
+        <template #footer>
+          <el-button @click="delete_cashier_visible = false">取 消</el-button>
+          <el-button type="danger" @click="deleteCashier">确 定</el-button>
+        </template>
+      </el-dialog>
 
-          </el-main>
+    </el-main>
 
-        </el-container>
-      </el-container>
-    </div>
   </div>
 </template>
 
@@ -242,7 +200,7 @@ export default {
     modifyLevel() {
       //this.$message.success('修改id为' + this.modify_level.id + '的审查员权限等级至' + this.modify_level.new_level);
       this.modify_level_visible = false;
-      if(this.modify_level.new_level!=='0'&&this.modify_level.new_level!=='1'&&this.modify_level.new_level!=='2'&&this.modify_level.new_level!=='3'){
+      if (this.modify_level.new_level !== '0' && this.modify_level.new_level !== '1' && this.modify_level.new_level !== '2' && this.modify_level.new_level !== '3') {
         this.$message.error('选择不能为空');
         return;
       }
@@ -267,7 +225,7 @@ export default {
         return;
       }
 
-      if (this.new_cashier.authority !=='0'&&this.new_cashier.authority !=='1'&&this.new_cashier.authority !=='2'&&this.new_cashier.authority !=='3') {
+      if (this.new_cashier.authority !== '0' && this.new_cashier.authority !== '1' && this.new_cashier.authority !== '2' && this.new_cashier.authority !== '3') {
         this.$message.error('权限等级不能为空');
         return;
       }
@@ -305,12 +263,12 @@ export default {
           id: this.delete_cashier_id
         }
       }).then(response => {
-            if (response.data.code === 1) {
-              this.$message.error(response.data.err)
-            } else {
-              this.$message.success('删除审查员成功')
-              this.queryCashier();
-            }
+        if (response.data.code === 1) {
+          this.$message.error(response.data.err)
+        } else {
+          this.$message.success('删除审查员成功')
+          this.queryCashier();
+        }
       });
       this.delete_cashier_visible = false;
     },

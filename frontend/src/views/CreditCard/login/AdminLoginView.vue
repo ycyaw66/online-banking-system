@@ -95,7 +95,7 @@ export default {
         } else {
           // 登录成功
           Cookies.set('token', response.data.payload.token);
-          this.$router.push('/creditCard/admin/inspector');
+          this.$router.push('/onlineBank/admin/inspector');
         }
       }).catch(error => {
         console.error('login error:', error);

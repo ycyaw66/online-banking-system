@@ -94,7 +94,7 @@ export default {
           this.$message.error(response.data.err);
           return;
         }else{
-          this.$router.push('/counter/admin/cashier');
+          this.$router.push('/onlineBank/admin/cashier');
         }
       })
     },

@@ -25,6 +25,18 @@
               </el-icon>
               <span>黑名单修改</span>
             </el-menu-item>
+            <el-menu-item index="inspector">
+              <el-icon>
+                <Avatar />
+              </el-icon>
+              <span>管理信用卡审查员</span>
+            </el-menu-item>
+            <el-menu-item index="cashier">
+              <el-icon>
+                <Avatar />
+              </el-icon>
+              <span>管理出纳员</span>
+            </el-menu-item>
             <el-button class="logout-button" type="danger" @click="logoutVisible = true">
               退出登录
             </el-button>

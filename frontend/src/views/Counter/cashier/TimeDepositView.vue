@@ -202,14 +202,15 @@ export default {
         return;
       }
 
-      let numMoney = Number(this.amount);
-      if (isNaN(numMoney)) {
+      if (isNaN(this.amount) || this.amount === '') {
         this.$message.error('输入的存款金额不是一个有效的数字');
+        return;
       } else {
-        var money_10 = numMoney * 100;
+        var money_10 = this.amount * 100;
         var isInt = money_10 % 1 === 0;
         if(!isInt){
           this.$message.error('存款金额小数部分最多两位');
+          return;
         }
       }
 

@@ -214,6 +214,19 @@ export default {
         this.$message.error('取款金额不能为空或为0');
         return;
       }
+
+      if (isNaN(this.withdraw_amount) || this.withdraw_amount === '') {
+        // 如果不是数字，就弹出警告并返回，不继续执行函数
+        this.$message.error('请输入数字作为取款金额！');
+        return;
+      }
+      var limit = this.withdraw_amount * 100;
+      var isInt = limit % 1 === 0;
+      if (!isInt) {
+        this.$message.error('取款金额的小数部分最多两位');
+        return;
+      }
+
       axios.post("/dp/counter/dp/draw",null,{
         params:{
 
