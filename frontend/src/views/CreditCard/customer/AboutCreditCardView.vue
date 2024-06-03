@@ -66,8 +66,8 @@
                 </el-sub-menu>
               </el-menu>
             </el-scrollbar>
-            <el-button type="danger" @click="exit" style="display: block; margin: auto;">
-              退出登录
+            <el-button type="danger" @click="exit" style="display: block; margin: auto; margin-bottom: 10%;">
+              退出信用卡页面
             </el-button>
           </el-aside>
           <!--主展示区域-->
@@ -93,16 +93,16 @@
                     <!-- 卡片内容 -->
                     <div style="margin-left: 10px; text-align: start; font-size: 16px;">
                       <p>信用卡 ID: {{ card.id }}</p>
-                      <p>信用卡总额度(元): {{ card.cardLimit / 100 }}</p>
-                      <p>信用卡已用额度(元): {{ card.loan / 100 }}</p>
-                      <p>信用卡可用额度(元): {{ (card.cardLimit - card.loan) / 100 }}</p>
-                      <p>是否挂失: {{ card.isLost === 1 ? '已挂失' : '未挂失' }}</p>
+                      <p>信用卡总额度(元): {{ card.card_limit }}</p>
+                      <p>信用卡已用额度(元): {{ card.loan }}</p>
+                      <p>信用卡可用额度(元): {{ (card.card_limit - card.loan) }}</p>
+                      <p>是否挂失: {{ card.is_lost === 1 ? '已挂失' : '未挂失' }}</p>
                     </div>
 
                     <el-divider/>
 
                     <!-- 卡片操作 -->
-                    <div style="margin-top: 10px;" v-if="card.isLost === 0">
+                    <div style="margin-top: 10px;" v-if="card.is_lost === 0">
                       <el-button type="primary"
                                  @click="modify_password_card_id = card.id, modify_password_old_password = card.password, modify_password.old_password = '', modify_password.new_password = '', modify_password.new_password_again = '', modify_password_visible = true">
                         修改密码
@@ -171,7 +171,7 @@
                   <template #footer>
                     <el-button @click="modify_password_visible = false">取 消</el-button>
                     <el-button type="primary"
-                               @click="modifyPassword(modify_password_card_id, modify_password_old_password)">确 定
+                               @click="modifyPassword(modify_password_card_id)">确 定
                     </el-button>
                   </template>
                 </el-dialog>
@@ -203,7 +203,7 @@
                   </el-form>
                   <template #footer>
                     <el-button @click="card_lost_visible = false">取 消</el-button>
-                    <el-button type="primary" @click="reportLost(lost_card_id, lost_card_password)">确 定</el-button>
+                    <el-button type="primary" @click="reportLost(lost_card_id)">确 定</el-button>
                   </template>
                 </el-dialog>
 
@@ -217,7 +217,7 @@
                   <template #footer>
                     <el-button @click="card_cancel_visible = false">取 消</el-button>
                     <el-button type="primary"
-                               @click="cancelCard(cancel_card_id, cancel_card_password, cancel_card_loan)">
+                               @click="cancelCard(cancel_card_id, cancel_card_loan)">
                       确 定
                     </el-button>
                   </template>
@@ -235,7 +235,7 @@
                   </el-form>
                   <template #footer>
                     <el-button @click="return_money_visible = false">取 消</el-button>
-                    <el-button type="primary" @click="returnMoney(return_money_password)">确 定</el-button>
+                    <el-button type="primary" @click="returnMoney()">确 定</el-button>
                   </template>
                 </el-dialog>
 
@@ -254,6 +254,18 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -262,25 +274,22 @@ export default {
       id_number: Cookies.get('credit_card_user_id_card'),
       credit_cards: [{
         id: '1',
-        idNumber: '3220101234',
-        password: '123456',
-        cardLimit: '100',
+        id_number: '3220101234',
+        card_limit: '100',
         loan: '10',
-        isLost: '0'
+        is_lost: '0'
       }, {
         id: '2',
-        idNumber: '3220105678',
-        password: "123456",
-        cardLimit: '200',
+        id_number: '3220105678',
+        card_limit: '200',
         loan: '20',
-        isLost: '1'
+        is_lost: '1'
       }, {
         id: '3',
-        idNumber: '3220109123',
-        password: '123456',
-        cardLimit: '300',
+        id_number: '3220109123',
+        card_limit: '300',
         loan: '30',
-        isLost: '0'
+        is_lost: '0'
       }],
       new_card: {
         limit: '',
@@ -330,7 +339,7 @@ export default {
   methods: {
     exit() {
       this.$store.state.user.ID_number = '';
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
     addNewCard() {
       // 检查信用卡额度是否为空
@@ -364,36 +373,39 @@ export default {
       }
 
       // 如果密码一致，就关闭模态框并弹出成功提示
-      this.add_new_card_visible = false;
       //this.$message.success('添加信用卡额度为' + this.new_card.limit)
+      const encrypted_password = CryptoJS.SHA256(this.new_card.first_password).toString();
 
-      axios.post("/creditCard/customer/card/register", null, {
+      axiosInstance.post("/credit-card/register", null, {
         params: {
-          id_number: Cookies.get('credit_card_user_id_card'),
-          card_limit: limit,
-          password: this.new_card.first_password
+          card_limit: this.new_card.limit,
+          password: encrypted_password
         }
       }).then(response => {
         if (response.data.code === 1) {
-          this.$message.error("申请失败")
+          this.$message.error(response.data.err);
         } else {
           this.$message.success("申请成功")
         }
+        this.add_new_card_visible = false;
         this.queryCards();
+      }).catch(error => {
+        console.error('POST error:', error);
+        this.$message.error('请求失败');
       });
 
     },
-    modifyPassword(card_id, password) {
+    modifyPassword(card_id) {// 修改信用卡密码
       // 检查新密码是否为空
       if (this.modify_password.new_password === '') {
         this.$message.error('新密码不能为空');
         return;
       }
-      if (this.modify_password.old_password !== password) {
-        // 如果不一致，就弹出警告并返回，不继续执行函数
-        this.$message.error('原密码错误!');
-        return;
-      }
+      // if (this.modify_password.old_password !== password) {
+      //   // 如果不一致，就弹出警告并返回，不继续执行函数
+      //   this.$message.error('原密码错误!');
+      //   return;
+      // }
       if (this.modify_password.new_password !== this.modify_password.new_password_again) {
         // 如果不一致，就弹出警告并返回，不继续执行函数
         this.$message.error('两次输入的新密码不一致，请重新输入！');
@@ -406,22 +418,33 @@ export default {
         return;
       }
       // this.$message.success('修改信用卡' + card_id + '密码成功，新密码为' + this.modify_password.new_password);
-      this.modify_password_visible = false;
-      axios.post("/creditCard/customer/card/modify", null, {
+
+      const encrypted_new_password = CryptoJS.SHA256(this.modify_password.new_password).toString();
+      const encrypted_old_password = CryptoJS.SHA256(this.modify_password.old_password).toString();
+
+
+      axiosInstance.post("/credit-card/modify-password", null, {
         params: {
           card_id: card_id,
-          password: this.modify_password.new_password
+          old_password: encrypted_old_password,
+          new_password: encrypted_new_password,
         }
       }).then(response => {
         if (response.data.code === 1) {
-          this.$message.error("修改失败")
+          this.$message.error(response.data.err);
+          return;
         } else {
           this.$message.success("修改成功")
         }
+        this.modify_password_visible = false;
         this.queryCards();
-      });
+      }).catch(error => {
+        console.error('POST error:', error);
+        this.$message.error('修改失败');
+      })
+
     },
-    modifyLimit(card_id, password, loan) {
+    modifyLimit(card_id, password, loan) {// 修改信用卡额度
       if (isNaN(this.modify_limit.new_limit) || this.modify_limit.new_limit === '') {
         // 如果不是数字，就弹出警告并返回，不继续执行函数
         this.$message.error('请输入数字作为信用卡额度！');
@@ -436,76 +459,97 @@ export default {
         return;
       }
       // 检查新的额度是否超过现有的贷款额度
-      if (limit < loan) {
+      if (this.modify_limit.new_limit < loan) {
         this.$message.error('新额度不能小于当前欠款');
         return;
       }
-      if (this.modify_limit.password !== password) {
-        // 如果不一致，就弹出警告并返回，不继续执行函数
-        this.$message.error('信用卡密码错误!');
-        return;
-      }
+      // if (this.modify_limit.password !== password) {
+      //   // 如果不一致，就弹出警告并返回，不继续执行函数
+      //   this.$message.error('信用卡密码错误!');
+      //   return;
+      // }
       //this.$message.success('修改信用卡' + card_id + '的额度至' + limit + '元');
-      this.modify_card_limit_visible = false;
-      axios.post("/creditCard/customer/card/update", null, {
+
+      const encrypted_old_password = CryptoJS.SHA256(this.modify_limit.password).toString();
+
+      axiosInstance.post("/credit-card/update-limit", null, {
         params: {
-          id_number: Cookies.get('credit_card_user_id_card'),
-          id: card_id,
-          limit: limit
+          card_id: card_id,
+          limit: this.modify_limit.new_limit,
+          password: encrypted_old_password
         }
       }).then(response => {
         if (response.data.code === 1) {
-          this.$message.error('申请失败');
+          this.$message.error(response.data.err);
+          return;
         } else {
           this.$message.success('申请成功')
         }
+        this.modify_card_limit_visible = false;
         this.queryCards();
-      });
+      }).catch(error => {
+        console.error('POST error:', error);
+        this.$message.error('申请失败');
+      })
 
     },
-    reportLost(card_id, password) {
-      if (this.lost_card.password !== password) {
-        // 如果不一致，就弹出警告并返回，不继续执行函数
-        this.$message.error('信用卡密码错误!');
-        return;
-      }
-      this.$message.success('挂失信用卡id为' + card_id)
-      this.card_lost_visible = false;
+    reportLost(card_id) {
+      // if (this.lost_card.password !== password) {
+      //   // 如果不一致，就弹出警告并返回，不继续执行函数
+      //   this.$message.error('信用卡密码错误!');
+      //   return;
+      // }
+      // this.$message.success('挂失信用卡id为' + card_id)
 
-      axios.get("/creditCard/customer/card/lost", {params: {card_id: card_id}})
+      const encrypted_password = CryptoJS.SHA256(this.lost_card.password).toString();
+
+      axiosInstance.post("/credit-card/lost", null, {params: {card_id: card_id, password: encrypted_password}})
           .then(response => {
             if (response.data.code === 1) {
-              this.$message.error('挂失失败')
+              this.$message.error(response.data.err);
+              return;
             } else {
-              this.$message.success('挂失成功')
+              this.$message.success('挂失成功');
             }
+            this.card_lost_visible = false;
             this.queryCards();
-          });
+          }).catch(error => {
+        console.error('GET error:', error);
+        this.$message.error('挂失失败');
+      })
+
     },
-    cancelCard(card_id, password, loan) {
+    cancelCard(card_id, loan) {
       if (loan !== 0) {
         this.$message.error('信用卡还存在欠额,无法注销!');
         return;
       }
-      if (this.cancel_card.password !== password) {
-        // 如果不一致，就弹出警告并返回，不继续执行函数
-        this.$message.error('信用卡密码错误!');
-        return;
-      }
-      this.$message.success('注销信用卡id为' + card_id)
-      this.card_cancel_visible = false;
+      // if (this.cancel_card.password !== password) {
+      //   // 如果不一致，就弹出警告并返回，不继续执行函数
+      //   this.$message.error('信用卡密码错误!');
+      //   return;
+      // }
+      // this.$message.success('注销信用卡id为' + card_id)
 
-      axios.get("/creditCard/customer/card/delete", {params: {card_id: card_id}})
+      const encrypted_password = CryptoJS.SHA256(this.cancel_card.password).toString();
+
+      axiosInstance.post("/credit-card/delete", null, {params: {card_id: card_id, password: encrypted_password}})
           .then(response => {
             if (response.data.code === 1) {
-              this.$message.error('注销失败')
+              this.$message.error(response.data.err);
+              return;
             } else {
               this.$message.success('注销成功')
             }
+            this.card_cancel_visible = false;
             this.queryCards();
-          });
+          }).catch(error => {
+        console.error('GET error:', error);
+        this.$message.error('注销失败');
+      })
+
     },
-    returnMoney(password) {
+    returnMoney() {
       // 检查密码是否为空
       if (this.return_money.password === '') {
         this.$message.error('密码不能为空');
@@ -513,10 +557,10 @@ export default {
       }
 
       // 检查密码是否正确
-      if (this.return_money.password !== password) {
-        this.$message.error('密码错误');
-        return;
-      }
+      // if (this.return_money.password !== password) {
+      //   this.$message.error('密码错误');
+      //   return;
+      // }
 
       // 检查还款金额是否为空
       if (this.return_money.amount === '') {
@@ -532,7 +576,7 @@ export default {
 
       // 判断输入的还款金额是否大于欠额（loan）
       console.log('还款金额为' + this.return_money.amount + ' and 欠额为' + this.return_money.loan);
-      if (Number(this.return_money.amount) * 100 > Number(this.return_money.loan)) {
+      if (Number(this.return_money.amount) > Number(this.return_money.loan)) {
         this.$message.error('还款金额不能大于信用卡欠额');
         return;
       }
@@ -545,32 +589,42 @@ export default {
       }
 
       //this.$message.success('还款信用卡id为' + this.return_money.card_id + '成功，还款金额为' + this.return_money.amount);
-      this.return_money_visible = false;
+
+      const encrypted_password = CryptoJS.SHA256(this.return_money.password).toString();
       // 如果所有验证都通过，执行后续还款操作
-      axios.post("/creditCard/customer/card/return", null, {
+      axiosInstance.post("/credit-card/return", null, {
         params: {
           card_id: this.return_money.card_id,
-          amount: amount
+          amount: this.return_money.amount,
+          password: encrypted_password,
         }
       }).then(response => {
         if (response.data.code === 1) {
-          this.$message.error('还款失败')
+          this.$message.error(response.data.err);
+          return;
         } else {
-          this.$message.success('还款成功')
+          this.$message.success('还款成功');
         }
+        this.return_money_visible = false;
         this.queryCards();
-      });
+      }).catch(error => {
+        console.error('POST error:', error);
+        this.$message.error('还款失败');
+      })
+
     },
     queryCards() {
       this.credit_cards = [];
-      axios.get('/creditCard/customer/card', {params: {id_number: Cookies.get('credit_card_user_id_card')}})
+      axiosInstance.get('/credit-card/getAllCard')
           .then(response => {
             let cards = response.data.payload;
-            console.log(cards);
+            // console.log(cards);
             cards.forEach(card => {
               this.credit_cards.push(card);
             })
-          })
+          }).catch(error => {
+        console.error('query cards error:', error);
+      })
     }
   },
   mounted() {

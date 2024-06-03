@@ -68,30 +68,25 @@
             </el-scrollbar>
             <el-button type="danger"
                        @click="exit"
-                       style="display: block; margin: auto;">
-              退出登录
+                       style="display: block; margin: auto; margin-bottom: 10%;">
+              退出信用卡页面
             </el-button>
           </el-aside>
           <!--主展示区域-->
-          <el-main style="background-color: #f1f1f1;">
-            <el-form :inline="true" :model="customer" class="demo-form-inline">
-              <el-form-item label="id">
-                <el-text>{{ this.$store.state.customer.id }}</el-text>
+          <el-main style="display: flex; flex-direction:column; flex: 1; margin-left: 30px; margin-top: 20px;">
+            <el-divider orientation="left" style="align-self: flex-start; width: 300px">用户信息</el-divider>
+            <el-form label-width="80px">
+              <el-form-item label="用户名" prop="username">
+                <el-text>{{userInfo.username}}</el-text>
               </el-form-item>
-              <el-form-item label="姓名">
-                <el-text>{{ this.$store.state.customer.name }}</el-text>
+              <el-form-item label="身份证号" prop="idCard" style="margin-top: 20px">
+                <el-text>{{userInfo.id_number}}</el-text>
               </el-form-item>
-              <el-form-item label="身份证">
-                <el-text>{{ this.$store.state.customer.identification }}</el-text>
+              <el-form-item label="手机号" prop="phone" style="margin-top: 20px">
+                <el-text>{{userInfo.phone_number}}</el-text>
               </el-form-item>
-              <el-form-item label="居住地址">
-                <el-text>{{ this.$store.state.customer.address }}</el-text>
-              </el-form-item>
-              <el-form-item label="手机号码">
-                <el-text>{{ this.$store.state.customer.phoneNumber }}</el-text>
-              </el-form-item>
-              <el-form-item label="身份证号码">
-                <el-text>{{ id_number }}</el-text>
+              <el-form-item label="邮箱" prop="email" style="margin-top: 20px">
+                <el-text>{{userInfo.email}}</el-text>
               </el-form-item>
             </el-form>
           </el-main>
@@ -105,25 +100,47 @@
 <script>
 
 import Cookies from "js-cookie";
+import axios from "axios";
+import {ElMessage} from "element-plus";
 
 export default {
   data() {
     return {
+      userInfo: {
+        username: '',
+        id_number: '',
+        phone_number: '',
+        email: ''
+      },
       id_number: Cookies.get('credit_card_user_id_card'),
     }
   },
   methods: {
-    Cookies,
+    queryInfo(){
+      axios.defaults.headers.common['Authorization'] = Cookies.get('token');
+      axios.get("/user/profile")
+          .then(response => {
+            if (response.data.code === 0) {
+              this.userInfo.username = response.data.payload.username;
+              this.userInfo.id_number = response.data.payload.id_number;
+              this.userInfo.phone_number = response.data.payload.phone_number;
+              this.userInfo.email = response.data.payload.email;
+            } else {
+              ElMessage.error(response.data.err);
+              return;
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
+
+    },
     exit() {
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
   },
   mounted() {
-    this.$store.state.customer.id='用户id';
-    this.$store.state.customer.name='用户姓名';
-    this.$store.state.customer.address='用户地址';
-    this.$store.state.customer.phoneNumber='用户手机号码';
-    this.$store.state.customer.identification='用户身份证号码';
+    this.queryInfo();
   }
 }
 </script>

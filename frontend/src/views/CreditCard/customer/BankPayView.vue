@@ -66,15 +66,15 @@
                 </el-sub-menu>
               </el-menu>
             </el-scrollbar>
-            <el-button type="danger" @click="exit" style="display: block; margin: auto;">
-              退出登录
+            <el-button type="danger" @click="exit" style="display: block; margin: auto; margin-bottom: 10%;">
+              退出信用卡页面
             </el-button>
           </el-aside>
           <!--主展示区域-->
           <el-main style="background-color: #f1f1f1; display: flex; justify-content: center; align-items: center;">
 
             <div class="flex gap-4 mb-4"
-              style="background-color: white; width: 60%; max-width: 800px; min-height: 40%; border: 3px solid lightblue; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                 style="background-color: white; width: 60%; max-width: 800px; min-height: 40%; border: 3px solid lightblue; border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
               <br>
               <div>
                 <span>信用卡编号：&nbsp;&nbsp;&nbsp;</span>
@@ -115,6 +115,18 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -127,7 +139,7 @@ export default {
   },
   methods: {
     exit() {
-      this.$router.push('/creditCard/customer/login');
+      this.$router.push('/personalBank/user/account');
     },
     pay() {
       // 检查信用卡编号、日期、密码、支付金额是否为空
@@ -160,13 +172,14 @@ export default {
         //this.$message.success('支付成功，共支付 ' + account + ' 元');
       }
 
-      axios.post("/creditCard/customer/pay/add",null,{
+      const encrypted_password = CryptoJS.SHA256(this.password).toString();
+
+      axiosInstance.post("/credit-card/pay",null,{
         params:{
           card_id: this.credit_card_id,
-          id_number: Cookies.get('credit_card_user_id_card'),
-          account: account,
+          amount: this.account,
           date: this.date,
-          password: this.password
+          password: encrypted_password
         }
       }).then(response => {
         if(response.data.code === 1){
@@ -174,6 +187,9 @@ export default {
         }else{
           this.$message.success('支付成功');
         }
+      }).catch(error => {
+        console.error('BankPay error:',error);
+        this.$message.error('支付失败');
       })
     },
   },
