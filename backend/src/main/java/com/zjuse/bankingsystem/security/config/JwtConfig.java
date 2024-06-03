@@ -11,7 +11,9 @@ import lombok.Data;
 public class JwtConfig {
     private String header;
     private String tokenStartWith; 
-    private String tokenValidityInSeconds; 
+    private Long tokenValidityInSeconds; 
     private String tokenSignKey; 
     private String onlineKey; 
+    private Long detectTime;
+    private Long renewTime; 
 }

@@ -5,16 +5,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.zjuse.bankingsystem.security.config.JwtConfig;
+import com.zjuse.bankingsystem.security.service.OnlineUserService;
+import com.zjuse.bankingsystem.security.service.UserCacheManager;
 import com.zjuse.bankingsystem.security.service.dto.OnlineUserDto;
 
 import cn.hutool.core.util.StrUtil;
@@ -34,6 +32,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService; 
+    @Autowired
+    private OnlineUserService onlineUserService; 
+    @Autowired
+    private UserCacheManager userCacheManager; 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -52,9 +54,16 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return ;
         }
 
+        OnlineUserDto onlineUserDto = onlineUserService.getOnlineUser(authToken);
+        if (Objects.isNull(onlineUserDto)) {
+            userCacheManager.cleanUserCache((String)JWTUtil.parseToken(authToken).getPayload("username"));
+            filterChain.doFilter(request, response);
+            return ;
+        }
 
         Authentication authentication = jwtTokenProvider.getAuthentication(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        jwtTokenProvider.checkRenewal(authToken);
 
         filterChain.doFilter(request, response);
         log.info("---------End Jwt authentication token filter---------");

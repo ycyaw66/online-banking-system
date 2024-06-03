@@ -1,17 +1,16 @@
 package com.zjuse.bankingsystem.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjuse.bankingsystem.entity.creditCard.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Mapper
-public interface CreditCardMapper {
+public interface CreditCardMapper extends BaseMapper<CreditCard>{
 
     @Select("select * from credit_card where id_number = #{id_number}")
     public List<CreditCard> queryCards(String id_number);
@@ -39,45 +38,6 @@ public interface CreditCardMapper {
 
     @Update("delete from credit_card where id = #{card_id}")
     public void deleteCreditCard(Long card_id);
-
-    @Select("select * from credit_card_admin where name = #{name} and password = #{password}")
-    public CreditCardAdmin loginAdmin(String name, String password);
-
-    @Select("select * from credit_card_inspector")
-    public List<CreditCardInspector> queryInspectors();
-
-    @Update("update credit_card_inspector set password = #{password} where id = #{id}")
-    public void modifyInspectorPassword(Integer id, String password);
-
-    @Update("update credit_card_inspector set permission = #{permission} where id = #{id}")
-    public void modifyInspectorLevel(Integer id, Integer permission);
-
-    @Update("delete from credit_card_inspector where id = #{id}")
-    public void deleteInspector(Integer id);
-
-    @Update("insert into credit_card_inspector (name, password, permission) VALUES ( #{name}, #{password}, #{permission})")
-    public void addNewInspector(String name, String password, Integer permission);
-
-    @Select("select * from credit_card_inspector where name = #{name} and password = #{password}")
-    public CreditCardInspector loginInspector(String name, String password);
-
-    @Select("select * from credit_card_application where status = 1")
-    public List<CreditCardApplication> queryAllRequestByInspector();
-
-    @Select("select * from credit_card_application where status = 1 and type = 1")
-    public List<CreditCardApplication> queryPartRequestByInspector();
-
-    @Select("select * from credit_card_application where id = #{id}")
-    public CreditCardApplication selectSingleRequest(Long id);
-
-    @Update("update credit_card set card_limit = #{card_limit} where id = #{id}")
-    public void updateCardLimit(BigDecimal card_limit, Long id);
-
-    @Update("update credit_card_application set status = 2 where id = #{id}")
-    public void acceptRequest(Long id);
-
-    @Update("update credit_card_application set status = 3 where id = #{id}")
-    public void rejectRequest(Integer id);
 
     @Select("select * from credit_card_application where id_number = #{idNumber}")
     public List<CreditCardApplication> queryAllRequestsByCustomer(String idNumber);

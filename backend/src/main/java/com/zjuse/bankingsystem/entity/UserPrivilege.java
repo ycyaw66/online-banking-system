@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@TableName("UserPrivilege")
+@TableName("user_privilege")
 @AllArgsConstructor
 public class UserPrivilege {
     @JsonProperty("user_id")

@@ -4,15 +4,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zjuse.bankingsystem.entity.UserPrivilege;
-import com.zjuse.bankingsystem.service.UserAndCardService;
 import com.zjuse.bankingsystem.service.UserPrivilegeService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
 import io.micrometer.common.lang.NonNull;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

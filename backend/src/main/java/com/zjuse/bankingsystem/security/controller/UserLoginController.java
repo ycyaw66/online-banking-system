@@ -2,27 +2,19 @@ package com.zjuse.bankingsystem.security.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mysql.cj.protocol.AuthenticationProvider;
 import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.controller.dto.ForgetReq;
@@ -38,6 +30,8 @@ import com.zjuse.bankingsystem.service.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,8 +46,6 @@ public class UserLoginController {
     private JwtConfig jwtConfig; 
     @Autowired
     private OnlineUserService onlineUserService; 
-    @Autowired
-    private UserDetailsService userDetailsService; 
     @Autowired
     private EmailValidService emailValidService; 
     @Autowired
@@ -145,5 +137,12 @@ public class UserLoginController {
             return RespResult.fail(apiResult.message); 
         }
         return RespResult.success(apiResult.payload);
+    }
+
+    @DeleteMapping("/logout") 
+    public RespResult logout(HttpServletRequest request) {
+        String token = jwtTokenProvider.getTokenFromRequest(request);
+        onlineUserService.logout(token);
+        return RespResult.success();
     }
 }
