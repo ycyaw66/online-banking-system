@@ -1,115 +1,38 @@
 <template>
-  <div>
-    <div class="common-layout">
-      <el-container class="layout-container-demo" style="height: 700px">
-        <!--标题区域-->
-        <el-header
-            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
-          <div style="display: inline-block;">
-            <img src="../icons/logo.png"
-                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-          </div>
-          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">线上银行系统--信用卡系统</span>
-        </el-header>
-        <el-container>
-          <!--侧边栏区域-->
-          <el-aside width="200px" style="height: 87vh; display: flex; flex-direction: column;">
-            <el-scrollbar style="flex: 1">
-              <el-menu :default-openeds="['1', '3']">
-                <el-sub-menu index="1">
-                  <template #title>
-                    <el-icon style="color: white;">
-                      <UserFilled/>
-                    </el-icon>
-                    <span style="color: white;">用户功能</span>
-                  </template>
-                  <el-menu-item index="1-1">
-                    <router-link to="/creditCard/customer/info">
-                      <el-icon style="color: white;">
-                        <HomeFilled/>
-                      </el-icon>
-                      <span style="color: white;">个人资料</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-2">
-                    <router-link to="/creditCard/customer/card">
-                      <el-icon style="color: white;">
-                        <WalletFilled/>
-                      </el-icon>
-                      <span style="color: white;">信用卡相关</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-3">
-                    <router-link to="/creditCard/customer/response">
-                      <el-icon style="color: white;">
-                        <Promotion/>
-                      </el-icon>
-                      <span style="color: white;">请求结果查询</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-4">
-                    <router-link to="/creditCard/customer/pay">
-                      <el-icon style="color: white;">
-                        <Shop/>
-                      </el-icon>
-                      <span style="color: white;">模拟支付</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-5">
-                    <router-link to="/creditCard/customer/simulation">
-                      <el-icon style="color: white;">
-                        <List/>
-                      </el-icon>
-                      <span style="color: white;">流水查询</span>
-                    </router-link>
-                  </el-menu-item>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-            <el-button type="danger" @click="exit" style="display: block; margin: auto; margin-bottom: 10%;">
-              退出信用卡页面
-            </el-button>
-          </el-aside>
-          <!--主展示区域-->
-          <el-main style="background-color: #f1f1f1;">
-            <div class="demo-date-picker">
-              <div class="block">
-                <el-date-picker v-model="start_date" type="date" placeholder="请选择您的开始日期"
-                                :default-value="new Date(2024, 5, 1)"/>
-                -----
-                <el-date-picker v-model="end_date" type="date" placeholder="请选择您的结束日期"
-                                :default-value="new Date(2024, 5, 1)"/>
-              </div>
-            </div>
-            <div class="mb-4" style="text-align: center;">
-              <el-button type="primary" round @click="query">确认查询</el-button>
-            </div>
-
-            <br><br>
-
-            <div style="display: flex; justify-content: center;">
-              <el-table :data="bills" stripe style="width: 800px;">
-                <el-table-column prop="id" label="交易订单编号" width="200px"/>
-                <el-table-column prop="creditCardId" label="信用卡id" width="200px"/>
-                <el-table-column label="交易金额：单位(元)" width="200px">
-                  <template v-slot="{ row = {} }">
-                    <span>{{ row.amount }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="billDate" label="交易日期" width="200px">
-                  <template v-slot="{ row = {} }">
-                    <span>{{ formatDate(row.billDate) }}</span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-
-          </el-main>
-
-        </el-container>
-      </el-container>
+  <el-main style="background-color: #f1f1f1;">
+    <div class="demo-date-picker">
+      <div class="block">
+        <el-date-picker v-model="start_date" type="date" placeholder="请选择您的开始日期"
+                        :default-value="new Date(2024, 5, 1)"/>
+        -----
+        <el-date-picker v-model="end_date" type="date" placeholder="请选择您的结束日期"
+                        :default-value="new Date(2024, 5, 1)"/>
+      </div>
     </div>
-  </div>
+    <div class="mb-4" style="text-align: center;">
+      <el-button type="primary" round @click="query">确认查询</el-button>
+    </div>
+
+    <br><br>
+
+    <div style="display: flex; justify-content: center;">
+      <el-table :data="bills" stripe style="width: 800px;">
+        <el-table-column prop="id" label="交易订单编号" width="200px"/>
+        <el-table-column prop="creditCardId" label="信用卡id" width="200px"/>
+        <el-table-column label="交易金额：单位(元)" width="200px">
+          <template v-slot="{ row = {} }">
+            <span>{{ row.amount }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="billDate" label="交易日期" width="200px">
+          <template v-slot="{ row = {} }">
+            <span>{{ formatDate(row.billDate) }}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+  </el-main>
 </template>
 
 <script>
@@ -158,19 +81,19 @@ export default {
       }
 
       //alert(this.start_date + ' ' + this.end_date);
-      axiosInstance.post("/credit-card/bills/query",null,{
-        params:{
+      axiosInstance.post("/credit-card/bills/query", null, {
+        params: {
           start_date: this.start_date,
           end_date: this.end_date,
         }
-      }).then(response =>{
+      }).then(response => {
         this.bills = [];
         let bills = response.data.payload;
         bills.forEach(bill => {
           this.bills.push(bill);
         })
       }).catch(error => {
-        console.error('query bills error:',error);
+        console.error('query bills error:', error);
       })
 
     },

@@ -1,252 +1,168 @@
 <template>
-  <div>
-    <div class="common-layout">
-      <el-container class="layout-container-demo" style="height: 700px">
-        <!--标题区域-->
-        <el-header
-            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
-          <div style="display: inline-block;">
-            <img src="../icons/logo.png"
-                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-          </div>
-          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">线上银行系统--信用卡系统</span>
-        </el-header>
-        <el-container>
-          <!--侧边栏区域-->
-          <el-aside width="200px" style="height: 87vh; display: flex; flex-direction: column;">
-            <el-scrollbar style="flex: 1">
-              <el-menu :default-openeds="['1', '3']">
-                <el-sub-menu index="1">
-                  <template #title>
-                    <el-icon style="color: white;">
-                      <UserFilled/>
-                    </el-icon>
-                    <span style="color: white;">用户功能</span>
-                  </template>
-                  <el-menu-item index="1-1">
-                    <router-link to="/creditCard/customer/info">
-                      <el-icon style="color: white;">
-                        <HomeFilled/>
-                      </el-icon>
-                      <span style="color: white;">个人资料</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-2">
-                    <router-link to="/creditCard/customer/card">
-                      <el-icon style="color: white;">
-                        <WalletFilled/>
-                      </el-icon>
-                      <span style="color: white;">信用卡相关</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-3">
-                    <router-link to="/creditCard/customer/response">
-                      <el-icon style="color: white;">
-                        <Promotion/>
-                      </el-icon>
-                      <span style="color: white;">请求结果查询</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-4">
-                    <router-link to="/creditCard/customer/pay">
-                      <el-icon style="color: white;">
-                        <Shop/>
-                      </el-icon>
-                      <span style="color: white;">模拟支付</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-5">
-                    <router-link to="/creditCard/customer/simulation">
-                      <el-icon style="color: white;">
-                        <List/>
-                      </el-icon>
-                      <span style="color: white;">流水查询</span>
-                    </router-link>
-                  </el-menu-item>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-            <el-button type="danger" @click="exit" style="display: block; margin: auto; margin-bottom: 10%;">
-              退出信用卡页面
-            </el-button>
-          </el-aside>
-          <!--主展示区域-->
-          <el-main style="background-color: #f1f1f1;">
+  <div
+      style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-left: 20px;">
+    <div style="font-weight: bold; font-size: 1.5em;">用户信用卡信息</div>
+    <el-button type="primary"
+               @click="new_card.limit = '0', new_card.first_password = '', new_card.second_password = '', add_new_card_visible = true">
+      注册新的信用卡
+    </el-button>
+  </div>
 
-            <div style="margin-top: 20px; margin-left: 20px;">
+  <!-- 信用卡卡片显示区 -->
+  <div style="display: flex;flex-wrap: wrap; justify-content: start;">
 
-              <div
-                  style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-left: 20px;">
-                <div style="font-weight: bold; font-size: 1.5em;">用户信用卡信息</div>
-                <el-button type="primary"
-                           @click="new_card.limit = '0', new_card.first_password = '', new_card.second_password = '', add_new_card_visible = true">
-                  注册新的信用卡
-                </el-button>
-              </div>
+    <!-- 信用卡卡片 -->
+    <div class="cardBox" v-for="card in credit_cards" :key="card.id" style="background-color: white;">
+      <div>
+        <!-- 卡片内容 -->
+        <div style="margin-left: 10px; text-align: start; font-size: 16px;">
+          <p>信用卡 ID: {{ card.id }}</p>
+          <p>信用卡总额度(元): {{ card.card_limit }}</p>
+          <p>信用卡已用额度(元): {{ card.loan }}</p>
+          <p>信用卡可用额度(元): {{ (card.card_limit - card.loan) }}</p>
+          <p>是否挂失: {{ card.is_lost === 1 ? '已挂失' : '未挂失' }}</p>
+        </div>
 
-              <!-- 信用卡卡片显示区 -->
-              <div style="display: flex;flex-wrap: wrap; justify-content: start;">
+        <el-divider/>
 
-                <!-- 信用卡卡片 -->
-                <div class="cardBox" v-for="card in credit_cards" :key="card.id" style="background-color: white;">
-                  <div>
-                    <!-- 卡片内容 -->
-                    <div style="margin-left: 10px; text-align: start; font-size: 16px;">
-                      <p>信用卡 ID: {{ card.id }}</p>
-                      <p>信用卡总额度(元): {{ card.card_limit }}</p>
-                      <p>信用卡已用额度(元): {{ card.loan }}</p>
-                      <p>信用卡可用额度(元): {{ (card.card_limit - card.loan) }}</p>
-                      <p>是否挂失: {{ card.is_lost === 1 ? '已挂失' : '未挂失' }}</p>
-                    </div>
+        <!-- 卡片操作 -->
+        <div style="margin-top: 10px;" v-if="card.is_lost === 0">
+          <el-button type="primary"
+                     @click="modify_password_card_id = card.id, modify_password_old_password = card.password, modify_password.old_password = '', modify_password.new_password = '', modify_password.new_password_again = '', modify_password_visible = true">
+            修改密码
+          </el-button>
+          <el-button type="primary"
+                     @click="modify_limit_loan = card.loan, modify_limit_card_id = card.id, modify_limit_password = card.password, modify_limit.password = '', modify_limit.new_limit = '0', modify_card_limit_visible = true">
+            修改额度
+          </el-button>
+          <el-button type="primary"
+                     @click="return_money.card_id = card.id, return_money_password = card.password, return_money.amount = '', return_money.loan = card.loan, return_money.password = '', return_money_visible = true">
+            还款
+          </el-button>
+          <br><br>
+          <el-button type="warning"
+                     @click="card_lost_visible = true, lost_card_id = card.id, lost_card_password = card.password, this.lost_card.password = ''">
+            挂失信用卡
+          </el-button>
+          <el-button type="danger"
+                     @click="cancel_card_id = card.id, cancel_card_password = card.password, cancel_card_loan = card.loan, this.cancel_card.password = '', card_cancel_visible = true">
+            注销信用卡
+          </el-button>
+        </div>
+        <div style="margin-top: 10px; color: red; font-weight: bold;" v-else>
+          <p>您不能对挂失的信用卡进行操作</p>
+        </div>
 
-                    <el-divider/>
-
-                    <!-- 卡片操作 -->
-                    <div style="margin-top: 10px;" v-if="card.is_lost === 0">
-                      <el-button type="primary"
-                                 @click="modify_password_card_id = card.id, modify_password_old_password = card.password, modify_password.old_password = '', modify_password.new_password = '', modify_password.new_password_again = '', modify_password_visible = true">
-                        修改密码
-                      </el-button>
-                      <el-button type="primary"
-                                 @click="modify_limit_loan = card.loan, modify_limit_card_id = card.id, modify_limit_password = card.password, modify_limit.password = '', modify_limit.new_limit = '0', modify_card_limit_visible = true">
-                        修改额度
-                      </el-button>
-                      <el-button type="primary"
-                                 @click="return_money.card_id = card.id, return_money_password = card.password, return_money.amount = '', return_money.loan = card.loan, return_money.password = '', return_money_visible = true">
-                        还款
-                      </el-button>
-                      <br><br>
-                      <el-button type="warning"
-                                 @click="card_lost_visible = true, lost_card_id = card.id, lost_card_password = card.password, this.lost_card.password = ''">
-                        挂失信用卡
-                      </el-button>
-                      <el-button type="danger"
-                                 @click="cancel_card_id = card.id, cancel_card_password = card.password, cancel_card_loan = card.loan, this.cancel_card.password = '', card_cancel_visible = true">
-                        注销信用卡
-                      </el-button>
-                    </div>
-                    <div style="margin-top: 10px; color: red; font-weight: bold;" v-else>
-                      <p>您不能对挂失的信用卡进行操作</p>
-                    </div>
-
-                  </div>
-                </div>
-
-                <!--表单区域-->
-                <el-dialog title="新建信用卡" v-model="add_new_card_visible" style="width: 25vw;">
-                  <el-form :model="new_card">
-                    <el-form-item label="申请额度" :label-width="formLabelWidth">
-                      <el-input v-model="new_card.limit" autocomplete="off" style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请输入密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="new_card.first_password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="new_card.second_password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <template #footer>
-                    <el-button @click="add_new_card_visible = false">取 消</el-button>
-                    <el-button type="primary" @click="addNewCard">确 定</el-button>
-                  </template>
-                </el-dialog>
-
-                <el-dialog title="修改密码" v-model="modify_password_visible" style="width: 25vw;">
-                  <el-form :model="modify_password">
-                    <el-form-item label="请输入原密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="modify_password.old_password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请输入新密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <template #footer>
-                    <el-button @click="modify_password_visible = false">取 消</el-button>
-                    <el-button type="primary"
-                               @click="modifyPassword(modify_password_card_id)">确 定
-                    </el-button>
-                  </template>
-                </el-dialog>
-
-                <el-dialog title="修改额度" v-model="modify_card_limit_visible" style="width: 25vw;">
-                  <el-form :model="modify_limit">
-                    <el-form-item label="请输入申请额度" :label-width="formLabelWidth">
-                      <el-input v-model="modify_limit.new_limit" autocomplete="off" style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请输入密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="modify_limit.password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <template #footer>
-                    <el-button @click="modify_card_limit_visible = false">取 消</el-button>
-                    <el-button type="primary"
-                               @click="modifyLimit(modify_limit_card_id, modify_limit_password, modify_limit_loan)">确 定
-                    </el-button>
-                  </template>
-                </el-dialog>
-
-                <el-dialog title="信用卡挂失" v-model="card_lost_visible" style="width: 25vw;">
-                  <el-form :model="lost_card">
-                    <el-form-item label="请输入信用卡密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="lost_card.password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <template #footer>
-                    <el-button @click="card_lost_visible = false">取 消</el-button>
-                    <el-button type="primary" @click="reportLost(lost_card_id)">确 定</el-button>
-                  </template>
-                </el-dialog>
-
-                <el-dialog title="信用卡注销" v-model="card_cancel_visible" style="width: 25vw;">
-                  <el-form :model="cancel_card">
-                    <el-form-item label="请输入信用卡密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="cancel_card.password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <template #footer>
-                    <el-button @click="card_cancel_visible = false">取 消</el-button>
-                    <el-button type="primary"
-                               @click="cancelCard(cancel_card_id, cancel_card_loan)">
-                      确 定
-                    </el-button>
-                  </template>
-                </el-dialog>
-
-                <el-dialog title="还款" v-model="return_money_visible" style="width: 25vw;">
-                  <el-form :model="return_money">
-                    <el-form-item label="请输入还款金额" :label-width="formLabelWidth">
-                      <el-input v-model="return_money.amount" autocomplete="off" style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                    <el-form-item label="请输入密码" :label-width="formLabelWidth">
-                      <el-input type="password" v-model="return_money.password" autocomplete="off"
-                                style="width: 12.5vw;"></el-input>
-                    </el-form-item>
-                  </el-form>
-                  <template #footer>
-                    <el-button @click="return_money_visible = false">取 消</el-button>
-                    <el-button type="primary" @click="returnMoney()">确 定</el-button>
-                  </template>
-                </el-dialog>
-
-              </div>
-            </div>
-
-          </el-main>
-
-        </el-container>
-      </el-container>
+      </div>
     </div>
+
+    <!--表单区域-->
+    <el-dialog title="新建信用卡" v-model="add_new_card_visible" style="width: 25vw;">
+      <el-form :model="new_card">
+        <el-form-item label="申请额度" :label-width="formLabelWidth">
+          <el-input v-model="new_card.limit" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="new_card.first_password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="new_card.second_password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="add_new_card_visible = false">取 消</el-button>
+        <el-button type="primary" @click="addNewCard">确 定</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="修改密码" v-model="modify_password_visible" style="width: 25vw;">
+      <el-form :model="modify_password">
+        <el-form-item label="请输入原密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="modify_password.old_password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入新密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="modify_password_visible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="modifyPassword(modify_password_card_id)">确 定
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="修改额度" v-model="modify_card_limit_visible" style="width: 25vw;">
+      <el-form :model="modify_limit">
+        <el-form-item label="请输入申请额度" :label-width="formLabelWidth">
+          <el-input v-model="modify_limit.new_limit" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="modify_limit.password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="modify_card_limit_visible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="modifyLimit(modify_limit_card_id, modify_limit_password, modify_limit_loan)">确 定
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="信用卡挂失" v-model="card_lost_visible" style="width: 25vw;">
+      <el-form :model="lost_card">
+        <el-form-item label="请输入信用卡密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="lost_card.password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="card_lost_visible = false">取 消</el-button>
+        <el-button type="primary" @click="reportLost(lost_card_id)">确 定</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="信用卡注销" v-model="card_cancel_visible" style="width: 25vw;">
+      <el-form :model="cancel_card">
+        <el-form-item label="请输入信用卡密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="cancel_card.password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="card_cancel_visible = false">取 消</el-button>
+        <el-button type="primary"
+                   @click="cancelCard(cancel_card_id, cancel_card_loan)">
+          确 定
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog title="还款" v-model="return_money_visible" style="width: 25vw;">
+      <el-form :model="return_money">
+        <el-form-item label="请输入还款金额" :label-width="formLabelWidth">
+          <el-input v-model="return_money.amount" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="return_money.password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="return_money_visible = false">取 消</el-button>
+        <el-button type="primary" @click="returnMoney()">确 定</el-button>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -662,4 +578,30 @@ export default {
   padding-right: 10px;
   padding-top: 15px;
 }
+
+.main {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  height: auto;
+  background-color: #dcdcdc;
+}
+
+.aside {
+  min-height: calc(100vh - 60px);
+  width: 180px;
+  background-color: red;
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 </style>

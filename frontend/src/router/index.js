@@ -1,7 +1,10 @@
 // 引入 Vue 3 的路由模块
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 import AdminBaseLayout from '../components/AdminBaseLayout.vue';
 import UserBaseLayout from '../components/UserBaseLayout.vue';
+import creditCardUserBaseLayout from "@/components/CreditCardUserBaseLayout.vue";
+import DataOperatorBaseLayout from '../components/DataOperatorLayout.vue';
+import UserFcBaseLayout from '../components/UserFcLayout.vue';
 
 // 定义路由
 const routes = [
@@ -30,6 +33,68 @@ const routes = [
         component: () => import('../views/PersonalBank/ForgetPassword.vue')
     },
     {
+        path: '/fc/data_operator',
+        component: DataOperatorBaseLayout,
+        children: [
+            {
+                path: 'ability',
+                name: 'opability',
+                component: () => import('../views/ForeignCurrencySystem/dataoperator/DataOperator.vue')
+            },
+            {
+                path: 'account',
+                name: 'opaccount',
+                component: () => import('../views/ForeignCurrencySystem/dataoperator/DataOperatorAccount.vue')
+            }
+        ]
+    },
+    {
+        path: '/fc/admin/login',
+        name: 'fcAdminLogin',
+        component: () => import('../views/ForeignCurrencySystem/fcAdmin/FcAdminLoginView.vue')
+    },
+    {
+        path: '/fc/admin/home',
+        name: 'fcAdminHome',
+        component: () => import('../views/ForeignCurrencySystem/fcAdmin/fcAdminHomeView.vue')
+    },
+    {
+        path: '/fc/admin/operationRecord',
+        name: 'operationRecordQuery',
+        component: () => import('../views/ForeignCurrencySystem/fcAdmin/fcAdminOperationQuery.vue')
+    },
+    {
+        path: '/fc/data_operator/start',
+        name: 'data_operator_login',
+        component: () => import('../views/ForeignCurrencySystem/dataoperator/DataOperatorLogin.vue')
+    },
+    {
+        path: '/fc/user',
+        component: UserFcBaseLayout,
+        children: [
+            {
+                path: 'record',
+                name: 'fctrade_record',
+                component: () => import('../views/ForeignCurrencySystem/TradeRecord.vue')
+            },
+            {
+                path: 'account',
+                name: 'fcaccount',
+                component: () => import('../views/ForeignCurrencySystem/ForeignAccount.vue')
+            },
+            {
+                path: 'trade',
+                name: 'fctrade',
+                component: () => import('../views/ForeignCurrencySystem/FcTrade.vue')
+            },
+            {
+                path: 'query',
+                name: 'fcquery',
+                component: () => import('../views/ForeignCurrencySystem/ForeignCurrencyQuery.vue')
+            }
+        ]
+    },
+    {
         path: '/personalBank/user',
         component: UserBaseLayout,
         children: [
@@ -47,6 +112,10 @@ const routes = [
                 path: 'transfer',
                 name: 'transfer',
                 component: () => import('../views/PersonalBank/TransDetail.vue')
+            },
+            {
+                path: 'foreign_exchange',
+                redirect: '/fc/user/record',
             }
         ]
     },
@@ -65,14 +134,45 @@ const routes = [
                 component: () => import('../views/PersonalBank/BlackList.vue')
             },
             {
-                path:'inspector',
-                name:'adminManageInspector',
-                component:()=>import('../views/CreditCard/admin/ManageInspectorView.vue')
+                path: 'inspector',
+                name: 'adminManageInspector',
+                component: () => import('../views/CreditCard/admin/ManageInspectorView.vue')
             },
             {
                 path: 'cashier',
                 name: 'adminManageCashier',
-                component:()=>import('../views/Counter/admin/ManageCashierView.vue')
+                component: () => import('../views/Counter/admin/ManageCashierView.vue')
+            },
+        ]
+    },
+    {
+        path: '/creditCard/customer',
+        component: creditCardUserBaseLayout,
+        children: [
+            {
+                path: 'info',
+                name: 'customerInfo',
+                component: () => import('../views/CreditCard/customer/CustomerInfoView.vue')
+            },
+            {
+                path: 'card',
+                name: 'cardInfo',
+                component: () => import('../views/CreditCard/customer/AboutCreditCardView.vue')
+            },
+            {
+                path: 'pay',
+                name: 'bankPay',
+                component: () => import('../views/CreditCard/customer/BankPayView.vue')
+            },
+            {
+                path: 'simulation',
+                name: 'paymentSimulation',
+                component: () => import('../views/CreditCard/customer/PaymentSimulationView.vue')
+            },
+            {
+                path: 'response',
+                name: 'responseOfRequest',
+                component: () => import('../views/CreditCard/customer/ResponseView.vue')
             },
         ]
     },
@@ -92,85 +192,61 @@ const routes = [
         component: () => import('../views/CreditCard/login/CustomerLoginView.vue')
     },
     {
-        path: '/creditCard/customer/info',
-        name: 'customerInfo',
-        component: () => import('../views/CreditCard/customer/CustomerInfoView.vue')
-    },
-    {
-        path: '/creditCard/customer/card',
-        name: 'cardInfo',
-        component: () => import('../views/CreditCard/customer/AboutCreditCardView.vue')
-    },
-    {
-        path: '/creditCard/customer/pay',
-        name: 'bankPay',
-        component: () => import('../views/CreditCard/customer/BankPayView.vue')
-    },
-    {
-        path: '/creditCard/customer/simulation',
-        name: 'paymentSimulation',
-        component: () => import('../views/CreditCard/customer/PaymentSimulationView.vue')
-    },
-    {
-        path: '/creditCard/customer/response',
-        name: 'responseOfRequest',
-        component: () => import('../views/CreditCard/customer/ResponseView.vue')
-    },
-    {
-        path:'/creditCard/inspector/request',
-        name:'responseToRequests',
-        component:()=>import('../views/CreditCard/inspector/CustomerRequestView.vue')
+        path: '/creditCard/inspector/request',
+        name: 'responseToRequests',
+        component: () => import('../views/CreditCard/inspector/CustomerRequestView.vue')
     },
     {
         path: '/counter/admin/login',
         name: 'loginAdminOfCashier',
-        component:()=>import('../views/Counter/login/AdminLoginView.vue')
+        component: () => import('../views/Counter/login/AdminLoginView.vue')
     },
     {
         path: '/counter/cashier/login',
         name: 'loginCashier',
-        component:()=>import('../views/Counter/login/CashierLoginView.vue')
+        component: () => import('../views/Counter/login/CashierLoginView.vue')
     },
     {
         path: '/counter/cashier/currentDeposit',
         name: 'cashierCurrentDeposit',
-        component:()=>import('../views/Counter/cashier/CurrentDepositView.vue')
+        component: () => import('../views/Counter/cashier/CurrentDepositView.vue')
     },
     {
         path: '/counter/cashier/currentWithdrawal',
         name: 'cashierCurrentWithdrawal',
-        component:()=>import('../views/Counter/cashier/CurrentWithdrawalView.vue')
+        component: () => import('../views/Counter/cashier/CurrentWithdrawalView.vue')
     },
     {
         path: '/counter/cashier/freeAndUnfreeze',
         name: 'cashierFreeAndUnfreeze',
-        component:()=>import('../views/Counter/cashier/FreezeAndUnfreezewView.vue')
+        component: () => import('../views/Counter/cashier/FreezeAndUnfreezewView.vue')
     },
     {
         path: '/counter/cashier/lossAndReissue',
         name: 'cashierLossAndReissue',
-        component:()=>import('../views/Counter/cashier/LossAndReissueView.vue')
+        component: () => import('../views/Counter/cashier/LossAndReissueView.vue')
     },
     {
         path: '/counter/cashier/openAccount',
         name: 'cashierOpenAccount',
-        component:()=>import('../views/Counter/cashier/OpenAccountView.vue')
+        component: () => import('../views/Counter/cashier/OpenAccountView.vue')
     },
     {
         path: '/counter/cashier/timeDeposit',
         name: 'cashierTimeDeposit',
-        component:()=>import('../views/Counter/cashier/TimeDepositView.vue')
+        component: () => import('../views/Counter/cashier/TimeDepositView.vue')
     },
     {
         path: '/counter/cashier/timeWithdrawal',
         name: 'cashierTimeWithdrawal',
-        component:()=>import('../views/Counter/cashier/TimeWithdrawalView.vue')
+        component: () => import('../views/Counter/cashier/TimeWithdrawalView.vue')
     },
     {
         path: '/counter/cashier/transferAccount',
         name: 'cashierTransferAccount',
-        component:()=>import('../views/Counter/cashier/TransferAccountView.vue')
-    }
+        component: () => import('../views/Counter/cashier/TransferAccountView.vue')
+    },
+
 ];
 
 // 创建并配置路由
