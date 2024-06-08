@@ -93,6 +93,7 @@ public class EmailValidService {
             transport.close();
             // System.out.println("### " + uuid.hashCode());
             EmailInfo emailInfo = new EmailInfo(email, code);
+            System.out.println("xxx " + emailInfo.toString());
             if (!redisUtils.set(uuid, emailInfo.toString(), 300)) {
                 return new ApiResult(false, "redis Error");
             }

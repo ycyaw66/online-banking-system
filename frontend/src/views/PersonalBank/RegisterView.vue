@@ -153,6 +153,7 @@ export default {
           "verification_code": this.registerForm.verificationCode
         })
         .then(response => {
+          console.log(response.data);
           if (response.data.code === 0) {
             ElMessage.success("注册成功");
             this.jumpLogin();
@@ -176,7 +177,7 @@ export default {
         this.doCountdown();
         axios.post("/user/register/sendMail",
           {
-            "email": this.registerForm.email
+            "mail": this.registerForm.email
           })
           .then(response => {
             if (response.data.code === 0) {

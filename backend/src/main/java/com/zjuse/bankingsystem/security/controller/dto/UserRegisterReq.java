@@ -13,7 +13,7 @@ public class UserRegisterReq {
     @JsonProperty("phone_number")
     private String phoneNumber; 
     private String email;
-    @JsonProperty("verificaition_code")
+    @JsonProperty("verification_code")
     private String verificationCode; 
     private String uuid; 
 }
