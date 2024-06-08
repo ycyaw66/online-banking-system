@@ -1,36 +1,28 @@
 <template>
-  <el-container style="width: 100%;">
+  <el-container style="width: 100%; padding: 20px; box-sizing: border-box;">
     <el-main style="height: 100%; width: 100%; position: relative;">
-      <div style="background-color: white; width: 100%; height: auto; padding: 20px; margin-bottom: 20px;">
-        <div style="font-size: 24px;">交易明细-{{accountNumber}}卡号</div>
-        <button @click="ReturnAcc" style="position: absolute; top: 40px; right: 20px; background-color: blue; color: white; border: none; padding: 10px 20px; cursor: pointer; font-size: 16px; border-radius: 4px;">返回</button>
-        
-        <div style="width: 90%; margin: 0 auto; padding-top: 5vh; display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap;">
-          <span style="margin-right: 5px;">付款账户:</span>
-          <el-input v-model="this.Cond.cardID" style="width: 8%;"></el-input>
-          <span style="margin-right: 5px;">收款账户:</span>
-          <el-input v-model="this.Cond.target_id" style="width: 8%;"></el-input>
-          
-          <div style="width: 25%; display: flex; align-items: center;">
-            <span style="margin-right: 5px;">交易金额:</span>
-            <el-input v-model="this.Cond.MinAmount" style="flex: 1;"></el-input>
-            <span style="margin: 0 5px;">-</span>
-            <el-input v-model="this.Cond.MaxAmount" style="flex: 1;"></el-input>
-          </div>
-
-          <div style="width: 25%; display: flex; align-items: center;">
-            <span style="margin-right: 5px;">日期:</span>
-            <el-input v-model="this.Cond.MinDate" style="flex: 1;"></el-input>
-            <span style="margin: 0 5px;">-</span>
-            <el-input v-model="this.Cond.MaxDate" style="flex: 1;"></el-input>
-          </div>
-          <span style="margin-right: 5px;">备注:</span>
-          <el-input v-model="this.Cond.Remark" placeholder="备注" style="width: 8%;"></el-input>
-          <el-button type="primary" @click="QueryCond" style="width: 8%;">查询</el-button>
+      <div style="background-color: white; padding: 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); border-radius: 8px;">
+        <div style="font-size: 24px;">交易明细-{{ accountNumber }}卡号</div>
+        <div style="display: flex; justify-content: flex-end; gap: 20px;">
+          <el-button @click="ReturnAcc" type="primary">返回</el-button>
+        </div>
+        <div style="font-size: 18px; margin-left: 20px;">
+          筛选
+        </div>
+        <div style="padding-top:3vh;">
+          <el-input v-model="this.Cond.cardID" style="display:inline; margin-left: 20px;" placeholder="付款账户"></el-input>
+          <el-input v-model="this.Cond.target_id" style="display:inline; margin-left: 20px;" placeholder="收款账户"></el-input>
+          <el-input v-model="this.Cond.MinAmount" style="display:inline; margin-left: 20px;" placeholder="交易金额最小值"></el-input> -
+          <el-input v-model="this.Cond.MaxAmount" style="display:inline; margin-left: 0;" placeholder="交易金额最大值"></el-input>
+        </div>
+        <div style="padding-top:2vh;">
+          <el-date-picker v-model="this.Cond.MinDate" type="date" :style="{marginLeft: '20px', width: '192.29px'}" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker> - 
+          <el-date-picker v-model="this.Cond.MaxDate" type="date" :style="{marginLeft: '4px', width: '192.29px'}" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-input v-model="this.Cond.Remark" :style="{marginLeft: '20px', width: '320px'}" placeholder="备注"></el-input>
+          <el-button style="margin-left: 20px;" type="primary" @click="QueryCond">查询</el-button>
         </div>
 
-        <el-table :data="Data" height="600" 
-            style="width: 100%; margin-left: 50px; margin-top: 30px; margin-right: 50px; max-width: 80vw; table-layout: fixed;">
+        <el-table :data="Data" style="margin-top: 20px;" border>
           <el-table-column prop="date" label="交易日期" min-width="150"></el-table-column>
           <el-table-column prop="card_id" label="付款账户" min-width="150"></el-table-column>
           <el-table-column prop="target_id" label="收款账户" min-width="150"></el-table-column>
@@ -128,30 +120,6 @@ export default {
 </script>
 
 <style scoped>
-
-.main {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  height: auto;
-  background-color: #dcdcdc;
-
-}
-
-.title {
-  background-color: #ffffff;
-  height: 60px;
-}
-
-.aside {
-  min-height: calc(100vh - 60px);
-  width: 180px;
-  background-color: red;
-}
 
 </style>
 

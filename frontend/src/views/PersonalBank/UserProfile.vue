@@ -195,40 +195,4 @@ export default {
 
 <style scoped>
 
-.main {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  height: auto;
-  background-color: #dcdcdc;
-}
-
-.information-card {
-  width: 100%;
-  min-height: 95%;
-  height: auto;
-}
-
-.title {
-  background-color: #ffffff;
-  height: 60px;
-}
-
-.aside {
-  min-height: calc(100vh - 60px);
-  width: 180px;
-  background-color: red;
-}
-
-.logout-button {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 </style>
