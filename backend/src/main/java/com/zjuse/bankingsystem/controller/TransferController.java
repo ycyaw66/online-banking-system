@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("transfer")
+@RequestMapping("/transfer")
 public class TransferController {
 
     @Data

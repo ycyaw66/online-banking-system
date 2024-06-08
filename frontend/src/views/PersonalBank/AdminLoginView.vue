@@ -69,7 +69,7 @@ export default {
       this.$router.push('/personalBank/user/login');
     },
     jumpInfo() {
-      this.$router.push('/personalBank/admin/privilege');
+      this.$router.push('/onlineBank/admin/privilege');
     },
     handleLogin() {
       // 加密后传给后端

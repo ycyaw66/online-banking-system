@@ -51,7 +51,7 @@ const routes = [
         ]
     },
     {
-        path: '/personalBank/admin',
+        path: '/onlineBank/admin',
         component: AdminBaseLayout,
         children: [
             {
@@ -63,6 +63,16 @@ const routes = [
                 path: 'blackList',
                 name: 'blackList',
                 component: () => import('../views/PersonalBank/BlackList.vue')
+            },
+            {
+                path:'inspector',
+                name:'adminManageInspector',
+                component:()=>import('../views/CreditCard/admin/ManageInspectorView.vue')
+            },
+            {
+                path: 'cashier',
+                name: 'adminManageCashier',
+                component:()=>import('../views/Counter/admin/ManageCashierView.vue')
             },
         ]
     },
@@ -107,11 +117,6 @@ const routes = [
         component: () => import('../views/CreditCard/customer/ResponseView.vue')
     },
     {
-        path:'/creditCard/admin/inspector',
-        name:'adminManageInspector',
-        component:()=>import('../views/CreditCard/admin/ManageInspectorView.vue')
-    },
-    {
         path:'/creditCard/inspector/request',
         name:'responseToRequests',
         component:()=>import('../views/CreditCard/inspector/CustomerRequestView.vue')
@@ -125,11 +130,6 @@ const routes = [
         path: '/counter/cashier/login',
         name: 'loginCashier',
         component:()=>import('../views/Counter/login/CashierLoginView.vue')
-    },
-    {
-        path: '/counter/admin/cashier',
-        name: 'adminManageCashier',
-        component:()=>import('../views/Counter/admin/ManageCashierView.vue')
     },
     {
         path: '/counter/cashier/currentDeposit',
