@@ -53,7 +53,7 @@ import { ElMessage } from 'element-plus';
 export default {
   data() {
     const checkPassword = (rule, value, callback) => {
-      if (value !== this.registerForm.password) {
+      if (value !== this.forgetForm.password) {
         callback(new Error('两次密码不一致'));
       } else {
         callback();
@@ -130,7 +130,7 @@ export default {
       this.doCountdown();
       axios.post("/user/register/sendMail",
         {
-          "email": this.forgetForm.email
+          "mail": this.forgetForm.email
         })
         .then(response => {
           if (response.data.code === 0) {

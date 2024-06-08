@@ -153,6 +153,7 @@ export default {
           "verification_code": this.registerForm.verificationCode
         })
         .then(response => {
+          console.log(response.data);
           if (response.data.code === 0) {
             ElMessage.success("注册成功");
             this.jumpLogin();
@@ -175,19 +176,19 @@ export default {
         this.isCounting = true;
         this.doCountdown();
         axios.post("/user/register/sendMail",
-        {
-          "email": this.forgetForm.email
-        })
-        .then(response => {
-          if (response.data.code === 0) {
-            this.uuid = response.data.payload.uuid;
-          } else {
-            ElMessage.error(response.data.err);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        })
+          {
+            "mail": this.registerForm.email
+          })
+          .then(response => {
+            if (response.data.code === 0) {
+              this.uuid = response.data.payload.uuid;
+            } else {
+              ElMessage.error(response.data.err);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
       },
       doCountdown() {
         this.countDownTimeout = setTimeout(() => {

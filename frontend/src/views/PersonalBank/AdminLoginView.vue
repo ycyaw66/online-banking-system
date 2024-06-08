@@ -80,10 +80,14 @@ export default {
           "password": encrypted
         })
         .then(response => {
-          ElMessage.success(response.data);
-          // handle successful login, redirect
-          Cookies.set('token', response.data.payload.token);
-          this.jumpInfo();
+          if (response.data.code === 0) {
+            ElMessage.success("登录成功");
+            Cookies.set('token', response.data.payload.token);
+            this.jumpInfo();
+          } else {
+            ElMessage.error(response.data.err);
+            return;
+          }
         })
         .catch(error => {
           ElMessage.error(error.response.data);

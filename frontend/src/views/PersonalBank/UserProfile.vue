@@ -75,7 +75,7 @@ import Cookies from 'js-cookie';
 export default {
   data() {
     const checkPassword = (rule, value, callback) => {
-      if (value !== this.passwordForm.password) {
+      if (value !== this.passwordForm.new_password) {
         callback(new Error('两次密码不一致'));
       } else {
         callback();
@@ -143,7 +143,7 @@ export default {
       const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
       const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.put("/user/profile",
+      axios.post("/user/profile/update",
         {
           "username": this.modifyForm.username,
           "password": encryptedOld,
@@ -185,14 +185,6 @@ export default {
         .catch(error => {
           console.log(error);
         })
-
-      // for debug
-      this.userInfo = {
-        username: 'xyxyxy',
-        id_number: '330812200001013316',
-        phone_number: '18888888888',
-        email: 'xyxyxy@xy.com'
-      };
     }
   },
   mounted() {
@@ -202,41 +194,5 @@ export default {
 </script>
 
 <style scoped>
-
-.main {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  min-height: 100%;
-  height: auto;
-  background-color: #dcdcdc;
-}
-
-.information-card {
-  width: 100%;
-  min-height: 95%;
-  height: auto;
-}
-
-.title {
-  background-color: #ffffff;
-  height: 60px;
-}
-
-.aside {
-  min-height: calc(100vh - 60px);
-  width: 180px;
-  background-color: red;
-}
-
-.logout-button {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-}
 
 </style>
