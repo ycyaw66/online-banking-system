@@ -75,7 +75,7 @@ import Cookies from 'js-cookie';
 export default {
   data() {
     const checkPassword = (rule, value, callback) => {
-      if (value !== this.passwordForm.password) {
+      if (value !== this.passwordForm.new_password) {
         callback(new Error('两次密码不一致'));
       } else {
         callback();
@@ -143,7 +143,7 @@ export default {
       const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
       const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.put("/user/profile",
+      axios.post("/user/profile/update",
         {
           "username": this.modifyForm.username,
           "password": encryptedOld,
@@ -185,14 +185,6 @@ export default {
         .catch(error => {
           console.log(error);
         })
-
-      // for debug
-      this.userInfo = {
-        username: 'xyxyxy',
-        id_number: '330812200001013316',
-        phone_number: '18888888888',
-        email: 'xyxyxy@xy.com'
-      };
     }
   },
   mounted() {

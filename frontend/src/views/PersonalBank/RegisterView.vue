@@ -175,19 +175,19 @@ export default {
         this.isCounting = true;
         this.doCountdown();
         axios.post("/user/register/sendMail",
-        {
-          "email": this.forgetForm.email
-        })
-        .then(response => {
-          if (response.data.code === 0) {
-            this.uuid = response.data.payload.uuid;
-          } else {
-            ElMessage.error(response.data.err);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        })
+          {
+            "email": this.registerForm.email
+          })
+          .then(response => {
+            if (response.data.code === 0) {
+              this.uuid = response.data.payload.uuid;
+            } else {
+              ElMessage.error(response.data.err);
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          })
       },
       doCountdown() {
         this.countDownTimeout = setTimeout(() => {
