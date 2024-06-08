@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.user.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
-import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 @SpringBootTest

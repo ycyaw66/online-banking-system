@@ -14,10 +14,15 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.zjuse.bankingsystem.entity.Card;
-import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
+import com.zjuse.bankingsystem.entity.user.Card;
+import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
+import com.zjuse.bankingsystem.service.creditCard.InspectorService;
+import com.zjuse.bankingsystem.service.user.CardService;
+import com.zjuse.bankingsystem.service.user.UserAndCardService;
+import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 import cn.hutool.core.lang.Assert;

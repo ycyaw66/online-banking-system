@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zjuse.bankingsystem.entity.Admin;
-import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.user.User;
 import com.zjuse.bankingsystem.mapper.AdminMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 

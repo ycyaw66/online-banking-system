@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zjuse.bankingsystem.service.CreditCardAdminService;
-import com.zjuse.bankingsystem.service.CreditCardService;
+import com.zjuse.bankingsystem.service.creditCard.CreditCardAdminService;
+import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.utils.ApiResult;

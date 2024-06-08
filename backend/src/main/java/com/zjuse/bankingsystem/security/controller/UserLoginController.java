@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.user.User;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.controller.dto.ForgetReq;
 import com.zjuse.bankingsystem.security.controller.dto.SendMailReq;
@@ -28,7 +28,7 @@ import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.security.service.OnlineUserService;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
-import com.zjuse.bankingsystem.service.UserService;
+import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
