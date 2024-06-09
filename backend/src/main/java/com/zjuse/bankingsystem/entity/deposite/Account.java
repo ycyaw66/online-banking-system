@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @TableName("account")
 public class Account {
-    @TableId(type = IdType.AUTO)
     private Long id;//账户ID
     private  String name;//姓名
     @JsonProperty("phonenumber")

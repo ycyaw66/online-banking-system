@@ -45,9 +45,15 @@ public class AccountService {
             String salt= String.valueOf(rand.nextInt(900001)+100000);
             String newpassword = DigestUtil.sha256Hex(password+salt);
             //创建账户实例
+            ApiResult apiResult = cardService.registerCard(CardType.DEBIT_CARD);
+            if (!apiResult.ok) {
+                return apiResult;
+            }
+            Long cardId = (Long) apiResult.payload;
             Account account = new Account();
+            account.setId(cardId);
             account.setName(name);
-            account.setCardId(0L);
+            account.setCardId(cardId);
             account.setSalt(salt);
             account.setPassword(newpassword);
             account.setStatus(status);
@@ -57,28 +63,20 @@ public class AccountService {
             accountMapper.insert(account);
             Long accountid = account.getId();
             // 用户注册卡片
-            cardService.registerCard(CardType.DEBIT_CARD);
-            cardService.bindUserAndCard(accountid, citizenid); 
+            if (!cardService.bindUserAndCard(accountid, citizenid).ok) {
+                return new ApiResult(false, "绑定失败");
+            } 
 
             //创建卡片实例
             DepositeCard card = new DepositeCard();
             card.setType(cardtype);
             card.setAccountid(accountid);
-            //插入卡片并获取id
-            cardMapper.insert(card);
-            Long cardid =card.getCardId();
-            account.setCardId(cardid);
             //新建活期
             Property property = new Property();
             property.setAccountid(account.getId());
             property.setType(PropertyType.demand);
             propertyMapper.insert(property);
             demandDepositService.newDemandDeposit(accountid, property.getId());
-            //更新账户中卡片id
-            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("id", accountid);
-            updateWrapper.set("card_id", cardid);
-            accountMapper.update(null, updateWrapper);
             return new ApiResult(true, account);
         }catch (Exception e){
             return  new ApiResult(false,e.getMessage());
