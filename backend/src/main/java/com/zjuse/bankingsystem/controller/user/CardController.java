@@ -3,9 +3,10 @@ package com.zjuse.bankingsystem.controller.user;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zjuse.bankingsystem.entity.Card;
-import com.zjuse.bankingsystem.entity.HistoryCondition;
-import com.zjuse.bankingsystem.entity.User;
+import com.zjuse.bankingsystem.entity.user.Card;
+import com.zjuse.bankingsystem.entity.user.History;
+import com.zjuse.bankingsystem.entity.user.HistoryCondition;
+import com.zjuse.bankingsystem.entity.user.User;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.user.CardService;
 import com.zjuse.bankingsystem.service.user.UserAndCardService;
@@ -99,7 +100,7 @@ public class CardController {
     public RespResult history(@RequestBody HistoryCondition historyCondition) {
         ApiResult apiResult = userAndCardService.history(historyCondition);
         if (apiResult.ok) {
-            return RespResult.success((List<com.zjuse.bankingsystem.entity.History>)apiResult.payload);
+            return RespResult.success((List<History>)apiResult.payload);
         }
         else {
             return RespResult.fail(apiResult.message);

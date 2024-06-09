@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zjuse.bankingsystem.entity.user.Card;
 import com.zjuse.bankingsystem.entity.user.History;
 import com.zjuse.bankingsystem.entity.user.HistoryCondition;;
 
@@ -91,7 +92,7 @@ public class UserAndCardService {
     public ApiResult loss(Long cardId, String password) {
         try {
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
+                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId, password);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }

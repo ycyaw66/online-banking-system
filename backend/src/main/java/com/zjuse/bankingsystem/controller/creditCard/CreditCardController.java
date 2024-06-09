@@ -142,12 +142,7 @@ public class CreditCardController {
 
     @PostMapping("/pay")
     public RespResult bankPay(@RequestParam Long card_id, @RequestParam BigDecimal amount, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date, @RequestParam String password) {
-        ApiResult apiResult = currentUserService.getCurrentUserIdNumber();
-        if (!apiResult.ok) {
-            return RespResult.fail(apiResult.message);
-        }
-        String idNumber = (String) apiResult.payload;
-        apiResult = creditCardService.bankPay(card_id, idNumber, password, amount, date);
+        ApiResult apiResult = creditCardService.bankPay(card_id, password, amount, date);
         if (apiResult.ok) {
             return RespResult.success(apiResult.payload);
         } else {

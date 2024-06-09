@@ -3,6 +3,7 @@ package com.zjuse.bankingsystem.service.creditCard;
 import com.zjuse.bankingsystem.entity.creditCard.*;
 import com.zjuse.bankingsystem.mapper.creditCard.CreditCardApplicationMapper;
 import com.zjuse.bankingsystem.mapper.creditCard.CreditCardMapper;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.user.CardService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
@@ -27,6 +28,9 @@ public class CreditCardService {
 
     @Autowired
     private CardService cardService;
+
+    @Autowired
+    private CurrentUserService currentUserService; 
 
     public ApiResult checkCreditCardPassword(Long cardId, String password) {
         CreditCard card = creditCardMapper.selectById(cardId);
@@ -79,7 +83,7 @@ public class CreditCardService {
         return new ApiResult(true, null, null);
     }
 
-    public ApiResult makeCreditCardLost(Long cardId) {
+    public ApiResult makeCreditCardLost(Long cardId, String password) {
         CreditCard creditCard = creditCardMapper.findCreditCard(cardId);
         if (creditCard.getId() == null) {
             return new ApiResult(false, "该信用卡不存在");
@@ -87,9 +91,9 @@ public class CreditCardService {
         if (creditCard.getIsLost() == 1) {
             return new ApiResult(false, "该信用卡已挂失");
         }
-        // if (!creditCard.getPassword().equals(password)) {
-        //     return new ApiResult(false, "Wrong password");
-        // }
+        if (!creditCard.getPassword().equals(password)) {
+            return new ApiResult(false, "Wrong password");
+        }
         creditCardMapper.setCreditCardLost(cardId);
         creditCardMapper.insertCreditCard(creditCard);
         return new ApiResult(true, "挂失成功");
@@ -110,7 +114,7 @@ public class CreditCardService {
         }
     }
 
-    public ApiResult bankPay(Long cardId, String idNumber, String password, BigDecimal account, Date date) {
+    public ApiResult bankPay(Long cardId, String password, BigDecimal account, Date date) {
         try {
             CreditCard matchCard = creditCardMapper.findCreditCard(cardId);
             if (matchCard == null || !matchCard.getPassword().equals(password)) {
@@ -126,7 +130,8 @@ public class CreditCardService {
             if (result < 0) {
                 return new ApiResult(false, "信用卡可用额度不足");
             }
-            creditCardMapper.addPayment(cardId, idNumber, account, date);
+            String identitNumber = (String) currentUserService.getCurrentUserIdNumber().payload; 
+            creditCardMapper.addPayment(cardId, identitNumber, account, date);
             creditCardMapper.updateLoan(cardId, account);
             return new ApiResult(true, null);
         }
