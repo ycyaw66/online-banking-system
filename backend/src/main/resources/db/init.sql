@@ -3,6 +3,17 @@ drop table if exists `credit_card_application` cascade;
 drop table if exists `credit_card_bill` cascade;
 drop table if exists `credit_card_inspector` cascade;
 drop table if exists `credit_card` cascade;
+
+drop table if exists `administrator` cascade;
+drop table if exists `cashier` cascade;
+drop table if exists `account` cascade;
+drop table if exists `deposite_card` cascade;
+drop table if exists `property` cascade;
+drop table if exists `demand_deposit` cascade;
+drop table if exists `fixed_deposit` cascade;
+drop table if exists `statement` cascade;
+drop table if exists `rate` cascade;
+
 DROP TABLE IF EXISTS `admin` cascade;
 DROP TABLE IF EXISTS `cardofperson` cascade;
 DROP TABLE IF EXISTS `user_privilege` cascade;
@@ -11,13 +22,10 @@ DROP TABLE IF EXISTS `history` cascade;
 DROP TABLE IF EXISTS `user` cascade;
 DROP TABLE IF EXISTS `card` cascade;
 
-CREATE TABLE `card`
-(
-    card_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '卡ID',
-    card_type INTEGER NOT NULL COMMENT '卡类型',
-    PRIMARY KEY(card_id)
-);
 
+
+
+-- 用户的基本信息的表 
 CREATE TABLE `user`
 (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -29,7 +37,15 @@ CREATE TABLE `user`
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+-- 用户卡的表，包括信用卡和储蓄卡
+CREATE TABLE `card`
+(
+    card_id BIGINT NOT NULL AUTO_INCREMENT COMMENT '卡ID',
+    card_type INTEGER NOT NULL COMMENT '卡类型',
+    PRIMARY KEY(card_id)
+);
 
+-- 用户拥有卡的表
 CREATE TABLE `cardofperson`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
@@ -39,6 +55,7 @@ CREATE TABLE `cardofperson`
     PRIMARY KEY (user_id, card_id)
 );
 
+-- 用户权限表
 CREATE TABLE `user_privilege`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
@@ -49,6 +66,7 @@ CREATE TABLE `user_privilege`
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
 
+-- 黑名单
 CREATE TABLE `blacklist`
 (
     user_id BIGINT NOT NULL COMMENT '人员ID',
@@ -57,6 +75,7 @@ CREATE TABLE `blacklist`
     foreign key (user_id) references user(id)
 );
 
+-- 交易历史记录
 CREATE TABLE `history`
 (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -70,6 +89,7 @@ CREATE TABLE `history`
     PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+-- 管理员
 CREATE TABLE `admin`
 (
     `id` int not null auto_increment,
@@ -79,6 +99,7 @@ CREATE TABLE `admin`
     primary key (`id`)
 );
 
+-- 信用卡
 CREATE TABLE `credit_card` (
     `id` bigint not null,
     `id_number` varchar(50) not null,
@@ -91,6 +112,7 @@ CREATE TABLE `credit_card` (
     check(is_lost in (0, 1))
 )engine=innodb DEFAULT charset=utf8mb4;
 
+-- 信用卡的申请
 create table `credit_card_application` (
     `id` int not null auto_increment,
     `id_number` varchar(50) not null,
@@ -103,6 +125,7 @@ create table `credit_card_application` (
     FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
 ) engine=innodb charset=utf8mb4;
 
+-- 信用卡账单
 create table `credit_card_bill` (
     `id` int not null auto_increment,
     `id_number` varchar(50) not null, 
@@ -113,13 +136,7 @@ create table `credit_card_bill` (
     FOREIGN KEY(`credit_card_id`) REFERENCES credit_card(`id`)
 ) engine=innodb charset=utf8mb4;
 
-create table `credit_card_admin` (
-  `id` int not null auto_increment,
-  `name` varchar(50) not null,
-  `password` varchar(64) not null,
-  primary key (`id`)
-) engine=innodb charset=utf8mb4;
-
+-- 信用卡审查员
 create table `credit_card_inspector` (
     `id` int not null auto_increment,
     `name` varchar(50) not null,
@@ -129,16 +146,16 @@ create table `credit_card_inspector` (
     check(`permission` in (1, 2))
 )engine=innodb charset=utf8mb4;
 
-create table `Administrator` (
-    `id` bigint(10)   zerofill not null auto_increment ,
+create table `administrator` (
+    `id` bigint(10) zerofill not null auto_increment ,
     `username` varchar(63) not null,
     `password` varchar(255) not null,
     `salt` varchar(255) not null,
     primary key (`id`)
 )  AUTO_INCREMENT=2000000000 engine=innodb charset=utf8mb4;
 
-create table `Cashier` (
-    `id` bigint(10)   zerofill not null auto_increment ,
+create table `cashier` (
+    `id` bigint(10) zerofill not null auto_increment ,
     `username` varchar(63) not null,
     `password` varchar(255) not null,
     `authority` int not null default 0,
@@ -148,7 +165,8 @@ create table `Cashier` (
     check(authority in (0,1,2,3))
 )  AUTO_INCREMENT=1000000000 engine=innodb charset=utf8mb4;
 
-create table `Account` (
+-- 储蓄账号
+create table `account` (
     `id` bigint(12)   zerofill not null auto_increment ,
     `name` varchar(63) not null,
     `phonenumber` varchar(12) not null,
@@ -162,36 +180,36 @@ create table `Account` (
     check ( `status` in (1,2,3))
 ) engine=innodb charset=utf8mb4;
 
-create table `Card` (
+create table `deposite_card` (
     `id` bigint(16)   zerofill not null auto_increment ,
     `type` int not null,
     `accountid`  bigint(12)   zerofill not null,
     primary key (`id`),
-    foreign key (accountid)references Account(id) on delete cascade on update cascade,
+    foreign key (accountid)references account(id) on delete cascade on update cascade,
     check (`type` in (1,2) )
 ) AUTO_INCREMENT=1000000000000000 engine=innodb charset=utf8mb4;
 
-create table `Property` (
+create table `property` (
     `id` bigint   not null auto_increment,
     `accountid` bigint(12)   zerofill not null,
     `type` int not null,
     primary key (`id`),
-    foreign key (accountid)references Account(id) on delete cascade on update cascade,
+    foreign key (accountid)references account(id) on delete cascade on update cascade,
     check ( `type` in (1, 2) )
 ) engine=innodb charset=utf8mb4;
 
-create table `Demand_deposit` (
+create table `demand_deposit` (
     `propertyid` bigint   not null ,
     `accountid`  bigint(12)   zerofill not null,
     `amount` decimal(15,2) not null default 0.00,
     `date` bigint not null,
     `base` decimal(15,2) not null default 0.00,
     check(amount >= 0),
-    foreign key (`propertyid`) references `Property`(`id`) on delete cascade on update cascade,
-    foreign key (`accountid`) references `Account`(`id`) on delete cascade on update cascade
+    foreign key (`propertyid`) references `property`(`id`) on delete cascade on update cascade,
+    foreign key (`accountid`) references `account`(`id`) on delete cascade on update cascade
 ) engine=innodb charset=utf8mb4;
 
-create table `Fixed_deposit` (
+create table `fixed_deposit` (
     `propertyid` bigint   not null ,
     `accountid`  bigint(12)   zerofill not null,
     `amount` decimal(15,2) not null default 0.00,
@@ -200,21 +218,21 @@ create table `Fixed_deposit` (
     `interestrate` decimal(4,2) not null default 0.00,
     `autocontinue` bool default true,
     check(amount >= 0),
-    foreign key (`propertyid`) references `Property`(`id`) on delete cascade on update cascade,
-    foreign key (`accountid`) references `Account`(`id`) on delete cascade on update cascade
+    foreign key (`propertyid`) references `property`(`id`) on delete cascade on update cascade,
+    foreign key (`accountid`) references `account`(`id`) on delete cascade on update cascade
 ) engine=innodb charset=utf8mb4;
 
-create table `Statement` (
+create table `statement` (
     `accountid`  bigint(12)   zerofill not null,
     `amount` decimal(15,2) not null default 0.00,
     `date` bigint not null,
     `type` int not null default 0,
     `traced` bigint not null,
     check ( `type` in (1,2,3,4,5,6,7,8) ),
-    foreign key (`accountid`) references `Account`(`id`) on delete cascade on update cascade
+    foreign key (`accountid`) references `account`(`id`) on delete cascade on update cascade
 ) engine=innodb charset=utf8mb4;
 
-create table `Rate`(
+create table `rate`(
     `demand_rate` decimal(3,2),
     `_3month_rate` decimal(3,2),
     `_6month_rate` decimal(3,2),

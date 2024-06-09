@@ -1,7 +1,7 @@
 package com.zjuse.bankingsystem.controller.deposite;
 
 import com.zjuse.bankingsystem.entity.deposite.Account;
-import com.zjuse.bankingsystem.entity.deposite.Card;
+import com.zjuse.bankingsystem.entity.deposite.DepositeCard;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
 import com.zjuse.bankingsystem.service.deposite.DepositeCardService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/account")
-public class AccountControler {
+public class AccountController {
     @Autowired
     private AccountService accountService;
 
@@ -191,7 +191,7 @@ public class AccountControler {
         ApiResult apiResult = cardService.newCard(cardType,accountid);
         if(!apiResult.ok)
             return  RespResult.fail(apiResult.message);
-        Card card = (Card) apiResult.payload;
+        DepositeCard card = (DepositeCard) apiResult.payload;
         Long newcardid = card.getCardId();
         cardService.bindCard(newcardid,accountid);
         ApiResult deletecard = cardService.DeleteCardByCardId(cardid);

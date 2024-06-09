@@ -52,7 +52,7 @@ public class DemandDepositController {
 
         ApiResult propertyResult=depositService.getDemandDepositByPropertyAccountId(id);
         //新建实例并返回
-        ApiResult apiResult  = depositService.changeamount(id,amount);
+        ApiResult apiResult  = depositService.changeAmount(id,amount);
         if(!apiResult.ok)
             return RespResult.fail(apiResult.message);
         ApiResult addStatement1 = statementService.addStatement(id,amount,System.currentTimeMillis(), StatementType.DemandDeposit,((DemandDeposit)propertyResult.payload).getpropertyid());
@@ -83,7 +83,7 @@ public class DemandDepositController {
             
         ApiResult propertyResult=depositService.getDemandDepositByPropertyAccountId(id);
         //新建实例并返回
-        ApiResult apiResult  = depositService.changeamount(id,amount.negate());
+        ApiResult apiResult  = depositService.changeAmount(id,amount.negate());
         if(!apiResult.ok)
             return RespResult.fail(apiResult.message);
         ApiResult addStatement1 = statementService.addStatement(id,amount,System.currentTimeMillis(), StatementType.DemandDraw,((DemandDeposit)propertyResult.payload).getpropertyid());
@@ -112,7 +112,7 @@ public class DemandDepositController {
         if(!states.equals(normal))
             return RespResult.fail("账户状态异常");
         //新建实例并返回
-        ApiResult apiResult  = depositService.showamount(id);
+        ApiResult apiResult  = depositService.showAmount(id);
         if(apiResult.ok)
             return RespResult.success(apiResult.payload);
         else

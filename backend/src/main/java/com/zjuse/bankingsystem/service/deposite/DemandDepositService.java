@@ -58,7 +58,7 @@ public class DemandDepositService {
             return new ApiResult(false,e.getMessage());
         }
     }
-    public ApiResult changeamount(Long account_id,BigDecimal amount){
+    public ApiResult changeAmount(Long account_id,BigDecimal amount){
         try{
             //获得实例
             QueryWrapper deposit_wrapper = new QueryWrapper<>();
@@ -183,7 +183,7 @@ public class DemandDepositService {
             return new ApiResult(false,e.getMessage());
         }
     }
-    public ApiResult showamount(Long account_id){
+    public ApiResult showAmount(Long account_id){
         try{
             //创建实例行返回
             QueryWrapper deposit_wrapper = new QueryWrapper<>();

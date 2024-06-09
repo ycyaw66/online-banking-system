@@ -1,6 +1,5 @@
 package com.zjuse.bankingsystem.mapper.creditCard;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -8,7 +7,6 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 
 @Mapper

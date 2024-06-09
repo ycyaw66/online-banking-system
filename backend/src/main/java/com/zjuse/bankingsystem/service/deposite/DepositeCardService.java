@@ -3,7 +3,7 @@ package com.zjuse.bankingsystem.service.deposite;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zjuse.bankingsystem.entity.deposite.Account;
-import com.zjuse.bankingsystem.entity.deposite.Card;
+import com.zjuse.bankingsystem.entity.deposite.DepositeCard;
 import com.zjuse.bankingsystem.mapper.deposite.AccountMapper;
 import com.zjuse.bankingsystem.mapper.deposite.DepositeCardMapper;
 import com.zjuse.bankingsystem.mapper.deposite.PropertyMapper;
@@ -27,7 +27,7 @@ public class DepositeCardService {
     public ApiResult newCard(DepositCardType cardType, Long accountid){
         try{
           //创建卡片实例
-          Card card = new Card();
+          DepositeCard card = new DepositeCard();
           card.setType(cardType);
           card.setAccountid(accountid);
            //插入卡片并获取id
@@ -54,9 +54,9 @@ public class DepositeCardService {
     public ApiResult DeleteCardByCardId(Long card_id){
         try{
             //获得card
-            QueryWrapper<Card> queryWrapper_card = new QueryWrapper<>();
+            QueryWrapper<DepositeCard> queryWrapper_card = new QueryWrapper<>();
             queryWrapper_card.eq("id", card_id);
-            Card card = cardMapper.selectOne(queryWrapper_card);
+            DepositeCard card = cardMapper.selectOne(queryWrapper_card);
             Long account_id= card.getAccountid();
             //删除
             QueryWrapper card_wrapper = new QueryWrapper<>();
@@ -72,7 +72,7 @@ public class DepositeCardService {
             //搜索
             QueryWrapper wrapper = new QueryWrapper<>();
             wrapper.eq("accountid",account_id);
-            List<Card> card = cardMapper.selectList(wrapper);
+            List<DepositeCard> card = cardMapper.selectList(wrapper);
             //没找到
             if(card.size()==0) {
                 return new ApiResult(false, "账户不存在");
@@ -88,7 +88,7 @@ public class DepositeCardService {
             //搜索
             QueryWrapper wrapper = new QueryWrapper<>();
             wrapper.eq("id",card_id);
-            List<Card> card = cardMapper.selectList(wrapper);
+            List<DepositeCard> card = cardMapper.selectList(wrapper);
             if(card.size()==0) {
                 return new ApiResult(false, "账户不存在");
             }else

@@ -1,7 +1,7 @@
 package com.zjuse.bankingsystem.mapper.deposite;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zjuse.bankingsystem.entity.deposite.Card;
+import com.zjuse.bankingsystem.entity.deposite.DepositeCard;
 
 import org.apache.ibatis.annotations.*;
 
@@ -22,6 +22,6 @@ public interface CardMapper {
     public void deleteCardById(Long id);
 }*/
 
-public interface DepositeCardMapper extends BaseMapper<Card>{
+public interface DepositeCardMapper extends BaseMapper<DepositeCard>{
 
 }

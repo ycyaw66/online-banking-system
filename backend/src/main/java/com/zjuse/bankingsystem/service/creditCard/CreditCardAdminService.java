@@ -5,27 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zjuse.bankingsystem.entity.creditCard.CreditCardAdmin;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
-import com.zjuse.bankingsystem.mapper.creditCard.CreditCardAdminMapper;
 import com.zjuse.bankingsystem.mapper.creditCard.InspectorMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 @Service
 public class CreditCardAdminService {
     @Autowired
-    private CreditCardAdminMapper adminMapper;  
-    @Autowired
     private InspectorMapper inspectorMapper; 
-
-    public ApiResult loginAdmin(String name, String password) {
-        CreditCardAdmin creditCardAdmin = adminMapper.loginAdmin(name, password);
-        if (creditCardAdmin == null) {
-            return new ApiResult(false, "登录失败");
-        } else {
-            return new ApiResult(true, "登录成功");
-        }
-    }
 
     public ApiResult queryInspectors() {
         List<CreditCardInspector> creditCardInspectors = inspectorMapper.queryInspectors();

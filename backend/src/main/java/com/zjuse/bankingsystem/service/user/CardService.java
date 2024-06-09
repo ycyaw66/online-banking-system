@@ -104,7 +104,7 @@ public class CardService {
             //     return apiResult;
             // }
             // Long userId = (Long) apiResult.payload;
-            QueryWrapper wrapper = new QueryWrapper();
+            QueryWrapper<CardOfPerson> wrapper = new QueryWrapper<>();
             wrapper.eq("user_id", userId);
             List<CardOfPerson> list = cardOfPersonMapper.selectList(wrapper);
             if (list == null) {
@@ -157,7 +157,7 @@ public class CardService {
 
     public ApiResult getUserId(Long cardId) {
         try {
-            QueryWrapper wrapper = new QueryWrapper();
+            QueryWrapper<CardOfPerson> wrapper = new QueryWrapper<>();
             wrapper.eq("card_id", cardId);
             CardOfPerson cardOfPerson = cardOfPersonMapper.selectOne(wrapper);
             if (cardOfPerson == null) {

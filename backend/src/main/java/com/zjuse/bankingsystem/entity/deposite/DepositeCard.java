@@ -10,8 +10,8 @@ import io.micrometer.common.lang.NonNull;
 import lombok.Data;
 
 @Data
-@TableName("card")
-public class Card {
+@TableName("deposite_card")
+public class DepositeCard {
     @JsonProperty("id")
     @TableId(type = IdType.AUTO)
     Long id;//卡ID

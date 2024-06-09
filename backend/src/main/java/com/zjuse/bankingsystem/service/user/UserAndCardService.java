@@ -2,29 +2,18 @@ package com.zjuse.bankingsystem.service.user;
 
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
-import com.zjuse.bankingsystem.mapper.*;
 import com.zjuse.bankingsystem.mapper.user.HistoryMapper;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.DebitcardService;
 import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
 
 import java.math.BigDecimal;
-import java.sql.Time;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
-
-import javax.management.Query;
-
-import org.apache.tomcat.util.buf.HexUtils;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.zjuse.bankingsystem.entity.*;
 import com.zjuse.bankingsystem.entity.user.History;
 import com.zjuse.bankingsystem.entity.user.HistoryCondition;;
 
@@ -241,8 +230,7 @@ public class UserAndCardService {
                 }
                 System.out.println("### ok1" + cardId);
                 isDec = true;
-            }
-            else {
+            } else {
                 apiResult = debitcardService.decreaceBalance(cardId, amount, password);
                 if (apiResult.ok == false) {
                     return apiResult;
