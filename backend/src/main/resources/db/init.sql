@@ -82,7 +82,7 @@ CREATE TABLE `history`
     card_id BIGINT NOT NULL COMMENT '卡ID',
     target_card BIGINT NOT NULL COMMENT '对方卡ID',
     amount DECIMAL(15, 2) NOT NULL COMMENT '交易金额',
-    time BIGINT NOT NULL COMMENT '交易时间戳',
+    time DATE NOT NULL COMMENT '交易时间',
     remark VARCHAR(64) NOT NULL COMMENT '备注',
     FOREIGN KEY(card_id) REFERENCES card(card_id),
     FOREIGN KEY(target_card) REFERENCES card(card_id),

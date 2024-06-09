@@ -3,8 +3,9 @@ package com.zjuse.bankingsystem.controller.user;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.zjuse.bankingsystem.entity.user.Card;
-import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.entity.Card;
+import com.zjuse.bankingsystem.entity.HistoryCondition;
+import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.user.CardService;
 import com.zjuse.bankingsystem.service.user.UserAndCardService;
@@ -89,6 +90,66 @@ public class CardController {
         if (apiResult.ok) {
             return RespResult.success(null);
         } 
+        else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
+
+    @PostMapping("/history")
+    public RespResult history(@RequestBody HistoryCondition historyCondition) {
+        ApiResult apiResult = userAndCardService.history(historyCondition);
+        if (apiResult.ok) {
+            return RespResult.success((List<com.zjuse.bankingsystem.entity.History>)apiResult.payload);
+        }
+        else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class ValidReceiver {
+        @JsonProperty("card_id")
+        @NonNull
+        Long cardId;
+        @NonNull
+        String password;
+    };
+
+    @PostMapping("/valid")
+    public RespResult valid(@RequestBody ValidReceiver validReceiver) {
+        ApiResult apiResult = userAndCardService.valid(validReceiver.getCardId(), validReceiver.getPassword());
+        if (apiResult.ok) {
+            return RespResult.success();
+        }
+        else {
+            return RespResult.fail(apiResult.message);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    class BindingReceiver {
+        @JsonProperty("card_id")
+        @NonNull
+        Long cardId;
+        @JsonProperty("user_id")
+        @NonNull
+        Long userId;
+        @NonNull
+        String password;
+    };
+    
+    @PostMapping("binding")
+    public RespResult binding(@RequestBody BindingReceiver receiver) {
+        ApiResult apiResult = userAndCardService.valid(receiver.getCardId(), receiver.getPassword());
+        if (!apiResult.ok) {
+            return RespResult.fail(apiResult.message);
+        }
+        apiResult = cardService.bindUserAndCard(receiver.getUserId(), receiver.getCardId());
+        if (apiResult.ok) {
+            return RespResult.success();
+        }
         else {
             return RespResult.fail(apiResult.message);
         }
