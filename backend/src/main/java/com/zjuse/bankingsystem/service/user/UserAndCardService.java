@@ -8,8 +8,17 @@ import com.zjuse.bankingsystem.service.DebitcardService;
 import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Time;
+import java.util.Calendar;
+import java.sql.Date;
 import java.util.List;
+import java.util.Vector;
+import java.util.function.Consumer;
+
+import javax.management.Query;
+
+import org.apache.tomcat.util.buf.HexUtils;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,13 +61,8 @@ public class UserAndCardService {
             // check priviledge? I don't know
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                Date date = new Date();
-                apiResult = currentUserService.getCurrentUser();
-                if (!apiResult.ok) {
-                    return apiResult; 
-                }
-                String idNumber = (String)apiResult.payload;
-                apiResult = creditcardService.bankPay(cardId, idNumber, password, amount, date);
+                Date date = new Date(System.currentTimeMillis());
+                apiResult = creditcardService.bankPay(cardId, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -71,8 +75,8 @@ public class UserAndCardService {
                 }
                 apiResult =  new ApiResult(true, "success");
             }
-            Date date = new Date();
-            History history = new History(null, cardId, 1L, amount, date.getTime(), remark);
+            Date date = new Date(System.currentTimeMillis());
+            History history = new History(null, cardId, 1L, amount, date, remark);
             historyMapper.insert(history);
             return apiResult;
         }
@@ -87,7 +91,7 @@ public class UserAndCardService {
     public ApiResult loss(Long cardId, String password) {
         try {
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId, password);
+                ApiResult apiResult = creditcardService.makeCreditCardLost(cardId);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -128,11 +132,66 @@ public class UserAndCardService {
     public ApiResult history(HistoryCondition condition) {
         try {
             QueryWrapper<History> wrapper = new QueryWrapper<>();
-            if (condition.getCardId() != null) {
+            // QueryWrapper<History> idWrapper = new QueryWrapper<>();
+            if (condition.getCardId() == null) {
+                return new ApiResult(false, "card id can't be null");
+            }
+            if (condition.getTargetCardId() != null && condition.getTransferCardId() != null) {
+                return new ApiResult(false, "target card and transfer card can't be set at the same time");
+            }
+            if (condition.getTargetCardId() == null && condition.getTransferCardId() == null) {
+                wrapper.and(w -> w.eq("card_id", condition.getCardId()).or().eq("target_card", condition.getCardId()));
+            }
+            else if (condition.getTargetCardId() != null) {
                 wrapper.eq("card_id", condition.getCardId());
+                wrapper.eq("target_card", condition.getTargetCardId());
+            }
+            else {
+                wrapper.eq("card_id", condition.getTransferCardId());
+                wrapper.eq("target_card", condition.getCardId());
+
+            }
+
+            if (condition.getLeastAmount() != null) {
+                wrapper.ge("amount", condition.getLeastAmount());
+            }
+            if (condition.getMostAmount() != null) {
+                wrapper.le("amount", condition.getMostAmount());
+            }
+            if (condition.getStartTime() != null) {
+                wrapper.ge("time", condition.getStartTime());
+            }
+            if (condition.getEndTime() != null) {
+                wrapper.le("time", condition.getEndTime());
+            }
+            if (condition.getRemark() != null) {
+                wrapper.like("remark", condition.getRemark());
+            }
+            List<History> list = historyMapper.selectList(wrapper);
+            if (list == null) {
+                return new ApiResult(false, "database error");
+            }
+            ApiResult apiResult = new ApiResult(true, "success");
+            apiResult.payload = list;
+            return apiResult;
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
+    public ApiResult historyAdmin(HistoryCondition condition) {
+        try {
+            QueryWrapper<History> wrapper = new QueryWrapper<>();
+            // QueryWrapper<History> idWrapper = new QueryWrapper<>();
+            if (condition.getTargetCardId() != null && condition.getTransferCardId() != null) {
+                return new ApiResult(false, "target card and transfer card can't be set at the same time");
             }
             if (condition.getTargetCardId() != null) {
                 wrapper.eq("target_card", condition.getTargetCardId());
+            }
+            if (condition.getTransferCardId() != null) {
+                wrapper.eq("card_id", condition.getTransferCardId());
             }
             if (condition.getLeastAmount() != null) {
                 wrapper.ge("amount", condition.getLeastAmount());
@@ -162,11 +221,46 @@ public class UserAndCardService {
         }
     }
 
+
+    public ApiResult loanHistory(Long userId) {
+        try {
+            ApiResult apiResult = cardService.getAllCardbyUserId(userId);
+            if (!apiResult.ok) {
+                return apiResult;
+            }
+            List<Card> cards = (List<Card>) apiResult.payload;
+            List<History> histories = new Vector<>();
+            for(Card card : cards) {
+                HistoryCondition historyCondition = new HistoryCondition();
+                historyCondition.setTargetCardId(card.getCardId());
+                Date date = new Date(System.currentTimeMillis()); // 获取90天前date
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.DAY_OF_MONTH, -90);
+                historyCondition.setStartTime(date);
+                apiResult = historyAdmin(historyCondition);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
+                apiResult = historyAdmin(historyCondition);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
+                List<History> histories_ = (List<History>) apiResult.payload;
+                histories.addAll(histories_);
+            }
+            return new ApiResult(true, "success", histories);
+        }
+        catch (Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
     public ApiResult getBalance(Long cardId, String password) {
         try {
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                // apiResult = creditcardService.getBalance(cardId, password);
+                apiResult = creditcardService.getBalance(cardId);
             }
             else {
                 apiResult = debitcardService.getBalance(cardId, password);
@@ -179,6 +273,22 @@ public class UserAndCardService {
     }
 
 
+
+    public ApiResult valid(Long cardId, String password) {
+        try {
+            if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
+                ApiResult apiResult = creditcardService.valid(cardId, password);
+                return apiResult;
+            }
+            else {
+                // ApiResult apiResult = debitcardService.valid(cardId, password);
+                return new ApiResult(false, "not implemented");
+            }
+        }
+        catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
 
 
     private void Rollback(Long cardId, BigDecimal amount) throws Exception {
@@ -218,13 +328,8 @@ public class UserAndCardService {
             ApiResult apiResult;
             // check priviledge? I don't know
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
-                Date date = new Date();
-                apiResult = currentUserService.getCurrentUser();
-                if (!apiResult.ok) {
-                    return apiResult; 
-                }
-                String idNumber = (String)apiResult.payload;
-                apiResult = creditcardService.bankPay(cardId, idNumber, password, amount, date);
+                Date date = new Date(System.currentTimeMillis());
+                apiResult = creditcardService.bankPay(cardId, password, amount, date);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -255,8 +360,8 @@ public class UserAndCardService {
             }
 
             
-            Date date = new Date();
-            History history = new History(null, cardId, targetCardId, amount, date.getTime(), remark);
+            Date date = new Date(System.currentTimeMillis());
+            History history = new History(null, cardId, targetCardId, amount, date, remark);
             historyMapper.insert(history);
             return new ApiResult(true, "success");
         }

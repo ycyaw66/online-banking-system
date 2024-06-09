@@ -1,6 +1,7 @@
 package com.zjuse.bankingsystem.entity.user;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Time;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,7 @@ public class History {
 
     BigDecimal amount;
 
-    Long time;
+    Date time;
     
     String remark;
 }
