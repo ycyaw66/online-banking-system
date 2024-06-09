@@ -6,12 +6,12 @@ drop table if exists `credit_card` cascade;
 
 drop table if exists `administrator` cascade;
 drop table if exists `cashier` cascade;
-drop table if exists `account` cascade;
 drop table if exists `deposite_card` cascade;
-drop table if exists `property` cascade;
 drop table if exists `demand_deposit` cascade;
 drop table if exists `fixed_deposit` cascade;
+drop table if exists `property` cascade;
 drop table if exists `statement` cascade;
+drop table if exists `account` cascade;
 drop table if exists `rate` cascade;
 
 DROP TABLE IF EXISTS `admin` cascade;
@@ -167,31 +167,32 @@ create table `cashier` (
 
 -- 储蓄账号
 create table `account` (
-    `id` bigint(12)   zerofill not null auto_increment ,
+    `id` bigint not null,
     `name` varchar(63) not null,
     `phonenumber` varchar(12) not null,
     `citizenid` varchar(18) not null,
     `status` int not null default 1,
-    `card_id` bigint(14)   zerofill not null,
+    `card_id` bigint   zerofill not null,
     `password` varchar(255) not null,
     `salt` varchar(255) not null,
     primary key (`id`),
+    foreign key(`id`) references card(`card_id`),
     unique(card_id),
     check ( `status` in (1,2,3))
 ) engine=innodb charset=utf8mb4;
 
 create table `deposite_card` (
-    `id` bigint(16)   zerofill not null auto_increment ,
+    `id` bigint not null,
     `type` int not null,
-    `accountid`  bigint(12)   zerofill not null,
+    `accountid`  bigint  not null,
     primary key (`id`),
-    foreign key (accountid)references account(id) on delete cascade on update cascade,
+    foreign key (accountid)references account(id),
     check (`type` in (1,2) )
-) AUTO_INCREMENT=1000000000000000 engine=innodb charset=utf8mb4;
+) engine=innodb charset=utf8mb4;
 
 create table `property` (
     `id` bigint   not null auto_increment,
-    `accountid` bigint(12)   zerofill not null,
+    `accountid` bigint  not null,
     `type` int not null,
     primary key (`id`),
     foreign key (accountid)references account(id) on delete cascade on update cascade,
@@ -200,7 +201,7 @@ create table `property` (
 
 create table `demand_deposit` (
     `propertyid` bigint   not null ,
-    `accountid`  bigint(12)   zerofill not null,
+    `accountid`  bigint  not null,
     `amount` decimal(15,2) not null default 0.00,
     `date` bigint not null,
     `base` decimal(15,2) not null default 0.00,
@@ -211,7 +212,7 @@ create table `demand_deposit` (
 
 create table `fixed_deposit` (
     `propertyid` bigint   not null ,
-    `accountid`  bigint(12)   zerofill not null,
+    `accountid`  bigint  not null,
     `amount` decimal(15,2) not null default 0.00,
     `date` bigint not null,
     `length` int not null,
@@ -223,7 +224,7 @@ create table `fixed_deposit` (
 ) engine=innodb charset=utf8mb4;
 
 create table `statement` (
-    `accountid`  bigint(12)   zerofill not null,
+    `accountid`  bigint  not null,
     `amount` decimal(15,2) not null default 0.00,
     `date` bigint not null,
     `type` int not null default 0,

@@ -1,11 +1,13 @@
 package com.zjuse.bankingsystem.service.user;
 
+import com.zjuse.bankingsystem.utils.AccountStatus;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
 import com.zjuse.bankingsystem.mapper.user.HistoryMapper;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
-import com.zjuse.bankingsystem.service.DebitcardService;
 import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
+import com.zjuse.bankingsystem.service.deposite.AccountService;
+import com.zjuse.bankingsystem.service.deposite.DemandDepositService;
 
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -38,7 +40,10 @@ public class UserAndCardService {
     @Autowired
     CreditCardService creditcardService;
     @Autowired
-    DebitcardService debitcardService;
+    DemandDepositService demandDepositService;
+
+    @Autowired
+    AccountService accountService;
     @Autowired
     BlacklistService blacklistService;
     @Autowired 
@@ -70,7 +75,7 @@ public class UserAndCardService {
                 apiResult = new ApiResult(true, "success");
             }
             else {
-                apiResult = debitcardService.decreaceBalance(cardId, amount, password);
+                apiResult = demandDepositService.changeAmount(cardId, amount.negate());
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -99,7 +104,7 @@ public class UserAndCardService {
                 return new ApiResult(true, "success");
             }
             else {
-                ApiResult apiResult = debitcardService.loss(cardId, password);
+                ApiResult apiResult = accountService.ChangeStatus(AccountStatus.Lost, cardId);
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -264,7 +269,7 @@ public class UserAndCardService {
                 apiResult = creditcardService.getBalance(cardId);
             }
             else {
-                apiResult = debitcardService.getBalance(cardId, password);
+                apiResult = demandDepositService.showAmount(cardId);
             }
             return apiResult;
         }
@@ -297,7 +302,7 @@ public class UserAndCardService {
             ApiResult apiResult = creditcardService.returnMoney(cardId, amount);
         }
         else {
-            ApiResult apiResult = debitcardService.increaceBalance(cardId, amount);
+            ApiResult apiResult = demandDepositService.changeAmount(cardId, amount);
         }
     }
 
@@ -334,10 +339,9 @@ public class UserAndCardService {
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
-                System.out.println("### ok1" + cardId);
                 isDec = true;
             } else {
-                apiResult = debitcardService.decreaceBalance(cardId, amount, password);
+                apiResult = demandDepositService.changeAmount(cardId, amount.negate());
                 if (apiResult.ok == false) {
                     return apiResult;
                 }
@@ -353,7 +357,7 @@ public class UserAndCardService {
                 System.out.println("### ok2" + targetCardId);
             }
             else {
-                apiResult = debitcardService.increaceBalance(cardId, amount);
+                apiResult = demandDepositService.changeAmount(cardId, amount);
                 if (apiResult.ok == false) {
                     Rollback(cardId, amount);
                     return apiResult;
