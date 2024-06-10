@@ -1,25 +1,37 @@
 package com.zjuse.bankingsystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zjuse.bankingsystem.entity.loan.Officer;
 import com.zjuse.bankingsystem.service.creditCard.CreditCardAdminService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
+import com.zjuse.bankingsystem.service.loan.OfficerService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/admin")
+@PreAuthorize("roleCheck.isRole('ADMIN')")
 public class AdminController {
     @Autowired
     private CreditCardAdminService adminService;
     @Autowired
     private CashierService cashierService; 
+    @Autowired
+    private OfficerService officerService; 
 
     @GetMapping("/creditCard/admin/inspector")
     public RespResult queryInspectors() {
@@ -90,4 +102,29 @@ public class AdminController {
             return RespResult.fail(apiResult.message);
     }
 
+    // 外汇相关
+    @PostMapping("/add-officer")
+    public String insertOfficer(@RequestBody Officer officer, HttpServletRequest request) {
+        return officerService.insertOfficer(officer);
+    }
+
+    @PutMapping("/update-officer-password")
+    public String updateOfficerPassword(@RequestParam String username, @RequestParam String newPassword) {
+        return officerService.updateOfficerPassword(username, newPassword);
+    }
+
+    @PutMapping("/update-officer-permission")
+    public String updateOfficerPermission(@RequestParam String username, @RequestParam String newPermission) {
+        return officerService.updateOfficerPermission(username, newPermission);
+    }
+
+    @GetMapping("/get-officers")
+    public IPage<Officer> getOfficers(@RequestParam int page, @RequestParam int pageSize) {
+        return officerService.getOfficers(page, pageSize);
+    }
+
+    @DeleteMapping("/delete-officer/{id}")
+    public String deleteOfficer(@PathVariable("id") int officer_id) {
+        return officerService.deleteOfficer(officer_id);
+    }
 }

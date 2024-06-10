@@ -341,3 +341,70 @@ CREATE TABLE `history_operation_record`
     FOREIGN KEY (fc_id) REFERENCES `foreign_currency`(fc_id),
     FOREIGN KEY (data_operator_id) REFERENCES `data_operator`(data_operator_id) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+drop table if exists `Loan`;
+drop table if exists `form`;
+drop table if exists `report`;
+drop table if exists `officer`; 
+drop table if exists `reminder`; 
+
+-- 创建申请表单表
+CREATE TABLE form (
+    form_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL,
+    id_number CHAR(18) NOT NULL,
+    gender ENUM('male', 'female') NOT NULL,
+    emotion ENUM('single', 'married') NOT NULL,
+    income INT NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    email VARCHAR(64) NOT NULL,
+    education VARCHAR(64) NOT NULL,
+    purpose VARCHAR(200) NOT NULL,
+    statement TEXT(2000) NOT NULL
+);
+
+-- 创建征信报告表
+CREATE TABLE report (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    credit_limit DECIMAL(12, 2) NOT NULL,
+    date DATE NOT NULL
+);
+
+-- 创建贷款审查员表
+CREATE TABLE officer (
+    officer_id INT AUTO_INCREMENT PRIMARY KEY,
+    officer_name VARCHAR(50) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    username CHAR(20) NOT NULL,
+    password CHAR(20) NOT NULL,
+    permissions ENUM('small', 'large') NOT NULL
+);
+
+-- 创建贷款表
+CREATE TABLE Loan (
+    loan_id INT AUTO_INCREMENT PRIMARY KEY,
+    borrow_id INT NOT NULL,
+    card_id INT NOT NULL,
+    officer_id INT,
+    amount NUMERIC(12, 2) NOT NULL,
+    rate NUMERIC(4, 2) NOT NULL,
+    term INT NOT NULL,
+    status ENUM('application', 'declined', 'repayment', 'settled', 'overdue') NOT NULL,
+    date_applied DATE NOT NULL,
+    date_approved DATE,
+    form_id INT NOT NULL,
+    FOREIGN KEY (officer_id) REFERENCES officer(officer_id),
+    FOREIGN KEY (form_id) REFERENCES form(form_id)
+);
+
+
+
+-- 创建还款提醒表
+CREATE TABLE reminder (
+    reminder_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    time INT NOT NULL
+);

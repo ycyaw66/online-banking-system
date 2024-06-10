@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 import com.zjuse.bankingsystem.entity.Admin;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import com.zjuse.bankingsystem.entity.deposite.Cashier;
+import com.zjuse.bankingsystem.entity.loan.Officer;
 import com.zjuse.bankingsystem.entity.user.User;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.dto.AuthorityDto;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.service.creditCard.InspectorService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
+import com.zjuse.bankingsystem.service.loan.OfficerLoginService;
 import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
@@ -35,6 +37,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private InspectorService inspectorService; 
     @Autowired
     private CashierService cashierService; 
+    @Autowired
+    private OfficerLoginService officerLoginService; 
 
     @Override
     public JwtUserDto loadUserByUsername(String username) {
@@ -91,6 +95,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             );
                         }
                         break ; 
+                    case OFFICER:
+                        Officer officer = (Officer) officerLoginService.findOfficerByUsername(username.split("-")[1]); 
+                        if (officer == null) {
+                            return null; 
+                        } else {
+                            jwtUserDto = new JwtUserDto(
+                                officer.getUsername(),  
+                                officer.getPassword(), 
+                                Collections.singletonList(new AuthorityDto("OFFICER"))
+                            );
+                        }
+                        break ;
                     default:
                         return null; 
                 }
