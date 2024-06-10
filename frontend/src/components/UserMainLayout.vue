@@ -49,8 +49,11 @@
                 </el-icon>
                 <span>设置提醒还款</span>
               </el-menu-item>
-
+              <el-button class="logout-button" type="danger" @click="logoutVisible = true" style="margin-left: 30px;">
+                退出外汇系统
+              </el-button>
             </el-menu>
+
           </el-aside>
 
           <el-main style="height: 100%; width: 100%; ">
@@ -63,6 +66,16 @@
         </el-container>
       </el-container>
     </div>
+
+    <el-dialog title="提示" v-model="logoutVisible" width="30%" align-center>
+      确认退出贷款系统？
+      <template #footer>
+          <span>
+            <el-button @click="logoutVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleLogout">确定</el-button>
+          </span>
+      </template>
+    </el-dialog>
   </div>
 
 
@@ -70,7 +83,19 @@
 
 <script>
 
-export default {}
+export default {
+  data() {
+    return {
+      logoutVisible: false,
+    }
+  },
+  methods: {
+    handleLogout() {
+      this.$router.push('/personalBank/user/profile');
+    }
+  }
+};
+
 </script>
 
 <style scoped>
