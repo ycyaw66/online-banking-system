@@ -75,6 +75,10 @@ public class UserAndCardService {
                 apiResult = new ApiResult(true, "success");
             }
             else {
+                apiResult = accountService.VerifyPassword(cardId, password);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
                 apiResult = demandDepositService.changeAmount(cardId, amount.negate());
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -341,6 +345,11 @@ public class UserAndCardService {
                 }
                 isDec = true;
             } else {
+                
+                apiResult = accountService.VerifyPassword(cardId, password);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
                 apiResult = demandDepositService.changeAmount(cardId, amount.negate());
                 if (apiResult.ok == false) {
                     return apiResult;
