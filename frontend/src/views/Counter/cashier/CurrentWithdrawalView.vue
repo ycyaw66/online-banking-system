@@ -176,6 +176,18 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -199,11 +211,11 @@ export default {
         this.$message.error('密码不能为空');
         return;
       }
-      axios.get("/dp/counter/dp/show", {
+      axiosInstance.get("/dp/counter/dp/show", {
         params:{
           id: this.id,
-          password: this.password,
-          operatorid: Cookies.get('operatorid')
+          password: CryptoJS.SHA256(this.password).toString(),
+          // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
         this.amount = response.data.payload
@@ -227,13 +239,12 @@ export default {
         return;
       }
 
-      axios.post("/dp/counter/dp/draw",null,{
+      axiosInstance.post("/dp/counter/dp/draw",null,{
         params:{
-
           id: this.id,
-          password: this.password,
+          password: CryptoJS.SHA256(this.password).toString(),
           amount: this.withdraw_amount,
-          operatorid: Cookies.get('operatorid')
+          // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
         if(response.data.code === 1){

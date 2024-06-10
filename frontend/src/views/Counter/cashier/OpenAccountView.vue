@@ -168,6 +168,18 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -219,14 +231,14 @@ export default {
         return;
       }
 
-      axios.post("/account/counter/account/add",null,{
+      axiosInstance.post("/account/counter/account/add",null,{
         params:{
           name: this.name,
           phoneNumber: this.phone_number,
-          password: this.password,
+          password: CryptoJS.SHA256(this.password).toString(),
           cardType: this.account_type,
           citizenid: this.ID_number,
-          operatorid: Cookies.get('operatorid')
+          // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
         if(response.data.code === 1){

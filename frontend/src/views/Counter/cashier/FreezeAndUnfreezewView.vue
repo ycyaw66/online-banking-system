@@ -150,6 +150,17 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
 export default {
   data() {
     return {
@@ -172,10 +183,10 @@ export default {
         return;
       }
       if(this.selected==='1'){
-        axios.post("/account/counter/account/modify/status/freeze",null,{
+        axiosInstance.post("/account/counter/account/modify/status/freeze",null,{
           params:{
             cardid: this.id,
-            operatorid: Cookies.get('operatorid')
+            // operatorid: Cookies.get('operatorid')
           }
         }).then(response => {
           if(response.data.code === 1){
@@ -185,10 +196,10 @@ export default {
           }
         })
       }else if(this.selected==='2'){
-        axios.post("/account/counter/account/modify/status/unfreeze",null,{
+        axiosInstance.post("/account/counter/account/modify/status/unfreeze",null,{
           params:{
             cardid: this.id,
-            operatorid: Cookies.get('operatorid')
+            // operatorid: Cookies.get('operatorid')
           }
         }).then(response => {
           if(response.data.code === 1){

@@ -192,6 +192,18 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -225,11 +237,11 @@ export default {
         this.$message.error('密码不能为空');
         return;
       }
-      axios.post("/fp/counter/fp/list",null ,{
+      axiosInstance.post("/fp/counter/fp/list",null ,{
         params:{
           id: this.account_id,
-          password: this.password,
-          operatorid: Cookies.get('operatorid')
+          password: CryptoJS.SHA256(this.password).toString(),
+          // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
         this.request_responses = []
@@ -253,12 +265,12 @@ export default {
         }
       })
       if (flag === 1){
-        axios.post("/fp/counter/fp/draw",null,{
+        axiosInstance.post("/fp/counter/fp/draw",null,{
           params:{
             id : this.account_id,
-            password : this.password,
+            password : CryptoJS.SHA256(this.password).toString(),
             propertyid : this.propertyid,
-            operatorid: Cookies.get('operatorid')
+            // operatorid: Cookies.get('operatorid')
           }
         }).then(response => {
           if(response.data.code === 1){
