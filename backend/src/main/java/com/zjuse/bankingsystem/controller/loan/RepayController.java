@@ -1,5 +1,6 @@
 package com.zjuse.bankingsystem.controller.loan;
 
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.loan.AmountService;
 import com.zjuse.bankingsystem.service.loan.CardgetService;
 import com.zjuse.bankingsystem.service.loan.LoanQueryService;
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,21 +25,22 @@ public class RepayController {
     private LoanQueryService loanQueryService;
     @Autowired
     private CardgetService bankCardService;
+    @Autowired
+    private CurrentUserService currentUserService; 
 
     // TODO 
 
-    //@PostMapping("/bank-cards")
-    /*
-    public List<BankCard> getUserBankCards() {
+    @PostMapping("/bank-cards")
+    public List<String> getUserBankCards() {
         // 假设这里有一个方法能够获取当前登录用户的银行卡列表
         // 假设已经获取到当前登录用户的用户ID，这里假设用户ID为1
-        int userId = 1;                                                     // need user_id
+        Long userId = (Long)currentUserService.getCurrentUserId().payload;
         return bankCardService.getUserBankCards(userId);
-    }*/
+    }
 
     @PostMapping("/confirm-repayment")
-    public Map<String, Object> Repayment(@RequestParam int loan_id,@RequestParam String info) {
-        int card_id=0;
+    public Map<String, Object> Repayment(@RequestParam int loan_id,@RequestParam String info, @RequestParam String password) {
+        Long card_id=0l;
         String[] parts = info.split(" - ");
         if (parts.length > 0) {
             try {
@@ -52,11 +56,11 @@ public class RepayController {
 
         double loan_amount=loanQueryService.getamount(loan_id);
 
-        double amount=amountService.getamount(card_id);
+        double amount = amountService.getamount(card_id, password).doubleValue();
 
         double repay_amount=loan_amount*(1+loanQueryService.getrate(loan_id)*0.01);
 
-        int result=amountService.changeamount(card_id, amount-repay_amount);
+        int result = amountService.subAmount(card_id, BigDecimal.valueOf(amount-repay_amount), password);
 
         loanQueryService.updatestatus(loan_id);
 

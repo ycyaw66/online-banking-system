@@ -98,6 +98,15 @@ public class UserAndCardService {
         }
     }
 
+    public ApiResult income(Long cardId, BigDecimal amount, String remark) {
+        return new ApiResult(false, "not implemented yet");
+    }
+
+    // 获得用户流水
+    public ApiResult getMoneyStream(Long userId) {
+        return new ApiResult(false, "not implemented yet");
+    }
+
     public ApiResult loss(Long cardId, String password) {
         try {
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {

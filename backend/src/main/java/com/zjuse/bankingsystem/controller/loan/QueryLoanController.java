@@ -3,6 +3,7 @@ package com.zjuse.bankingsystem.controller.loan;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zjuse.bankingsystem.entity.loan.Loan;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.loan.LoanQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ public class QueryLoanController {
 
     @Autowired
     private LoanQueryService loanQueryService;
+    @Autowired
+    private CurrentUserService currentUserService; 
 
     @PostMapping("/loan-history")
     public Map<String, Object> getLoanHistory(@RequestBody LoanQueryRequest filter,
@@ -24,8 +27,8 @@ public class QueryLoanController {
                                               @RequestParam(defaultValue = "10") int size) {
         QueryWrapper<Loan> queryWrapper = new QueryWrapper<>();
                                                                                  
-        
-        //queryWrapper.eq("borrower_id", ?);                              //need to get user_id 
+        int userId = (int) currentUserService.getCurrentUserId().payload;
+        queryWrapper.eq("borrower_id", userId);
         
         if (filter.getAmount() != null) {
             queryWrapper.eq("amount", filter.getAmount());

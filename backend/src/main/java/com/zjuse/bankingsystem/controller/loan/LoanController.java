@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,21 +31,27 @@ public class LoanController {
     private CreditReportService creditReportService;
     @Autowired
     private AmountService amountService;
+    @Autowired 
+    private CurrentUserService currentUserService; 
+    @Autowired
+    private OfficerLoginService loginService;
+    @Autowired
+    private LoanApprovalService loanApprovalService;
 
     @PostMapping("/add-loan")
-    public Map<String, Object> insertLoan(@RequestBody Loan loan) {
+    public Map<String, Object> insertLoan(@RequestBody Loan loan, @RequestParam("password") String password) {
 
         int result;
         Map<String, Object> response = new HashMap<>();
 
-        //get borrower_id(user_id) from outside                                            not implement
-        loan.setBorrow_id(1);
+        Long userId = (Long)currentUserService.getCurrentUserId().payload; 
+        loan.setBorrow_id(userId);
 
         //set date
         loan.setDate_applied(LocalDate.now());
 
 
-        Double credit= creditReportService.calculateCreditLimit(loan.getBorrow_id());
+        Double credit= creditReportService.calculateCreditLimit(loan.getBorrow_id(),password);
 
         String permission;double rate;
         if(loan.getAmount()>100000) {permission="large";rate=0.03;}
@@ -62,8 +69,7 @@ public class LoanController {
         }
         //automic
         else{
-            double money=amountService.getamount(loan.getCard_id());                     // update amount
-            amountService.changeamount(loan.getCard_id(), money);
+            amountService.addAmount(loan.getCard_id(), BigDecimal.valueOf(loan.getAmount()));
             loan.setStatus(2);
             loan.setDate_approved(LocalDate.now());
             result=loanApplyService.autoloan(loan);
@@ -78,13 +84,6 @@ public class LoanController {
         return response;
     }
 
-
-    @Autowired
-    private OfficerLoginService loginService;
-    @Autowired
-    private LoanApprovalService loanApprovalService;
-    @Autowired
-    private CurrentUserService currentUserService;
 
     @GetMapping("/get-loans")
     public IPage<Loan> getLoans(@RequestParam int page, @RequestParam int pageSize, HttpServletRequest request) {

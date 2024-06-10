@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Report {
     private int report_id;
-    private int user_id;
+    private Long user_id;
     private double creditLimit;
     private LocalDate date;
     private double creditScore;
@@ -19,11 +19,11 @@ public class Report {
         this.report_id = report_id;
     }
 
-    public int getUser_id() {
+    public Long getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(Long user_id) {
         this.user_id = user_id;
     }
 

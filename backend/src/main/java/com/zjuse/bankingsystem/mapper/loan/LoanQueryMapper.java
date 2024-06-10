@@ -22,5 +22,5 @@ public interface LoanQueryMapper extends BaseMapper<Loan> {
     int updatestatus(int loan_id);
 
      @Select("SELECT * FROM loan WHERE borrow_id = #{borrow_id}")
-    List<Loan> getLoansByUserId(@Param("borrow_id") int borrow_id);
+    List<Loan> getLoansByUserId(@Param("borrow_id") Long borrow_id);
 }

@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zjuse.bankingsystem.entity.loan.Loan;
 import com.zjuse.bankingsystem.mapper.loan.LoanMapper;
+import com.zjuse.bankingsystem.service.user.UserAndCardService;
+
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +18,8 @@ public class LoanApprovalService {
 
     @Autowired
     private LoanMapper loanMapper;
+    @Autowired
+    private UserAndCardService userAndCardService; 
 
     public IPage<Loan> getLoan(Page<Loan> loanPage, int officer_id){
         return loanMapper.selectPage(loanPage, new QueryWrapper<Loan>().eq("status", "application").eq("officer_id", officer_id));
@@ -31,11 +37,11 @@ public class LoanApprovalService {
         return loanMapper.selectOne(new QueryWrapper<Loan>().eq("form_id", form_id));
     }
 
-    public int getCardId(int loan_id) {return loanMapper.getCardId(loan_id);}
+    public Long getCardId(int loan_id) {return loanMapper.getCardId(loan_id);}
     public double getAmount(int loan_id) {return loanMapper.getAmount(loan_id);}
 
-    //为银行卡号为card_id的账户增加余额，量为amout
-    public void AddBalance(int card_id, double amount) {
-
+    //为银行卡号为card_id的账户增加余额，量为amount
+    public void AddBalance(Long card_id, double amount) {
+        userAndCardService.income(card_id, new BigDecimal(amount), null);
     }
 }

@@ -2,12 +2,14 @@ package com.zjuse.bankingsystem.service.loan;
 
 import com.zjuse.bankingsystem.entity.loan.Loan;
 import com.zjuse.bankingsystem.entity.loan.Report;
-import com.zjuse.bankingsystem.mapper.loan.AmountMapper;
 import com.zjuse.bankingsystem.mapper.loan.LoanQueryMapper;
 import com.zjuse.bankingsystem.mapper.loan.ReportMapper;
+import com.zjuse.bankingsystem.service.user.UserAndCardService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -20,9 +22,9 @@ public class CreditReportService {
     private ReportMapper reportMapper;
 
     @Autowired
-    private AmountMapper amountMapper;
+    private UserAndCardService userAndCardService; 
 
-    public double calculateCreditScore(int userId) {
+    public double calculateCreditScore(Long userId) {
         // 查询用户的贷款记录
         List<Loan> loans = loanQueryMapper.getLoansByUserId(userId);
 
@@ -42,10 +44,10 @@ public class CreditReportService {
         return creditScore;
     }
 
-    public double calculateCreditLimit(int userId) {
+    public double calculateCreditLimit(Long userId, String password) {
 
                                                                             // 需要三个月内的流水
-        double moneyin=10000;
+        double moneyin = ((BigDecimal) userAndCardService.getMoneyStream(userId).payload).doubleValue();
         double innum;
         //计算流水系数
         if(moneyin<=10000) innum=0.2;
@@ -56,7 +58,7 @@ public class CreditReportService {
         
                                                        
                                                                             //需要用户所有卡的余额综合
-        double money=100000;  //用户总余额
+        double money = ((BigDecimal) userAndCardService.getBalance(userId, password).payload).doubleValue();  //用户总余额
         double loan_money=0;      //用户未还的款
         List<Loan> loans = loanQueryMapper.getLoansByUserId(userId);
         for (Loan loan : loans) {

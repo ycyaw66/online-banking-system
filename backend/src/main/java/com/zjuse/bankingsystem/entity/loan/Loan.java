@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import lombok.Data;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -12,13 +15,13 @@ import java.time.LocalDate;
 public class Loan {
 
     @TableId(value = "loan_id", type = IdType.AUTO)
-    private int loan_id;
+    private Long loan_id;
 
     @TableField("borrow_id")
-    private int borrow_id;
+    private Long borrow_id;
 
     @TableField("card_id")
-    private int card_id;
+    private Long card_id;
 
     @TableField("officer_id")
     private int officer_id;
@@ -48,27 +51,27 @@ public class Loan {
     // Getters and Setters
 
 
-    public int getLoan_id() {
+    public Long getLoan_id() {
         return loan_id;
     }
 
-    public void setLoan_id(int loan_id) {
+    public void setLoan_id(Long loan_id) {
         this.loan_id = loan_id;
     }
 
-    public int getBorrow_id() {
+    public Long getBorrow_id() {
         return borrow_id;
     }
 
-    public void setBorrow_id(int borrow_id) {
+    public void setBorrow_id(Long borrow_id) {
         this.borrow_id = borrow_id;
     }
 
-    public int getCard_id() {
+    public Long getCard_id() {
         return card_id;
     }
 
-    public void setCard_id(int card_id) {
+    public void setCard_id(Long card_id) {
         this.card_id = card_id;
     }
 
