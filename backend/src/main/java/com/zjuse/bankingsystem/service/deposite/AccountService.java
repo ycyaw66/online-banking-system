@@ -114,9 +114,7 @@ public class AccountService {
             if(account.size()==0) {
                 return new ApiResult(false,"卡片不存在");
             }
-            String salt = account.get(0).getSalt();
-            String newpassword = DigestUtil.sha256Hex(password+salt);
-            if(newpassword.equals(account.get(0).getPassword())) {
+            if(password.equals(account.get(0).getPassword())) {
                 return  new ApiResult(true,account.get(0).getId());
             }else{
                 return new ApiResult(false,"密码不匹配");
@@ -180,11 +178,9 @@ public class AccountService {
             if(account.size()==0) {
                 return new ApiResult(false,"账户不存在");
             }
-            String salt = account.get(0).getSalt();
-            String newpassword = DigestUtil.sha256Hex(password+salt);
             UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("id",accountid);
-            updateWrapper.set("password",newpassword);
+            updateWrapper.set("password",password);
             accountMapper.update(null,updateWrapper);
             return new ApiResult(true,"修改成功");
         }catch (Exception e){

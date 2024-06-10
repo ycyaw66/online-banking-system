@@ -2,6 +2,7 @@ package com.zjuse.bankingsystem.controller.deposite;
 
 import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.DepositeCard;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
 import com.zjuse.bankingsystem.service.deposite.DepositeCardService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
@@ -10,10 +11,18 @@ import com.zjuse.bankingsystem.utils.AccountStatus;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.DepositCardType;
 import com.zjuse.bankingsystem.utils.RespResult;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/account")
 public class AccountController {
@@ -29,8 +38,16 @@ public class AccountController {
     @Autowired
     private CashierService cashierService;
 
+    @Autowired 
+    private CurrentUserService currentUserService; 
+
     @PostMapping("/counter/account/add")//添加账户，输入姓名、电话号码、密码、卡片类型、身份证号，返回entity中的Account类
-    public RespResult addAccount(@RequestParam("name")String name, @RequestParam("phoneNumber")String phoneNumber,@RequestParam("password")String password,@RequestParam("cardType") DepositCardType cardType,@RequestParam("citizenid")String citizenid,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult addAccount(@RequestParam("name") String name, @RequestParam("phoneNumber")String phoneNumber,@RequestParam("password")String password,@RequestParam("cardType") DepositCardType cardType,@RequestParam("citizenid")String citizenid) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){
@@ -45,13 +62,18 @@ public class AccountController {
     }
 
     @DeleteMapping("/counter/account/delete")//删除账户，输入卡号、密码删除账号，返回信息字符串
-    public RespResult deleteAccount(@RequestParam("cardid")Long cardid, @RequestParam("password")String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult deleteAccount(@RequestParam("cardid")Long cardid, @RequestParam("password")String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){
             return  RespResult.fail("权限不足");
         }
-        ApiResult apiResult1 =accountService.VerifyPassword(cardid,password);
+        ApiResult apiResult1 = accountService.VerifyPassword(cardid,password);
         if(!apiResult1.ok)
             return  RespResult.fail(apiResult1.message);
         Long accountid = (Long)apiResult1.payload;
@@ -63,7 +85,12 @@ public class AccountController {
     }
 
     @PostMapping("/counter/account/modify/password")//更改密码，输入卡号、旧密码、新密码，返回信息字符串
-    public RespResult modifyAccountPassword(@RequestParam("cardid")Long cardid,@RequestParam("oldpassword")String oldpassword,@RequestParam("newpassword")String newpassword,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult modifyAccountPassword(@RequestParam("cardid")Long cardid,@RequestParam("oldpassword")String oldpassword,@RequestParam("newpassword")String newpassword) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){
@@ -81,7 +108,12 @@ public class AccountController {
     }
 
     @PostMapping("/counter/account/modify/status/freeze")//冻结账户，输入卡号，返回信息字符串
-    public RespResult freezeAccount(@RequestParam("cardid")Long cardid,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult freezeAccount(@RequestParam("cardid")Long cardid) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<3){
@@ -104,7 +136,12 @@ public class AccountController {
     }
 
     @PostMapping("/counter/account/modify/status/unfreeze")//解冻账户，输入卡号，返回信息字符串
-    public RespResult unFreezeAccount(@RequestParam("cardid")Long cardid,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult unFreezeAccount(@RequestParam("cardid")Long cardid) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<3){
@@ -127,7 +164,12 @@ public class AccountController {
     }
 
     @PostMapping("/counter/account/modify/status/lost")
-    public RespResult lostAccount(@RequestParam("cardid")Long cardid,@RequestParam("password")String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult lostAccount(@RequestParam("cardid")Long cardid,@RequestParam("password")String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){
@@ -150,7 +192,12 @@ public class AccountController {
     }
 
     @PostMapping("/counter/account/modify/status/unlost")
-    public RespResult unLostAccount(@RequestParam("cardid")Long cardid,@RequestParam String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult unLostAccount(@RequestParam("cardid")Long cardid,@RequestParam String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){
@@ -173,7 +220,12 @@ public class AccountController {
     }
 
     @PostMapping("/counter/account/modify/replace")
-    public RespResult replaceAccount(@RequestParam("cardid")Long cardid,@RequestParam("password")String password,@RequestParam("cardtype")DepositCardType cardType,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult replaceAccount(@RequestParam("cardid")Long cardid,@RequestParam("password")String password,@RequestParam("cardtype")DepositCardType cardType) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){
@@ -203,7 +255,12 @@ public class AccountController {
     }
 
     @GetMapping("/account/info")
-    public RespResult getAccountInfo(@RequestParam("cardid")Long cardid, @RequestParam("password") String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult getAccountInfo(@RequestParam("cardid")Long cardid, @RequestParam("password") String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<1){
@@ -220,7 +277,12 @@ public class AccountController {
     }
 
     @GetMapping("/account/property")
-    public RespResult getAccountProperty(@RequestParam("cardid")Long cardid, @RequestParam("password") String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult getAccountProperty(@RequestParam("cardid")Long cardid, @RequestParam("password") String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<1){
@@ -237,7 +299,12 @@ public class AccountController {
     }
 
     @GetMapping("/accounnt/list")
-    public RespResult getAccountList(@RequestParam("citizenid")String citizenid,@RequestParam("name")String name,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult getAccountList(@RequestParam("citizenid")String citizenid,@RequestParam("name")String name) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<2){

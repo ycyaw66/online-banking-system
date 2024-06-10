@@ -13,9 +13,6 @@ public class DepositeAdminController {
     @Autowired
     private DepositeAdminService adminService;
 
-    @Autowired
-    private CashierService cashierService;
-
     @PostMapping("/counter/admin/login/log")
     public RespResult loginAdmin(@RequestParam("id") Long id, @RequestParam("password") String password) {
         System.out.println("loginAdmin where id = '" + id + "' and password = '" + password + "'");

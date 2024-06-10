@@ -2,6 +2,7 @@ package com.zjuse.bankingsystem.controller.deposite;
 
 
 import com.zjuse.bankingsystem.entity.deposite.Account;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.deposite.DemandDepositService;
@@ -11,6 +12,7 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 import com.zjuse.bankingsystem.utils.StatementType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,9 +31,16 @@ public class DepositeTransferController {
     private StatementService statementService;
     @Autowired
     private CashierService cashierService;
+    @Autowired
+    private CurrentUserService currentUserService; 
 
     @PostMapping("/counter/transfer")
-    public RespResult transfer(@RequestParam("id") Long card_id,@RequestParam("password")String password,@RequestParam("toid") Long to_id, @RequestParam("amount")BigDecimal amount,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult transfer(@RequestParam("id") Long card_id,@RequestParam("password")String password,@RequestParam("toid") Long to_id, @RequestParam("amount")BigDecimal amount) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //System.out.println("loginAdmin where id = '" + id + "' and password = '" + password + "'");
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);

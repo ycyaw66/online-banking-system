@@ -1,6 +1,8 @@
 package com.zjuse.bankingsystem.service.deposite;
 
 import cn.hutool.crypto.digest.DigestUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zjuse.bankingsystem.entity.deposite.Cashier;
@@ -10,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
+@Slf4j
 @Service
 public class CashierService {
     @Autowired
@@ -37,6 +41,34 @@ public class CashierService {
             return new ApiResult(true,cashierList.get(0));
         }catch (Exception e){
             return new ApiResult(false,e.getMessage());
+        }
+    }
+
+    public ApiResult getCashierByUsername(String username) {
+        try {
+            QueryWrapper<Cashier> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("username", username); 
+            Cashier cashier = cashierMapper.selectOne(queryWrapper);
+            if (Objects.isNull(cashier)) {
+                return new ApiResult(false, "用户名不存在");
+            }
+            return new ApiResult(true, cashier); 
+        } catch (Exception e) { 
+            return new ApiResult(false, e.getMessage()); 
+        }
+    }
+
+    public ApiResult getCashierIdByUsername(String username) {
+        try {
+            QueryWrapper<Cashier> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("username", username); 
+            Cashier cashier = cashierMapper.selectOne(queryWrapper);
+            if (Objects.isNull(cashier)) {
+                return new ApiResult(false, "用户名不存在");
+            }
+            return new ApiResult(true, cashier.getId()); 
+        } catch (Exception e) { 
+            return new ApiResult(false, e.getMessage()); 
         }
     }
 
@@ -77,14 +109,13 @@ public class CashierService {
 
     public ApiResult verifyCashier(Long id ,String password){
         try{
-            QueryWrapper queryWrapper = new QueryWrapper<>();
+            QueryWrapper<Cashier> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", id);
             List<Cashier> cashiers = cashierMapper.selectList(queryWrapper);
             if(cashiers.size()==0){
                 return new ApiResult(false,"账号不存在");
             }
-            String newpassword = DigestUtil.sha256Hex(password+ cashiers.get(0).getSalt());
-            if(newpassword.equals(cashiers.get(0).getPassword())){
+            if(password.equals(cashiers.get(0).getPassword())){
                 return new ApiResult(true, cashiers.get(0));
             }else{
                 return new ApiResult(false,"密码错误");
@@ -96,16 +127,15 @@ public class CashierService {
 
     public ApiResult changePassword(Long id,String password){
         try{
-            QueryWrapper queryWrapper = new QueryWrapper<>();
+            QueryWrapper<Cashier> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", id);
             List<Cashier> cashiers = cashierMapper.selectList(queryWrapper);
             if(cashiers.size()==0){
                 return new ApiResult(false,"账号不存在");
             }
-            String newpassword = DigestUtil.sha256Hex(password+ cashiers.get(0).getSalt());
             UpdateWrapper<Cashier> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("id", id);
-            updateWrapper.set("password", newpassword);
+            updateWrapper.set("password", password);
             cashierMapper.update(null, updateWrapper);
             return new ApiResult(true,"修改成功");
         }catch (Exception e){
@@ -133,7 +163,7 @@ public class CashierService {
 
     public ApiResult getAuthority(Long id){
         try{
-            QueryWrapper queryWrapper = new QueryWrapper<>();
+            QueryWrapper<Cashier> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", id);
             List<Cashier> cashiers = cashierMapper.selectList(queryWrapper);
             if(cashiers.size()==0){

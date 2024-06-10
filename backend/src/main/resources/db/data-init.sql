@@ -54,7 +54,7 @@ insert into `administrator` (username, password, salt) values
 ('testadmin', '4739ee3bd29e4f415da8ba9298a087e0fdc9c61378420ba8fbbab298bd74c4df','123');
 
 insert into `cashier`(username, password, authority,salt)values
-('testcashier', '4739ee3bd29e4f415da8ba9298a087e0fdc9c61378420ba8fbbab298bd74c4df',1,'123');
+('testcashier', '4739ee3bd29e4f415da8ba9298a087e0fdc9c61378420ba8fbbab298bd74c4df',2,'123');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password, salt) values
 (000000000001,'testaccount','131313131',210204199802011234,1000000000000000,'4739ee3bd29e4f415da8ba9298a087e0fdc9c61378420ba8fbbab298bd74c4df','123');

@@ -4,16 +4,19 @@ import java.util.Collections;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.zjuse.bankingsystem.entity.Admin;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
+import com.zjuse.bankingsystem.entity.deposite.Cashier;
 import com.zjuse.bankingsystem.entity.user.User;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.dto.AuthorityDto;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.service.creditCard.InspectorService;
+import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
@@ -30,6 +33,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private AdminService adminService; 
     @Autowired
     private InspectorService inspectorService; 
+    @Autowired
+    private CashierService cashierService; 
 
     @Override
     public JwtUserDto loadUserByUsername(String username) {
@@ -74,6 +79,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             );
                         }
                         break;
+                    case CASHIER:
+                        Cashier cashier = (Cashier) cashierService.getCashierByUsername(username.split("-")[1]).payload;
+                        if (cashier == null) {
+                            return null; 
+                        } else {
+                            jwtUserDto = new JwtUserDto(
+                                cashier.getUsername(),  
+                                cashier.getPassword(), 
+                                Collections.singletonList(new AuthorityDto("CASHIER"))
+                            );
+                        }
+                        break ; 
                     default:
                         return null; 
                 }
