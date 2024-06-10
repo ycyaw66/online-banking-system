@@ -2,16 +2,13 @@ package com.zjuse.bankingsystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zjuse.bankingsystem.service.CreditCardAdminService;
-import com.zjuse.bankingsystem.service.CreditCardService;
-import com.zjuse.bankingsystem.service.deposite.CashierService;
+import com.zjuse.bankingsystem.service.creditCard.CreditCardAdminService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
@@ -23,18 +20,6 @@ public class AdminController {
     private CreditCardAdminService adminService;
     @Autowired
     private CashierService cashierService; 
-
-
-    @PostMapping("/creditCard/admin/login/log")
-    public RespResult loginAdmin(@RequestParam String name, @RequestParam String password) {
-        System.out.println("loginAdmin where name = " + name + " and password = " + password);
-        ApiResult apiResult = adminService.loginAdmin(name, password);
-        if (apiResult.ok) {
-            return RespResult.success(null);
-        } else {
-            return RespResult.fail("登录失败");
-        }
-    }
 
     @GetMapping("/creditCard/admin/inspector")
     public RespResult queryInspectors() {

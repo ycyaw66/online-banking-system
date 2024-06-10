@@ -16,17 +16,17 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.zjuse.bankingsystem.entity.Blacklist;
-import com.zjuse.bankingsystem.entity.CardOfPerson;
-import com.zjuse.bankingsystem.entity.History;
-import com.zjuse.bankingsystem.entity.User;
-import com.zjuse.bankingsystem.entity.UserPrivilege;
-import com.zjuse.bankingsystem.mapper.UserMapper;
+import com.zjuse.bankingsystem.entity.user.Blacklist;
+import com.zjuse.bankingsystem.entity.user.CardOfPerson;
+import com.zjuse.bankingsystem.entity.user.History;
+import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.entity.user.UserPrivilege;
+import com.zjuse.bankingsystem.mapper.user.UserMapper;
 import com.zjuse.bankingsystem.security.service.EmailValidService;
-import com.zjuse.bankingsystem.service.BlacklistService;
-import com.zjuse.bankingsystem.service.CardService;
-import com.zjuse.bankingsystem.service.UserAndCardService;
-import com.zjuse.bankingsystem.service.UserPrivilegeService;
+import com.zjuse.bankingsystem.service.user.BlacklistService;
+import com.zjuse.bankingsystem.service.user.CardService;
+import com.zjuse.bankingsystem.service.user.UserAndCardService;
+import com.zjuse.bankingsystem.service.user.UserPrivilegeService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
 

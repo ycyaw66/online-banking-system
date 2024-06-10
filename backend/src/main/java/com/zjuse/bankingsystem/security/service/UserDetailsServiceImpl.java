@@ -8,13 +8,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.zjuse.bankingsystem.entity.Admin;
-import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
+import com.zjuse.bankingsystem.entity.user.User;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.dto.AuthorityDto;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
-import com.zjuse.bankingsystem.service.InspectorService;
-import com.zjuse.bankingsystem.service.UserService;
+import com.zjuse.bankingsystem.service.creditCard.InspectorService;
+import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 import lombok.extern.slf4j.Slf4j;

@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.zjuse.bankingsystem.entity.User;
-import com.zjuse.bankingsystem.service.UserService;
+import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 import lombok.extern.slf4j.Slf4j;

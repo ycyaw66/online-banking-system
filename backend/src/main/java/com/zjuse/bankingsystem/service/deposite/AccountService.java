@@ -3,13 +3,15 @@ package com.zjuse.bankingsystem.service.deposite;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zjuse.bankingsystem.entity.deposite.Account;
-import com.zjuse.bankingsystem.entity.deposite.Card;
+import com.zjuse.bankingsystem.entity.deposite.DepositeCard;
 import com.zjuse.bankingsystem.entity.deposite.Property;
 import com.zjuse.bankingsystem.mapper.deposite.AccountMapper;
 import com.zjuse.bankingsystem.mapper.deposite.DepositeCardMapper;
 import com.zjuse.bankingsystem.mapper.deposite.PropertyMapper;
+import com.zjuse.bankingsystem.service.user.CardService;
 import com.zjuse.bankingsystem.utils.AccountStatus;
 import com.zjuse.bankingsystem.utils.ApiResult;
+import com.zjuse.bankingsystem.utils.CardType;
 import com.zjuse.bankingsystem.utils.DepositCardType;
 import com.zjuse.bankingsystem.utils.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,19 @@ import java.util.Random;
 @Service
 public class AccountService {
     @Autowired
+    CardService cardService; 
+    @Autowired
     AccountMapper accountMapper;
     @Autowired
     DepositeCardMapper cardMapper;
     @Autowired
     PropertyMapper propertyMapper;
     @Autowired
-   DemandDepositService demandDepositService;
+    DemandDepositService demandDepositService;
 
+    /*
+     * 新建储蓄卡账号
+     */
     public ApiResult newAccount(String name, String phoneNumber, AccountStatus status, String password,DepositCardType cardtype,String citizenid){
         try{
             //加密密码
@@ -38,9 +45,15 @@ public class AccountService {
             String salt= String.valueOf(rand.nextInt(900001)+100000);
             String newpassword = DigestUtil.sha256Hex(password+salt);
             //创建账户实例
+            ApiResult apiResult = cardService.registerCard(CardType.DEBIT_CARD);
+            if (!apiResult.ok) {
+                return apiResult;
+            }
+            Long cardId = (Long) apiResult.payload;
             Account account = new Account();
+            account.setId(cardId);
             account.setName(name);
-            account.setCardId(0L);
+            account.setCardId(cardId);
             account.setSalt(salt);
             account.setPassword(newpassword);
             account.setStatus(status);
@@ -49,40 +62,39 @@ public class AccountService {
             //插入账户并获取id
             accountMapper.insert(account);
             Long accountid = account.getId();
+            // 用户注册卡片
+            if (!cardService.bindUserAndCard(accountid, citizenid).ok) {
+                return new ApiResult(false, "绑定失败");
+            } 
+
             //创建卡片实例
-            Card card = new Card();
+            DepositeCard card = new DepositeCard();
             card.setType(cardtype);
             card.setAccountid(accountid);
-            //插入卡片并获取id
-            cardMapper.insert(card);
-            Long cardid =card.getCardId();
-            account.setCardId(cardid);
             //新建活期
             Property property = new Property();
             property.setAccountid(account.getId());
             property.setType(PropertyType.demand);
             propertyMapper.insert(property);
             demandDepositService.newDemandDeposit(accountid, property.getId());
-            //更新账户中卡片id
-            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("id", accountid);
-            updateWrapper.set("card_id",cardid);
-            accountMapper.update(null,updateWrapper);
-            return new ApiResult(true,account);
+            return new ApiResult(true, account);
         }catch (Exception e){
             return  new ApiResult(false,e.getMessage());
         }
     }
 
+    /*
+     * 删除储蓄卡账号
+     */
     public ApiResult DeleteAccountByAccountId(Long accountid){
         try{
-            QueryWrapper propertywrapper = new QueryWrapper<>();
+            QueryWrapper<Property> propertywrapper = new QueryWrapper<>();
             propertywrapper.eq("accountid",accountid);
             List<Property> property = propertyMapper.selectList(propertywrapper);
-            if(property.size()>1|| !((BigDecimal)demandDepositService.showamount(accountid).payload).equals(BigDecimal.ZERO)) {
+            if(property.size()>1|| !((BigDecimal)demandDepositService.showAmount(accountid).payload).equals(BigDecimal.ZERO)) {
                return new ApiResult(false,"账户内有资产");
             }
-            QueryWrapper accountwrapper = new QueryWrapper<>();
+            QueryWrapper<Account> accountwrapper = new QueryWrapper<>();
             accountwrapper.eq("id",accountid);
             accountMapper.delete(accountwrapper);
             return new ApiResult(true,"删除成功");
@@ -91,9 +103,12 @@ public class AccountService {
         }
     }
 
+    /*
+     * 验证密码
+     */
     public ApiResult VerifyPassword(Long cardid,String password){
         try{
-            QueryWrapper wrapper = new QueryWrapper<>();
+            QueryWrapper<Account> wrapper = new QueryWrapper<>();
             wrapper.eq("card_id",cardid);
             List<Account> account = accountMapper.selectList(wrapper);
             if(account.size()==0) {
@@ -113,7 +128,7 @@ public class AccountService {
 
     public ApiResult getAccountByCardId(Long cardid){
         try{
-            QueryWrapper wrapper = new QueryWrapper<>();
+            QueryWrapper<Account> wrapper = new QueryWrapper<>();
             wrapper.eq("card_id",cardid);
             List<Account> account = accountMapper.selectList(wrapper);
             if(account.size()==0) {
@@ -127,7 +142,7 @@ public class AccountService {
 
     public ApiResult getAccountByAccountId(Long accountid){
         try {
-            QueryWrapper wrapper = new QueryWrapper<>();
+            QueryWrapper<Account> wrapper = new QueryWrapper<>();
             wrapper.eq("id",accountid);
             List<Account> account = accountMapper.selectList(wrapper);
             if(account.size()==0) {
@@ -141,7 +156,7 @@ public class AccountService {
 
     public  ApiResult ChangeStatus(AccountStatus status,Long accountid){
         try{
-            QueryWrapper wrapper = new QueryWrapper<>();
+            QueryWrapper<Account> wrapper = new QueryWrapper<>();
             wrapper.eq("id",accountid);
             List<Account> account = accountMapper.selectList(wrapper);
             if(account.size()==0) {
@@ -159,7 +174,7 @@ public class AccountService {
 
     public ApiResult ChangePassword(String password,Long accountid){
         try{
-            QueryWrapper wrapper = new QueryWrapper<>();
+            QueryWrapper<Account> wrapper = new QueryWrapper<>();
             wrapper.eq("id",accountid);
             List<Account> account = accountMapper.selectList(wrapper);
             if(account.size()==0) {

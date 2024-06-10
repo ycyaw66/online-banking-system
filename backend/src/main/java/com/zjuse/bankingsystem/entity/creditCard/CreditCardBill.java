@@ -8,9 +8,12 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.PropertyResourceBundle;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@TableName("credit_card_bill")
 public class CreditCardBill {
     private Long id;
     private String idNumber;

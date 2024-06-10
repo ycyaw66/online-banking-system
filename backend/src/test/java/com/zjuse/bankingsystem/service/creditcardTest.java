@@ -14,10 +14,15 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.zjuse.bankingsystem.entity.Card;
-import com.zjuse.bankingsystem.entity.User;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCard;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardApplication;
+import com.zjuse.bankingsystem.entity.user.Card;
+import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.service.creditCard.CreditCardService;
+import com.zjuse.bankingsystem.service.creditCard.InspectorService;
+import com.zjuse.bankingsystem.service.user.CardService;
+import com.zjuse.bankingsystem.service.user.UserAndCardService;
+import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 import cn.hutool.core.lang.Assert;
@@ -93,7 +98,7 @@ public class creditcardTest {
                     assertTrue(userAndCardService.transfer(item1.getCardId(), pre, new BigDecimal(50), "123456", "??").ok);
                 }
                 Date date = new Date();
-                assertTrue(creditCardService.bankPay(item1.getCardId(), "", "123456", new BigDecimal(100), date).ok);
+                assertTrue(creditCardService.bankPay(item1.getCardId(), "123456", new BigDecimal(100), date).ok);
                 ApiResult apiResult2 = userAndCardService.consume(item1.getCardId(), new BigDecimal(10), "123456", "??");
                 System.out.println(apiResult2.message);
                 assertTrue(apiResult2.ok);

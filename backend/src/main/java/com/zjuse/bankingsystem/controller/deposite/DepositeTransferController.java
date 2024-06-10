@@ -66,12 +66,12 @@ public class DepositeTransferController {
             return RespResult.fail("收账账户状态异常");
 
 
-        ApiResult apiResult  = depositService.changeamount(id,amount.negate());
+        ApiResult apiResult  = depositService.changeAmount(id,amount.negate());
         if(!apiResult.ok)
             return RespResult.success(apiResult.payload);
-        ApiResult toapiResult  = depositService.changeamount(toid,amount);
+        ApiResult toapiResult  = depositService.changeAmount(toid,amount);
         if(!toapiResult.ok){
-            apiResult  = depositService.changeamount(id,amount);
+            apiResult  = depositService.changeAmount(id,amount);
             return RespResult.fail(toapiResult.message);
         }
         ApiResult addStatement1 = statementService.addStatement(id,amount,System.currentTimeMillis(), StatementType.TransferOut,toid);
