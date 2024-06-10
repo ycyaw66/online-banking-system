@@ -379,7 +379,7 @@ CREATE TABLE officer (
     officer_name VARCHAR(50) NOT NULL,
     phone_number VARCHAR(20) NOT NULL,
     username CHAR(20) NOT NULL,
-    password CHAR(20) NOT NULL,
+    password CHAR(64) NOT NULL,
     permissions ENUM('small', 'large') NOT NULL
 );
 

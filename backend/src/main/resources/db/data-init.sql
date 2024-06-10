@@ -90,3 +90,7 @@ INSERT INTO trade_record (trade_id, fc_id, trade_time, amount_cny, amount_foreig
     
 INSERT INTO trade_record (trade_id, fc_id, trade_time, amount_cny, amount_foreign_currency, user_id, credit_card_id, is_buy_in) VALUES
     ('20230530000002', 'RMB', '2024-06-2 12:00:00', 100.00, 100.00, '0', '1234567890', TRUE);
+
+-- 贷款
+INSERT INTO officer (officer_id, officer_name, phone_number, username, password, permissions) VALUES
+    (0, "A3", "15544443333", "A3", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", "LARGE"); 

@@ -54,6 +54,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/credit-card/inspector/login").permitAll()
                 // 出纳员登陆
                 .requestMatchers("/counter/cashier/login").permitAll()
+                // 贷款审查员登陆
+                .requestMatchers("/officer/login").permitAll()
                 // 跨域的一次 OPTION 预检
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()
