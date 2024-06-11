@@ -178,7 +178,7 @@ export default {
               });
               console.log('Login response:', response.data);
               if (response.data.code === 0) {
-                const token = response.data.token;
+                const token = response.data.payload.token;
                 localStorage.setItem('token', token);
                 Cookies.set('token',token);
                 console.log(localStorage.getItem('token'));

@@ -193,6 +193,7 @@ export default {
             pageSize: pageSize.value
           }
         });
+        console.log(loanResponse);
 
         const loansData = loanResponse.data.records;
 
