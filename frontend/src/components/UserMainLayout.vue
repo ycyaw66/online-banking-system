@@ -6,7 +6,7 @@
           <div style="margin-top: 12px; display: inline-block;">
             <img src="./icons/logo.png"
                  style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-            <span style="font-size: large; font-family: 'Microsoft YaHei';
+            <span style="font-size: large; font-family: 'Microsoft YaHei',serif;
                   color: black; font-weight: bold;">贷款模块</span>
             <span style="margin-left: 40px; color:rgba(0, 0, 0, 0.2)">在线银行系统/用户贷款系统</span>
           </div>
@@ -50,7 +50,7 @@
                 <span>设置提醒还款</span>
               </el-menu-item>
               <el-button class="logout-button" type="danger" @click="logoutVisible = true" style="margin-left: 30px;">
-                退出外汇系统
+                退出贷款系统
               </el-button>
             </el-menu>
 
