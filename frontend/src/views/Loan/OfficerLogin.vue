@@ -18,6 +18,8 @@
 </template>
 <script>
   import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from 'element-plus';
+  import Cookies from "js-cookie";
+  import CryptoJS from "crypto-js";
 
   export default {
     components: {
@@ -45,14 +47,15 @@
           if (valid) {
             try {
               console.log('Sending login request with data:', this.loginForm);
-              const response = await this.$axios.post('/officerlogin', {
+              const response = await this.$axios.post('/officer/login', {
                 username: this.loginForm.username,
-                password: this.loginForm.password
+                password: CryptoJS.SHA256(this.loginForm.password).toString()
               });
               console.log('Login response:', response.data);
               if (response.data.message === "登录成功") {
                 const token = response.data.token;
                 localStorage.setItem('token', token);
+                Cookies.set('token',token);
                 console.log(localStorage.getItem('token'));
 
                 console.log('登录成功');

@@ -16,6 +16,20 @@
   
   <script>
   import { ElForm, ElFormItem, ElInput, ElButton } from 'element-plus';
+  import axios from "axios";
+  import Cookies from "js-cookie";
+  import CryptoJS from "crypto-js";
+
+  const axiosInstance = axios.create();
+  axiosInstance.interceptors.request.use(config => {
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = token;
+    }
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
 
   export default {
     components: {
@@ -42,7 +56,9 @@
         this.$refs.passwordForm.validate(async (valid) => {
           if (valid) {
             try {
-              await this.$axios.put('/update-officer-password-by-officer', null, { params: this.passwordData });
+              this.passwordData.currentPassword = CryptoJS.SHA256(this.passwordData.currentPassword).toString();
+              this.passwordData.newPassword = CryptoJS.SHA256(this.passwordData.newPassword).toString();
+              await axiosInstance.put('/update-officer-password-by-officer', null, { params: this.passwordData });
               this.$message.success('密码修改成功！');
             } catch (error) {
               console.error('修改密码时发生错误:', error);

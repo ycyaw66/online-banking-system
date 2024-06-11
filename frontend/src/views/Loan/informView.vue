@@ -28,6 +28,18 @@
 import {ref, onMounted} from 'vue';
 import {ElForm, ElFormItem, ElButton, ElSelect, ElOption, ElDialog, ElMessage} from 'element-plus';
 import axios from 'axios';
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   components: {
@@ -64,7 +76,7 @@ export default {
         }
 
         // Send the converted days to the backend
-        await axios.post('/save-reminder', {timeBefore: timeBeforeInDays});
+        await axiosInstance.post('/save-reminder', {timeBefore: timeBeforeInDays});
 
         // Check reminders after saving settings
         checkReminders();
@@ -76,7 +88,7 @@ export default {
 
     const checkReminders = async () => {
       try {
-        const response = await axios.get('/get-reminder');
+        const response = await axiosInstance.get('/get-reminder');
         const reminderTime = response.data.reminderTime;
         const loans = response.data.loans;
         const now = new Date();

@@ -72,6 +72,19 @@
 <script>
 import {ref} from 'vue';
 import {ElTable, ElTableColumn, ElDialog, ElButton, ElForm, ElFormItem, ElInput, ElMessage} from 'element-plus';
+import axios from "axios";
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   components: {
@@ -109,7 +122,7 @@ export default {
   methods: {
     async fetchApprovals() {
       try {
-        const response = await this.$axios.get('/get-approvals', {
+        const response = await axiosInstance.get('/get-approvals', {
           params: {
             page: this.currentPage,
             pageSize: this.pageSize

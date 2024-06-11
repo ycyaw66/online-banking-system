@@ -18,6 +18,19 @@
   
   <script>
   import { ElFormItem, ElInput, ElButton } from 'element-plus';
+  import axios from "axios";
+  import Cookies from "js-cookie";
+
+  const axiosInstance = axios.create();
+  axiosInstance.interceptors.request.use(config => {
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = token;
+    }
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
   
   export default {
     components: {
@@ -31,7 +44,7 @@
     methods: {
       async fetchCreditInfo() {
         try {
-          const response = await this.$axios.post('/fetch-credit-info');
+          const response = await axiosInstance.post('/fetch-credit-info');
           this.creditInfo = response.data;
           this.$message.success('征信查询成功！');
         } catch (error) {
