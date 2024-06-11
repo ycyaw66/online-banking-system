@@ -13,6 +13,8 @@ import com.zjuse.bankingsystem.entity.loan.Officer;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @CrossOrigin
 public class LoanController {
@@ -39,7 +42,7 @@ public class LoanController {
     private LoanApprovalService loanApprovalService;
 
     @PostMapping("/add-loan")
-    public Map<String, Object> insertLoan(@RequestBody Loan loan, @RequestParam("password") String password) {
+    public Map<String, Object> insertLoan(@RequestBody Loan loan) {
 
         int result;
         Map<String, Object> response = new HashMap<>();
@@ -51,7 +54,7 @@ public class LoanController {
         loan.setDate_applied(LocalDate.now());
 
 
-        Double credit= creditReportService.calculateCreditLimit(loan.getBorrow_id(),password);
+        Double credit= creditReportService.calculateCreditLimit(loan.getBorrow_id());
 
         String permission;double rate;
         if(loan.getAmount()>100000) {permission="large";rate=0.03;}

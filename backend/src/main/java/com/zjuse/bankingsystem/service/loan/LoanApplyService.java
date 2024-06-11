@@ -4,9 +4,13 @@ import com.zjuse.bankingsystem.entity.loan.Loan;
 import com.zjuse.bankingsystem.mapper.loan.AutoLoanMapper;
 import com.zjuse.bankingsystem.mapper.loan.IdgetMapper;
 import com.zjuse.bankingsystem.mapper.loan.LoanApplyMapper;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class LoanApplyService {
 

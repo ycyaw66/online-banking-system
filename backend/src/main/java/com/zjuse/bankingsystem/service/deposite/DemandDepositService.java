@@ -10,12 +10,16 @@ import com.zjuse.bankingsystem.mapper.deposite.RateMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.DepositCardType;
 import com.zjuse.bankingsystem.utils.StatementType;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
+@Slf4j
 @Service
 public class DemandDepositService {
     //余额变动、基数结算，利息结算
@@ -34,6 +38,7 @@ public class DemandDepositService {
             deposit.setpropertyid(propertyid);
             deposit.setdate(System.currentTimeMillis());
             //插入活期存款并获取id
+            log.info(deposit.toString());
             depositMapper.insert(deposit);
             return new ApiResult(true,deposit);
         }catch (Exception e){

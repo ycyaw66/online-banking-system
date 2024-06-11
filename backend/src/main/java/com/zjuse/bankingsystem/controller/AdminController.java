@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/admin")
-@PreAuthorize("roleCheck.isRole('ADMIN')")
+@PreAuthorize("@roleCheck.isRole('ADMIN')")
 public class AdminController {
     @Autowired
     private CreditCardAdminService adminService;
@@ -33,7 +33,7 @@ public class AdminController {
     @Autowired
     private OfficerService officerService; 
 
-    @GetMapping("/creditCard/admin/inspector")
+    @GetMapping("/inspector")
     public RespResult queryInspectors() {
         ApiResult apiResult = adminService.queryInspectors();
         return RespResult.success(apiResult.payload);

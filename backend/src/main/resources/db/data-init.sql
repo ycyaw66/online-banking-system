@@ -134,34 +134,64 @@ insert into `cashier`(username, password, authority)values
 -- 储蓄账号
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(7,'testAccount1','12967777593','134015851838831650',1000000000000000,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(7,'testAccount1','12967777593','134015851838831650',1,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(8,'testAccount2','12967777594','134015851838831651',1000000000000001,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(8,'testAccount2','12967777594','134015851838831651',2,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(9,'testAccount3','12967777595','134015851838831652',1000000000000002,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(9,'testAccount3','12967777595','134015851838831652',3,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(10,'testAccount4','12967777596','134015851838831653',1000000000000003,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(10,'testAccount4','12967777596','134015851838831653',4,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(11,'testAccount5','12967777597','134015851838831654',1000000000000004,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(11,'testAccount5','12967777597','134015851838831654',5,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000000, 1, 7);
+(1, 1, 7);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000001, 2, 8);
+(2, 2, 8);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000002, 1, 9);
+(3, 1, 9);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000003, 2, 10);
+(4, 2, 10);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000004, 1, 11);
+(5, 1, 11);
+
+insert into `property` (id, accountid, type) VALUES
+    (1, 7, 1);
+
+insert into `property` (id, accountid, type) VALUES
+    (2, 8, 1);
+
+insert into `property` (id, accountid, type) VALUES
+    (3, 9, 1);
+
+insert into `property` (id, accountid, type) VALUES
+    (4, 10, 1);
+
+insert into `property` (id, accountid, type) VALUES
+    (5, 11, 1);
+
+insert into `demand_deposit` (propertyid, accountid, amount, date, base) VALUES
+    (1, 7, 1000, 1718105369006, 0);
+
+insert into `demand_deposit` (propertyid, accountid, amount, date, base) VALUES
+    (2, 8, 1000, 1718105369006, 0);
+
+insert into `demand_deposit` (propertyid, accountid, amount, date, base) VALUES
+    (3, 9, 1000, 1718105369006, 0);
+
+insert into `demand_deposit` (propertyid, accountid, amount, date, base) VALUES
+    (4, 10, 1000, 1718105369006, 0);
+
+insert into `demand_deposit` (propertyid, accountid, amount, date, base) VALUES
+    (5, 11, 1000, 1718105369006, 0);
 
 
 Insert into `rate`values

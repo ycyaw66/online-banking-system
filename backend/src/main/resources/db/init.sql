@@ -154,7 +154,7 @@ create table `cashier` (
      primary key (`id`),
      unique (`username`, `password`),
     check(authority in (0,1,2,3))
-)  AUTO_INCREMENT=1000000000 engine=innodb charset=utf8mb4;
+) engine=innodb charset=utf8mb4;
 
 -- 储蓄账号
 create table `account` (
@@ -163,7 +163,7 @@ create table `account` (
     `phonenumber` varchar(11) not null,
     `citizenid` varchar(18) not null,
     `status` int not null default 1,
-    `card_id` bigint   zerofill not null,
+    `card_id` bigint zerofill not null,
     `password` varchar(64) not null,
     primary key (`id`),
     foreign key(`id`) references card(`card_id`),
@@ -172,7 +172,7 @@ create table `account` (
 ) engine=innodb charset=utf8mb4;
 
 create table `deposite_card` (
-    `id` bigint not null,
+    `id` bigint auto_increment not null,
     `type` int not null,
     `accountid`  bigint  not null,
     primary key (`id`),
@@ -323,7 +323,7 @@ CREATE TABLE `history_operation_record`
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
-drop table if exists `Loan`;
+drop table if exists `loan`;
 drop table if exists `form`;
 drop table if exists `report`;
 drop table if exists `officer`; 
@@ -364,7 +364,7 @@ CREATE TABLE officer (
 );
 
 -- 创建贷款表
-CREATE TABLE Loan (
+CREATE TABLE loan (
     loan_id INT AUTO_INCREMENT PRIMARY KEY,
     borrow_id INT NOT NULL,
     card_id INT NOT NULL,

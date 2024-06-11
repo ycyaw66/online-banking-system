@@ -23,7 +23,7 @@ public class CreditReportController {
     private CurrentUserService currentUserService; 
 
     @PostMapping("/generate-credit-report")
-    public Map<String, Object> generateCreditReport(@RequestParam("password") String password) {
+    public Map<String, Object> generateCreditReport() {
         // 获取用户ID
         Long userId = (Long)currentUserService.getCurrentUserId().payload;                                                     //need  user_id
         System.out.println(userId);
@@ -31,7 +31,7 @@ public class CreditReportController {
         double credit_score = creditReportService.calculateCreditScore(userId);
         System.out.println(credit_score);
         //  计算信用额度
-        double credit_limit = creditReportService.calculateCreditLimit(userId, password);
+        double credit_limit = creditReportService.calculateCreditLimit(userId);
         System.out.println(credit_limit);
         // 插入报告
         Report report = new Report();

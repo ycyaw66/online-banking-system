@@ -104,7 +104,7 @@ public class UserAndCardService {
 
     // 获得用户流水
     public ApiResult getMoneyStream(Long userId) {
-        return new ApiResult(false, "not implemented yet");
+        return new ApiResult(false, "not implemented yet", new BigDecimal(0));
     }
 
     public ApiResult loss(Long cardId, String password) {
@@ -284,7 +284,7 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult getBalance(Long cardId, String password) {
+    public ApiResult getBalance(Long cardId) {
         try {
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {

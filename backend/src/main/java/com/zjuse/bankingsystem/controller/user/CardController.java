@@ -66,7 +66,7 @@ public class CardController {
 
     @GetMapping("/balance")
     public RespResult getBalance(@RequestParam("card_id") Long cardId,@RequestParam String password) {
-        ApiResult apiResult = userAndCardService.getBalance(cardId, password);
+        ApiResult apiResult = userAndCardService.getBalance(cardId);
         if (apiResult.ok) {
             return RespResult.success((((BigDecimal)apiResult.payload).toString()));
         }

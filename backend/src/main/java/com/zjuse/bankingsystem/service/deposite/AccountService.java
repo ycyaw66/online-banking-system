@@ -16,11 +16,8 @@ import com.zjuse.bankingsystem.utils.DepositCardType;
 import com.zjuse.bankingsystem.utils.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.hutool.crypto.digest.DigestUtil;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class AccountService {
@@ -40,43 +37,47 @@ public class AccountService {
      */
     public ApiResult newAccount(String name, String phoneNumber, AccountStatus status, String password,DepositCardType cardtype,String citizenid){
         try{
-            //加密密码
-            Random rand = new Random(Long.parseLong(phoneNumber)+ System.currentTimeMillis());
-            String salt= String.valueOf(rand.nextInt(900001)+100000);
-            String newpassword = DigestUtil.sha256Hex(password+salt);
             //创建账户实例
             ApiResult apiResult = cardService.registerCard(CardType.DEBIT_CARD);
             if (!apiResult.ok) {
                 return apiResult;
             }
-            Long cardId = (Long) apiResult.payload;
+            Long accountid = (Long) apiResult.payload;
             Account account = new Account();
-            account.setId(cardId);
+            account.setId(accountid);
             account.setName(name);
-            account.setCardId(cardId);
-            account.setSalt(salt);
-            account.setPassword(newpassword);
+            account.setCardId(0L);
+            account.setPassword(password);
             account.setStatus(status);
             account.setPhonenumber(phoneNumber);
             account.setCitizenid(citizenid);
             //插入账户并获取id
             accountMapper.insert(account);
-            Long accountid = account.getId();
+            
             // 用户注册卡片
-            if (!cardService.bindUserAndCard(accountid, citizenid).ok) {
-                return new ApiResult(false, "绑定失败");
-            } 
+            cardService.bindUserAndCard(accountid, citizenid); 
 
             //创建卡片实例
             DepositeCard card = new DepositeCard();
             card.setType(cardtype);
             card.setAccountid(accountid);
+            cardMapper.insert(card);
+            Long cardid =card.getCardId();
+            account.setCardId(cardid);
             //新建活期
             Property property = new Property();
             property.setAccountid(account.getId());
             property.setType(PropertyType.demand);
             propertyMapper.insert(property);
-            demandDepositService.newDemandDeposit(accountid, property.getId());
+            ApiResult res = demandDepositService.newDemandDeposit(accountid, property.getId());
+            if (!res.ok) {
+                return new ApiResult(false, res.message);
+            }
+            //更新账户中卡片id
+            UpdateWrapper<Account> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("id", accountid);
+            updateWrapper.set("card_id",cardid);
+            accountMapper.update(null,updateWrapper);
             return new ApiResult(true, account);
         }catch (Exception e){
             return  new ApiResult(false,e.getMessage());

@@ -14,7 +14,7 @@ public class AmountService {
     private UserAndCardService userAndCardService;
 
     public BigDecimal getamount(Long card_id, String password){
-        return  (BigDecimal)userAndCardService.getBalance(card_id, password).payload;
+        return  (BigDecimal)userAndCardService.getBalance(card_id).payload;
     }
     public void addAmount(Long card_id, BigDecimal amount) {
         userAndCardService.income(card_id, amount, "贷款");
