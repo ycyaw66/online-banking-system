@@ -198,7 +198,7 @@ export default {
       this.modify_password_visible = false;
       axiosInstance.post("/counter/cashier/modify", null, {
         params: {
-          id: this.modify_password.id,
+          // id: this.modify_password.id,
           newpassword: CryptoJS.SHA256(this.modify_password.new_password).toString(),
           oldpassword: CryptoJS.SHA256(this.modify_password.old_password).toString()
         }

@@ -58,6 +58,17 @@
         </el-form-item>
       </el-form>
     </div>
+
+    <!-- 添加提交成功的弹窗 -->
+    <el-dialog v-model="dialogVisible" title="提交成功">
+      <p>贷款申请已提交成功！</p>
+      <template v-slot:footer>
+      <span class="dialog-footer">
+         <el-button type="primary" @click="closeDialog">确定</el-button>
+      </span>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -103,7 +114,7 @@ export default {
         term: '',
         officer_id: '', //这里需要算法实现随机分给符合权限的officer！！！
         //borrow_id也还未实现
-        password:''
+        password: ''
       },
       rules: {
         card_id: [{required: true, message: '请输入银行卡号', trigger: 'blur'}],
@@ -153,15 +164,28 @@ export default {
               card_id: this.loan_data.card_id,
               amount: this.loan_data.amount,
               term: this.loan_data.term,
-              officer_id: this.loan_data.officer_id,
+              // officer_id: this.loan_data.officer_id,
               form_id: form_id, // Include the form_id in the loan data
-              password: CryptoJS.SHA256(this.loan_data.password).toString()
             };
 
             // Submit the loan data
-            await axiosInstance.post('/add-loan', loanData);
-
-            this.$message.success('贷款申请已提交成功！');
+            // await axiosInstance.post('/add-loan', loanData, {
+            //   params: {
+            //     password: CryptoJS.SHA256(this.loan_data.password).toString()
+            //   }
+            // });
+            const response = await axiosInstance.post('/add-loan', loanData,{
+              params:{
+                password: CryptoJS.SHA256(this.loan_data.password).toString()
+              }
+            });
+            if (response.data.message === "Loan created successfully!") {
+              this.dialogVisible = true; // 显示弹窗
+              this.resetForm(); // 清空表单数据
+              this.$message.success('贷款申请已提交!');
+            } else {
+              this.$message.error('贷款信息错误!');
+            }
           } catch (error) {
             console.error('提交贷款申请时发生错误:', error);
             this.$message.error('提交失败。');

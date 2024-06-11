@@ -24,6 +24,17 @@ import {ElMessage} from 'element-plus'
 import axios from 'axios'
 import Cookies from "js-cookie";
 
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
 axios.defaults.baseURL = 'http://localhost:8082'
 
 export default {
@@ -126,7 +137,7 @@ export default {
       this.operationInfo.dest_date = strs[0] + ' ' + strs[1]
     },
     confirmNew() {
-      axios.post('/fc/currency/operation', this.operationInfo).then(response => {
+      axiosInstance.post('/fc/currency/operation', this.operationInfo).then(response => {
         if (response.data.code === 0) {
           console.log(response)
           ElMessage.success("增加成功")
@@ -140,7 +151,7 @@ export default {
       })
     },
     confirmDelete() {
-      axios.post('/fc/currency/operation',
+      axiosInstance.post('/fc/currency/operation',
           this.operationInfo).then(response => {
         console.log(response)
         if (response.data.code === 0) {
@@ -155,7 +166,7 @@ export default {
       })
     },
     confirmEdit() {
-      axios.post("/fc/currency/operation", this.operationInfo).then(response => {
+      axiosInstance.post("/fc/currency/operation", this.operationInfo).then(response => {
         if (response.data.code === 0) {
           ElMessage.success("修改成功")
           this.editCurrencyVisible = false
@@ -168,7 +179,7 @@ export default {
       })
     },
     confirmSearch() {
-      axios.get('/fc/currency/' + this.toSearchCurrencyInfo)
+      axiosInstance.get('/fc/currency/' + this.toSearchCurrencyInfo)
           .then(response => {
             if (response.data.code === 0) {
               this.tableData = []
@@ -191,7 +202,7 @@ export default {
     },
     Query() {
       this.tableData = [] // 清空列表
-      axios.get('/fc/currency/all') // 向/book发出GET请求
+      axiosInstance.get('/fc/currency/all') // 向/book发出GET请求
           .then(response => {
             if (response.data.code === 0) {
               let currencys = response.data.payload // 接收响应负载

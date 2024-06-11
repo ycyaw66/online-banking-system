@@ -197,8 +197,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import {Avatar, UserFilled} from "@element-plus/icons-vue";
+import CryptoJS from "crypto-js";
 
 axios.defaults.baseURL = "http://localhost:8082";
+
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use(config => {
   const token = Cookies.get('token');
@@ -310,7 +312,7 @@ export default {
           username: this.new_operator.name,
           email: this.new_operator.email,
           phone_number: this.new_operator.phoneNumber,
-          password: this.new_operator.password,
+          password: CryptoJS.SHA256(this.new_operator.password).toString(),
           add_permission: this.new_operator.addPermission,
           delete_permission: this.new_operator.deletePermission,
           update_permission: this.new_operator.updatePermission

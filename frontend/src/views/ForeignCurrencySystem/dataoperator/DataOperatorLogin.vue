@@ -5,6 +5,7 @@ import {ElMessage} from 'element-plus'
 import axios from 'axios';
 import {useRouter} from 'vue-router';
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
 axios.defaults.baseURL = 'http://localhost:8082'
 //控制注册与登录表单的显示， 默认显示注册
@@ -74,9 +75,10 @@ const register = async () => {
   if (!form.value) return
   await form.value.validate((valid) => {
     if (valid) {
+      registerData.value.password = CryptoJS.SHA256(registerData.value.password).toString();
       axios.post('/fc/data_operator/start/register', registerData.value).then(res => {
         console.log(res.data)
-        if (res.data.code == 0) {
+        if (res.data.code === 0) {
           ElMessage.success('注册成功')
           clearRegisterData()
           isRegister.value = false
@@ -94,9 +96,10 @@ const login = async () => {
   if (!form.value) return
   await form.value.validate((valid) => {
     if (valid) {
+      registerData.value.password = CryptoJS.SHA256(registerData.value.password).toString();
       axios.post('/fc/data_operator/start/login', registerData.value).then(res => {
         console.log(res)
-        if (res.data.code == 0) {
+        if (res.data.code === 0) {
           ElMessage.success('登录成功')
           clearRegisterData()
           setTimeout(() => {

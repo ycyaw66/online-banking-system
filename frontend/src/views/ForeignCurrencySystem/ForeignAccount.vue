@@ -35,6 +35,18 @@
 import axios from 'axios';
 import {Search} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus';
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 axios.defaults.baseURL = 'http://localhost:8082'
 
@@ -61,7 +73,7 @@ export default {
     },
     async QueryAccount() {
       this.tableData = [] // 清空列表
-      await axios.get(`/fc/account/${this.creditCardId}/$(this.userId)`).then(response => {
+      await axiosInstance.get(`/fc/account/${this.creditCardId}/$(this.userId)`).then(response => {
         console.log(response);
         let accounts = response.data.payload // 获取响应负载
         accounts.forEach(record => { // 对于每一个交易记录

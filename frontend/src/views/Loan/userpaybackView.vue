@@ -75,11 +75,14 @@ export default {
         const repaymentInfo = {
           loan_id: this.repaymentData.loanId,
           info: this.repaymentData.selectedCard,
-          password: CryptoJS.SHA256(this.repaymentData.password).toString()
         };
 
         // 发送还款信息到后端
-        await axiosInstance.post('/confirm-repayment', repaymentInfo);
+        await axiosInstance.post('/confirm-repayment', repaymentInfo,{
+          params:{
+            password: CryptoJS.SHA256(this.repaymentData.password).toString()
+          }
+        });
 
         this.$message.success('还款申请已提交成功！');
       } catch (error) {

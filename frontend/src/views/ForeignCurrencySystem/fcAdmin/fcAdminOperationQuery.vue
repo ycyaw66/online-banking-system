@@ -104,9 +104,7 @@ export default {
         new_rate: 0,
         dest_date: '',
         operation_time: ''
-      },
-
-      ],
+      }],
       modify_password_visible: false,
       modify_password: {
         id: '',

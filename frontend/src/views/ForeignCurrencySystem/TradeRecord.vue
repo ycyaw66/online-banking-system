@@ -92,6 +92,18 @@
 <script>
 import axios from 'axios';
 import {Search} from '@element-plus/icons-vue'
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 axios.defaults.baseURL = 'http://localhost:8082';
 
@@ -143,7 +155,7 @@ export default {
       try {
         this.tableData = [] // 清空列表
         this.searchForm.userId = this.getUserId()
-        const response = await axios.post('/fc/trade/history/search', this.searchForm);
+        const response = await axiosInstance.post('/fc/trade/history/search', this.searchForm);
         console.log(response);
         this.tableData = response.data.payload;
         this.isShow = true // 显示结果列表
@@ -154,7 +166,7 @@ export default {
     async QueryTrade() {
       this.tableData = [] // 清空列表
       this.userId = this.getUserId()
-      axios.get(`/fc/trade/history/${this.userId}`).then(response => {
+      axiosInstance.get(`/fc/trade/history/${this.userId}`).then(response => {
         console.log(response);
         this.tableData = response.data // 获取响应负载
         this.isShow = true // 显示结果列表
