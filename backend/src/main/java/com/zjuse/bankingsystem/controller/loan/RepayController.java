@@ -29,7 +29,7 @@ public class RepayController {
     @Autowired
     private CurrentUserService currentUserService; 
 
-    @PostMapping("/bank-cards")
+    @GetMapping("/bank-cards")
     public List<String> getUserBankCards() {
         // 假设这里有一个方法能够获取当前登录用户的银行卡列表
         // 假设已经获取到当前登录用户的用户ID，这里假设用户ID为1

@@ -4,10 +4,14 @@ import com.zjuse.bankingsystem.entity.foreignCurrency.ForeignCurrencyAccount;
 import com.zjuse.bankingsystem.entity.foreignCurrency.TradeRecord;
 import com.zjuse.bankingsystem.mapper.foreignCurrency.ForeignCurrencyAccountMapper;
 import com.zjuse.bankingsystem.mapper.foreignCurrency.TradeRecordMapper;
+import com.zjuse.bankingsystem.service.user.CardService;
+import com.zjuse.bankingsystem.service.user.UserAndCardService;
+import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -27,6 +31,9 @@ public class TradeService {
     @Autowired
     private CurrencyManagerService currencyManagerService;
 
+    @Autowired
+    private UserAndCardService cardService; 
+
     /**
      * 执行外汇交易的主方法。
      *
@@ -34,7 +41,11 @@ public class TradeService {
      */
     public RespResult executeTrade(TradeRecord record) {
         // TODO:查询用户人民币账户余额
-        double userBalance = 10000;//userAccountMapper.getBalanceByUserId(userId);
+        Long cardId = Long.valueOf(record.getCredit_card_id()); 
+        ApiResult res = cardService.getBalance(cardId);
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        double userBalance = ((BigDecimal)res.payload).doubleValue();//userAccountMapper.getBalanceByUserId(userId);
         // 查询外币账户余额
         ForeignCurrencyAccount fAccount = fcAccountMapper.findAccountsByCreditCardIdAndFcId(record.getCredit_card_id(), record.getFc_id());
         if(fAccount == null){
@@ -47,6 +58,7 @@ public class TradeService {
                 return RespResult.fail("交易失败：人民币余额不足");
             }
             // TODO:更新人民币账户余额
+            cardService.consume(cardId, new BigDecimal(record.getAmount_cny()), "", "买卖外币");
             // 更新外币账户余额
             fAccount.setAmount(fAccount.getAmount() + record.getAmount_foreign_currency());
             fcAccountMapper.updateForeignCurrencyAccount(fAccount);

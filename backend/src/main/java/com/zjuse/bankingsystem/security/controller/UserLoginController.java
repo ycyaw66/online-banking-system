@@ -27,6 +27,7 @@ import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.security.service.EmailValidService;
 import com.zjuse.bankingsystem.security.service.OnlineUserService;
+import com.zjuse.bankingsystem.security.service.UserCacheManager;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -54,6 +55,8 @@ public class UserLoginController {
     private UserService userService; 
     @Autowired
     private CurrentUserService currentUserService; 
+    @Autowired
+    private UserCacheManager userCacheManager; 
     
     @PostMapping("/login")
     public RespResult postUserLogin(@Validated @RequestBody UserLoginReq req) {
@@ -145,6 +148,7 @@ public class UserLoginController {
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
+        userCacheManager.cleanUserCache(req.getUsername());
 
         return RespResult.success(); 
     }
@@ -161,7 +165,7 @@ public class UserLoginController {
     @DeleteMapping("/logout") 
     public RespResult logout(HttpServletRequest request) {
         String token = jwtTokenProvider.getTokenFromRequest(request);
-        onlineUserService.logout(token);
+        onlineUserService.logout(token); 
         return RespResult.success();
     }
 }

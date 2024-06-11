@@ -2,13 +2,10 @@ package com.zjuse.bankingsystem.controller.deposite;
 
 import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.DemandDeposit;
-import com.zjuse.bankingsystem.entity.deposite.Property;
 import com.zjuse.bankingsystem.security.service.CurrentUserService;
-import com.zjuse.bankingsystem.service.*;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.deposite.DemandDepositService;
-import com.zjuse.bankingsystem.service.deposite.PropertyService;
 import com.zjuse.bankingsystem.service.deposite.StatementService;
 import com.zjuse.bankingsystem.utils.AccountStatus;
 import com.zjuse.bankingsystem.utils.ApiResult;
