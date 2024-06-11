@@ -21,6 +21,13 @@
           </template>
           <!-- 登陆卡片的body -->
           <el-form :model="loginForm" ref="loginForm" :rules="loginRules" label-width="80px">
+            <el-form-item label="登陆选项" prop="loginType">
+              <el-cascader
+                v-model="loginForm.loginType"
+                :options="options"
+                style="width: 250px"
+              />
+            </el-form-item>
             <el-form-item label="用户名" prop="username">
               <el-input v-model="loginForm.username" placeholder="请输入用户名" style="width: 250px"></el-input>
             </el-form-item>
@@ -50,7 +57,31 @@ import Cookies from "js-cookie";
 export default {
   data() {
     return {
+      options: [
+        {
+          value: "admin",
+          label: "系统管理员"
+        },
+        {
+          value: "inspector",
+          label: "审查员"
+        },
+        {
+          value: "cashier",
+          label: "出纳员"
+        },
+        // TODO not merge
+        // {
+        //   value: "operator",
+        //   label: "数据操纵员"
+        // },
+        {
+          value: "officer",
+          label: "贷款审查员"
+        },
+      ], 
       loginForm: {
+        loginType: '', 
         username: '',
         password: ''
       },
@@ -71,27 +102,99 @@ export default {
     jumpInfo() {
       this.$router.push('/onlineBank/admin/privilege');
     },
-    handleLogin() {
+    async handleLogin() {
       // 加密后传给后端
       const encrypted = CryptoJS.SHA256(this.loginForm.password).toString();
-      axios.post("/admin/login",
-        {
-          "username": this.loginForm.username,
-          "password": encrypted
-        })
-        .then(response => {
-          if (response.data.code === 0) {
-            ElMessage.success("登录成功");
-            Cookies.set('token', response.data.payload.token);
-            this.jumpInfo();
-          } else {
-            ElMessage.error(response.data.err);
-            return;
-          }
-        })
-        .catch(error => {
-          ElMessage.error(error.response.data);
-        })
+      console.log(this.loginForm.loginType)
+      switch (String(this.loginForm.loginType)) {
+        case "admin":
+          console.log("admin login")
+          axios.post("/admin/login",
+            {
+              "username": this.loginForm.username,
+              "password": encrypted
+            })
+            .then(response => {
+              if (response.data.code === 0) {
+                ElMessage.success("登录成功");
+                Cookies.set('token', response.data.payload.token);
+                this.jumpInfo();
+              } else {
+                ElMessage.error(response.data.err);
+                return;
+              }
+            })
+            .catch(error => {
+              ElMessage.error(error.response.data);
+            })
+          break ;
+        case "inspector": 
+          axios.post("/credit-card/inspector/login", null, {
+            params: {
+              name: this.loginForm.username,
+              password: encrypted
+            }
+          }).then(response => {
+            if (response.data.code === 1) {
+              this.$message.error(response.data.err);
+              return;
+            } else {
+              Cookies.set('token', response.data.payload.token);
+              Cookies.set('credit_card_inspector_permission', response.data.payload.permission);
+              // this.$store.state.creditCardInspector.permission = response.data.payload.permission;
+              // console.log(this.$store.state.creditCardInspector.permission);
+              this.$router.push('/creditCard/inspector/request');
+            }
+          }).catch(error => {
+            console.error('login error:', error);
+          });
+          break ; 
+        case "cashier":
+          axios.post("/counter/cashier/login",null,{
+            params:{
+              username:this.loginForm.username,
+              password:encrypted
+            }
+          }).then(response =>{
+            if(response.data.code === 1){
+              this.$message.error(response.data.err);
+              return;
+            }else{
+              // Cookies.set('operatorid',this.cashier.id);
+              Cookies.set('token',response.data.payload.token);
+              this.$message.success('出纳员登录成功');
+              this.$router.push('/counter/cashier/openAccount');
+            }
+          })
+          break ;
+        case "operator":
+          break ;
+        case "officer": 
+          try {
+              console.log('Sending login request with data:', this.loginForm);
+              const response = await this.$axios.post('/officer/login', {
+                username: this.loginForm.username,
+                password: encrypted
+              });
+              console.log('Login response:', response.data);
+              if (response.data.message === "登录成功") {
+                const token = response.data.token;
+                localStorage.setItem('token', token);
+                Cookies.set('token',token);
+                console.log(localStorage.getItem('token'));
+
+                console.log('登录成功');
+                this.$router.push('/officer-main'); // 跳转到主页面
+              } else {
+                ElMessage.error(response.data.message);
+              }
+            } catch (error) {
+              console.error('登录失败', error);
+              ElMessage.error('错误');
+            }
+          break ;
+      }
+
     },
   }
 };

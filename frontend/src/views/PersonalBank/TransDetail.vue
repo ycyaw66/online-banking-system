@@ -84,17 +84,16 @@ export default {
         const st = this.Cond.MinDate;
         const et = this.Cond.MaxDate;
         axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-        let response = await axios.get("/account/trans", 
-          {
-            params: {
-              "target_card_id": tg,
-              "transfer_card_id": cd,
-              "MinAmount": ia,
-              "MaxAmount": xa,
-              "start_time": st,
-              "end_time" : et,
-              "Remark": this.Cond.Remark
-            }
+        let response = await axios.post("/card/history", 
+         {
+            "card_id": Number(this.accountNumber), 
+            "target_card_id": tg,
+            "transfer_card_id": cd,
+            "least_amount": ia,
+            "most_amount": xa,
+            "start_time": st,
+            "end_time" : et,
+            "remark": this.Cond.Remark
           })
         let querydata = response.data
         if (querydata.code === 0) {

@@ -346,7 +346,8 @@ const routes = [
     {
         path: '/counter/cashier/login',
         name: 'loginCashier',
-        component: () => import('../views/Counter/login/CashierLoginView.vue')
+        redirect: '/personalBank/admin/login',  
+        // component: () => import('../views/Counter/login/CashierLoginView.vue')
     },
     {
         path: '/counter/cashier/currentDeposit',
