@@ -41,6 +41,12 @@
                 </el-icon>
                 <span>修改密码</span>
               </el-menu-item>
+
+              <el-button type="danger"
+                         @click="exit"
+                         style="display: block; margin: auto;">
+                退出登录
+              </el-button>
              
             </el-menu>
           </el-aside>
@@ -58,10 +64,17 @@
 
 <script>
 import { RouterView } from 'vue-router';
+import Cookies from "js-cookie";
 
 export default {
   components: {
     RouterView
+  },
+  methods:{
+    exit() {
+      Cookies.remove('token');
+      this.$router.push('/personalBank/admin/login');
+    }
   }
 };
 </script>

@@ -141,7 +141,7 @@ export default {
   methods: {
     exit() {
       Cookies.remove('token');
-      this.$router.push('/creditCard/inspector/login');
+      this.$router.push('/personalBank/admin/login');
     },
     accept(id) {
       axiosInstance.post("/credit-card/inspector/request/accept", null, {params: {id: id}})
