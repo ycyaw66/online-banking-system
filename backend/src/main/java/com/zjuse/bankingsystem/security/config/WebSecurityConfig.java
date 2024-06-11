@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -56,6 +54,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/counter/cashier/login").permitAll()
                 // 贷款审查员登陆
                 .requestMatchers("/officer/login").permitAll()
+                // 
+                .requestMatchers("/fc/data_operator/start/login", "/fc/data_opertaor/start/register").permitAll()
                 // 跨域的一次 OPTION 预检
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()

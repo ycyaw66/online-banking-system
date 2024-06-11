@@ -74,13 +74,8 @@ public class CashierService {
 
     public ApiResult addCashier(String username,String password,int authority){
         try{
-            //加密密码
-            Random rand = new Random(3*System.currentTimeMillis());
-            String salt= String.valueOf(rand.nextInt(900001)+100000);
-            String newpassword = DigestUtil.sha256Hex(password+salt);
             Cashier cashier = new Cashier();
-            cashier.setSalt(salt);
-            cashier.setPassword(newpassword);
+            cashier.setPassword(password);
             cashier.setUsername(username);
             cashier.setAuthority(authority);
             cashierMapper.insert(cashier);

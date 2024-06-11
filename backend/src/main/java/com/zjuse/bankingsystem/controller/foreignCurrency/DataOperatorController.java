@@ -31,39 +31,6 @@ public class DataOperatorController {
     @Autowired
     private DataOperatorService dataOperatorService;
 
-    @PostMapping("/start/register")
-    public RespResult register(@RequestBody DataOperatorRegister dataOperatorRegister) {
-        DataOperator entity = new DataOperator("", dataOperatorRegister.getUsername(), dataOperatorRegister.getPassword(), dataOperatorRegister.getEmail(), dataOperatorRegister.getPhone(), 0, 0, 0);
-        if(!dataOperatorRegister.getConfirm().equals("111")){
-            return RespResult.fail("邀请码错误");
-        }
-        try{
-            dataOperatorService.register(entity);
-        }catch(Exception e){
-            return RespResult.fail(e.getMessage());
-        }
-        return RespResult.success("注册成功");
-
-    }
-
-    @PostMapping("/start/login")
-    public RespResult login(@RequestBody LoginInfo loginInfo) {
-        ApiResult result = new ApiResult(false, "");
-        try{
-            DataOperatorInfo dt = dataOperatorService.selectDataOperatorByUsernameAndPassword(loginInfo.getUsername(), loginInfo.getPassword());
-            if(dt != null) {
-                result.ok = true;
-                result.message = "登录成功";
-                result.payload = dt;
-            } else {
-                result.message = "用户名或密码错误";
-            }
-        }catch(Exception e){
-            return RespResult.fail(e.getMessage());
-        }
-        return new RespResult(0, result.message, result.payload);
-    }
-
     @DeleteMapping("/delete/{data_operator_id}")
     public RespResult delete(String data_operator_id) {
         ApiResult result = new ApiResult(false, "");

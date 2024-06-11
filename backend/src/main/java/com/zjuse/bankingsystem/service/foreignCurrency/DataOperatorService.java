@@ -10,6 +10,8 @@ public interface DataOperatorService {
 
     DataOperatorInfo selectDataOperatorById(String id) throws Exception;
 
+    DataOperator selectDataOperatorByUsername(String username) throws Exception;
+
     void register(DataOperator entity) throws Exception;
 
     void detailedInformation(DataOperator entity) throws Exception;

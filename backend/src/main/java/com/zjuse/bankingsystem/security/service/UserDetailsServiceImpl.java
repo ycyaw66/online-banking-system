@@ -11,13 +11,16 @@ import org.springframework.stereotype.Service;
 import com.zjuse.bankingsystem.entity.Admin;
 import com.zjuse.bankingsystem.entity.creditCard.CreditCardInspector;
 import com.zjuse.bankingsystem.entity.deposite.Cashier;
+import com.zjuse.bankingsystem.entity.foreignCurrency.DataOperator;
 import com.zjuse.bankingsystem.entity.loan.Officer;
 import com.zjuse.bankingsystem.entity.user.User;
+import com.zjuse.bankingsystem.model.DataOperatorInfo;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.dto.AuthorityDto;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.service.creditCard.InspectorService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
+import com.zjuse.bankingsystem.service.foreignCurrency.DataOperatorService;
 import com.zjuse.bankingsystem.service.loan.OfficerLoginService;
 import com.zjuse.bankingsystem.service.user.UserService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -39,6 +42,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private CashierService cashierService; 
     @Autowired
     private OfficerLoginService officerLoginService; 
+    @Autowired
+    private DataOperatorService dataOperatorService; 
 
     @Override
     public JwtUserDto loadUserByUsername(String username) {
@@ -107,6 +112,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             );
                         }
                         break ;
+                    case OPERATOR:
+                        DataOperator dt = dataOperatorService.selectDataOperatorByUsername(username.split("-")[1]); 
+                        if (dt == null) 
+                            return null;
+                        else {
+                            jwtUserDto = new JwtUserDto(
+                                dt.getUsername(),  
+                                dt.getPassword(), 
+                                Collections.singletonList(new AuthorityDto("OFFICER"))
+                            );
+                        }
                     default:
                         return null; 
                 }

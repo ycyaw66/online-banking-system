@@ -146,20 +146,11 @@ create table `credit_card_inspector` (
     check(`permission` in (1, 2))
 )engine=innodb charset=utf8mb4;
 
-create table `administrator` (
-    `id` bigint(10) zerofill not null auto_increment ,
-    `username` varchar(63) not null,
-    `password` varchar(255) not null,
-    `salt` varchar(255) not null,
-    primary key (`id`)
-)  AUTO_INCREMENT=2000000000 engine=innodb charset=utf8mb4;
-
 create table `cashier` (
     `id` bigint(10) zerofill not null auto_increment ,
     `username` varchar(63) not null,
     `password` varchar(255) not null,
     `authority` int not null default 0,
-    `salt` varchar(255) not null,
      primary key (`id`),
      unique (`username`, `password`),
     check(authority in (0,1,2,3))
@@ -253,16 +244,6 @@ DROP TABLE IF EXISTS `fc_administrator`;
 
 -- 关于如何构造字符类型的id，可以用时间戳去掉中间的多余字符，再加上一个数字
 -- 2020-01-01 00:00:00->"20200101000000"+"000000"
-
-CREATE TABLE `fc_administrator`
-(
-    admin_id VARCHAR(20) NOT NULL COMMENT '主键ID',
-    username VARCHAR(25) NOT NULL COMMENT '用户名', 
-    password VARCHAR(64) NOT NULL COMMENT '密码',
-    email VARCHAR(50) NULL DEFAULT NULL COMMENT '邮箱',
-    phone_number VARCHAR(20) DEFAULT NULL COMMENT '手机号', 
-    PRIMARY KEY (admin_id)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE `data_operator`

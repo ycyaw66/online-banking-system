@@ -7,7 +7,8 @@ public enum LoginType {
     ADMIN("ADMIN"),
     INSPECTOR("INSPECTOR"), 
     CASHIER("CASHIER"), 
-    OFFICER("OFFICER");
+    OFFICER("OFFICER"),
+    OPERATOR("OPERATOR");
 
     @Getter
     private final String role; 

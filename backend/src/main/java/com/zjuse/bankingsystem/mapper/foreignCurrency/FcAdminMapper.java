@@ -3,16 +3,13 @@ package com.zjuse.bankingsystem.mapper.foreignCurrency;
 import org.apache.ibatis.annotations.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zjuse.bankingsystem.entity.foreignCurrency.DataOperator;
-import com.zjuse.bankingsystem.entity.foreignCurrency.FcAdministrator;
 import com.zjuse.bankingsystem.entity.foreignCurrency.HistoryOperationRecord;
 
 import java.util.List;
 
 @Mapper
-public interface FcAdminMapper extends BaseMapper<FcAdministrator> {
+public interface FcAdminMapper {
 
-    @Select("select username as name, password from fc_administrator where username = #{name} and password = #{password}")
-    public FcAdministrator FcAdminLogin(String name,String password);
 
     @Select("select * from data_operator")
     List<DataOperator> queryOperator();

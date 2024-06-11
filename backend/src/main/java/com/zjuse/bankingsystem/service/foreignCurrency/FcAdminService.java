@@ -1,6 +1,5 @@
 package com.zjuse.bankingsystem.service.foreignCurrency;
 import com.zjuse.bankingsystem.entity.foreignCurrency.DataOperator;
-import com.zjuse.bankingsystem.entity.foreignCurrency.FcAdministrator;
 import com.zjuse.bankingsystem.entity.foreignCurrency.HistoryOperationRecord;
 import com.zjuse.bankingsystem.mapper.foreignCurrency.FcAdminMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -13,15 +12,6 @@ import java.util.List;
 public class FcAdminService {
     @Autowired
     private FcAdminMapper fcAdminMapper;
-
-    public ApiResult FcAdminLogin(String name, String password) {
-        FcAdministrator fcAdmin = fcAdminMapper.FcAdminLogin(name, password);
-        if (fcAdmin == null) {
-            return new ApiResult(false, "登录失败");
-        } else {
-            return new ApiResult(true, "登录成功", fcAdmin);
-        }
-    }
 
     public ApiResult queryOperator(){
         List<DataOperator> operators= fcAdminMapper.queryOperator();

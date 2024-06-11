@@ -28,6 +28,14 @@ public class DataOperatorServiceImp implements DataOperatorService {
         return new DataOperatorInfo(dt);
     }
 
+    @Override
+    public DataOperator selectDataOperatorByUsername(String username) throws Exception {
+        DataOperator dt = dataOperatorMapper.selectDataOperatorByUsername(username);
+        if(dt == null)
+            throw new Exception("用户名不存在");
+        return dt; 
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void register(DataOperator entity) throws Exception {
