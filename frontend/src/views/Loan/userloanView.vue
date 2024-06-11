@@ -53,9 +53,9 @@
         <el-form-item label="贷款期限(Loan Term)" prop="term">
           <el-input v-model="loan_data.term"/>
         </el-form-item>
-        <el-form-item label="密码(Password)" prop="password">
-          <el-input type="password" v-model="loan_data.password"/>
-        </el-form-item>
+<!--        <el-form-item label="密码(Password)" prop="password">-->
+<!--          <el-input type="password" v-model="loan_data.password"/>-->
+<!--        </el-form-item>-->
       </el-form>
     </div>
 
@@ -76,7 +76,6 @@
 import {ElForm, ElFormItem, ElInput, ElButton, ElSelect, ElOption} from 'element-plus';
 import axios from "axios";
 import Cookies from "js-cookie";
-import CryptoJS from "crypto-js";
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use(config => {
@@ -114,7 +113,7 @@ export default {
         term: '',
         officer_id: '', //这里需要算法实现随机分给符合权限的officer！！！
         //borrow_id也还未实现
-        password: ''
+        // password: ''
       },
       rules: {
         card_id: [{required: true, message: '请输入银行卡号', trigger: 'blur'}],
@@ -174,11 +173,7 @@ export default {
             //     password: CryptoJS.SHA256(this.loan_data.password).toString()
             //   }
             // });
-            const response = await axiosInstance.post('/add-loan', loanData,{
-              params:{
-                password: CryptoJS.SHA256(this.loan_data.password).toString()
-              }
-            });
+            const response = await axiosInstance.post('/add-loan', loanData);
             if (response.data.message === "Loan created successfully!") {
               this.dialogVisible = true; // 显示弹窗
               this.resetForm(); // 清空表单数据
