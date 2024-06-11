@@ -75,6 +75,10 @@ public class UserAndCardService {
                 apiResult = new ApiResult(true, "success");
             }
             else {
+                apiResult = accountService.VerifyPassword(cardId, password);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
                 apiResult = demandDepositService.changeAmount(cardId, amount.negate());
                 if (apiResult.ok == false) {
                     return apiResult;
@@ -92,6 +96,15 @@ public class UserAndCardService {
             return new ApiResult(false, e.getMessage());
 
         }
+    }
+
+    public ApiResult income(Long cardId, BigDecimal amount, String remark) {
+        return new ApiResult(false, "not implemented yet");
+    }
+
+    // 获得用户流水
+    public ApiResult getMoneyStream(Long userId) {
+        return new ApiResult(false, "not implemented yet", new BigDecimal(0));
     }
 
     public ApiResult loss(Long cardId, String password) {
@@ -138,6 +151,15 @@ public class UserAndCardService {
     public ApiResult history(HistoryCondition condition) {
         try {
             QueryWrapper<History> wrapper = new QueryWrapper<>();
+            if (condition == null) {
+                List<History> list = historyMapper.selectList(wrapper);
+                if (list == null) {
+                    return new ApiResult(false, "database error");
+                }
+                ApiResult apiResult = new ApiResult(true, "success");
+                apiResult.payload = list;
+                return apiResult;
+            }
             // QueryWrapper<History> idWrapper = new QueryWrapper<>();
             if (condition.getCardId() == null) {
                 return new ApiResult(false, "card id can't be null");
@@ -262,7 +284,7 @@ public class UserAndCardService {
         }
     }
 
-    public ApiResult getBalance(Long cardId, String password) {
+    public ApiResult getBalance(Long cardId) {
         try {
             ApiResult apiResult = null;
             if (cardService.getCardType(cardId) == CardType.CREDIT_CARD) {
@@ -341,6 +363,11 @@ public class UserAndCardService {
                 }
                 isDec = true;
             } else {
+                
+                apiResult = accountService.VerifyPassword(cardId, password);
+                if (!apiResult.ok) {
+                    return apiResult;
+                }
                 apiResult = demandDepositService.changeAmount(cardId, amount.negate());
                 if (apiResult.ok == false) {
                     return apiResult;

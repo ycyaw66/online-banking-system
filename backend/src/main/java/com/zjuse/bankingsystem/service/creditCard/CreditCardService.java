@@ -95,7 +95,12 @@ public class CreditCardService {
             return new ApiResult(false, "Wrong password");
         }
         creditCardMapper.setCreditCardLost(cardId);
+        ApiResult apiResult = cardService.registerCard(CardType.CREDIT_CARD);
+        if (!apiResult.ok) return apiResult;
+        Long newCardId = (Long) apiResult.payload;
+        creditCard.setId(newCardId);
         creditCardMapper.insertCreditCard(creditCard);
+        cardService.bindUserAndCard(newCardId, creditCard.getIdNumber());
         return new ApiResult(true, "挂失成功");
     }
 

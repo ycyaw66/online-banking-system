@@ -18,8 +18,6 @@ public class Cashier {
     @JsonIgnore
     private String password;//密码
     private String username;//用户名
-    @JsonIgnore
-    private String salt;//盐
     private int authority;
 
     public Long getId() {return id;}
@@ -28,8 +26,6 @@ public class Cashier {
     public void setPassword(String password) {this.password = password;}
     public String getUsername() {return username;}
     public void setUsername(String username) {this.username = username;}
-    public String getSalt() {return salt;}
-    public void setSalt(String salt) {this.salt = salt;}
     public int getAuthority() {return authority;}
     public void setAuthority(int authority) {this.authority = authority;}
 }

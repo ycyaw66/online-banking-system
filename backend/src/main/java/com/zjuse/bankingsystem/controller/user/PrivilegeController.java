@@ -38,7 +38,7 @@ public class PrivilegeController {
     }
 
     @Data
-    class Receiver {
+    static class Receiver {
         @NonNull
         @JsonProperty("user_id")
         Long userId;

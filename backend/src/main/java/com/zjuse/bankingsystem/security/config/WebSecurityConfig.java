@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -18,6 +19,7 @@ import com.zjuse.bankingsystem.security.security.JwtAuthenticationTokenFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -48,6 +50,12 @@ public class WebSecurityConfig {
                 .requestMatchers("/admin/login").permitAll()
                 // 审查员登陆
                 .requestMatchers("/credit-card/inspector/login").permitAll()
+                // 出纳员登陆
+                .requestMatchers("/counter/cashier/login").permitAll()
+                // 贷款审查员登陆
+                .requestMatchers("/officer/login").permitAll()
+                // 
+                .requestMatchers("/fc/data_operator/start/login", "/fc/data_opertaor/start/register").permitAll()
                 // 跨域的一次 OPTION 预检
                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated()

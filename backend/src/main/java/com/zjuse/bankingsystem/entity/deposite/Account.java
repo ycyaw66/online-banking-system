@@ -26,8 +26,6 @@ public class Account {
     private Long cardId;//绑定的卡的ID
     @JsonIgnore
     private String password;//密码
-    @JsonIgnore
-    private String salt;//盐
     private String citizenid;
 
     public Long getId() {return id;}
@@ -42,8 +40,6 @@ public class Account {
     public void setCardId(Long cardId) {this.cardId = cardId;}
     public String getPassword() {return password;}
     public void setPassword(String password) {this.password = password;}
-    public String getSalt() {return salt;}
-    public void setSalt(String salt) {this.salt = salt;}
     public String getCitizenid() {return citizenid;}
     public void setCitizenid(String citizenid) {this.citizenid = citizenid;}
 }

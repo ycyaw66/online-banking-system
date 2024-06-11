@@ -2,18 +2,17 @@ package com.zjuse.bankingsystem.controller.deposite;
 
 import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.DemandDeposit;
-import com.zjuse.bankingsystem.entity.deposite.Property;
-import com.zjuse.bankingsystem.service.*;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.deposite.DemandDepositService;
-import com.zjuse.bankingsystem.service.deposite.PropertyService;
 import com.zjuse.bankingsystem.service.deposite.StatementService;
 import com.zjuse.bankingsystem.utils.AccountStatus;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 import com.zjuse.bankingsystem.utils.StatementType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -30,10 +29,15 @@ public class DemandDepositController {
     @Autowired
     private CashierService cashierService;
     @Autowired
-    private PropertyService propertyService;
+    private CurrentUserService currentUserService;
 
     @PostMapping("/counter/dp/save")
-    public RespResult saveDemandDeposit(@RequestParam("id") Long card_id, @RequestParam("amount")BigDecimal amount,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult saveDemandDeposit(@RequestParam("id") Long card_id, @RequestParam("amount")BigDecimal amount) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<1){
@@ -60,7 +64,12 @@ public class DemandDepositController {
     }
 
     @PostMapping("/counter/dp/draw")
-    public RespResult drawDemandDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password, @RequestParam("amount")BigDecimal amount,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult drawDemandDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password, @RequestParam("amount")BigDecimal amount) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //System.out.println("loginAdmin where id = '" + id + "' and password = '" + password + "'");
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
@@ -91,7 +100,12 @@ public class DemandDepositController {
     }
 
     @GetMapping("/counter/dp/show")
-    public RespResult showDemandDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult showDemandDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //System.out.println("loginAdmin where id = '" + id + "' and password = '" + password + "'");
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);

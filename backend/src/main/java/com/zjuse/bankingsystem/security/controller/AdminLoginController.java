@@ -10,6 +10,7 @@ import com.zjuse.bankingsystem.security.service.OnlineUserService;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.utils.RespResult;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,5 +67,12 @@ public class AdminLoginController {
         onlineUserService.save(jwtUserDto, token);
 
         return RespResult.success(authInfo);
+    }
+
+    @DeleteMapping("/logout") 
+    public RespResult logout(HttpServletRequest request) {
+        String token = jwtTokenProvider.getTokenFromRequest(request);
+        onlineUserService.logout(token);
+        return RespResult.success();
     }
 }

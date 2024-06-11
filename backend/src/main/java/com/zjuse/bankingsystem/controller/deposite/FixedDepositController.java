@@ -4,6 +4,7 @@ import com.zjuse.bankingsystem.entity.deposite.Account;
 import com.zjuse.bankingsystem.entity.deposite.FixedDeposit;
 import com.zjuse.bankingsystem.entity.deposite.Property;
 import com.zjuse.bankingsystem.entity.deposite.Rate;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 import com.zjuse.bankingsystem.service.*;
 import com.zjuse.bankingsystem.service.deposite.AccountService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
@@ -13,6 +14,7 @@ import com.zjuse.bankingsystem.service.deposite.RateService;
 import com.zjuse.bankingsystem.service.deposite.StatementService;
 import com.zjuse.bankingsystem.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,9 +37,16 @@ public class FixedDepositController {
     private StatementService statementService;
     @Autowired
     private CashierService cashierService;
+    @Autowired
+    private CurrentUserService currentUserService; 
 
     @PostMapping("/counter/fp/save")
-    public RespResult saveFixedDeposit(@RequestParam("id") Long card_id, @RequestParam("amount") BigDecimal amount, @RequestParam("Length") int length, @RequestParam("ifauto") boolean autocontinue,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult saveFixedDeposit(@RequestParam("id") Long card_id, @RequestParam("amount") BigDecimal amount, @RequestParam("Length") int length, @RequestParam("ifauto") boolean autocontinue) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<1){
@@ -90,7 +99,12 @@ public class FixedDepositController {
     }
 
     @PostMapping("/counter/fp/draw")
-    public RespResult drawFixedDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password, @RequestParam("propertyid")Long pid,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult drawFixedDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password, @RequestParam("propertyid")Long pid) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<1){
@@ -124,7 +138,12 @@ public class FixedDepositController {
     }
 
     @PostMapping("/counter/fp/list")
-    public RespResult listFixedDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password,@RequestParam("operatorid")Long operatorid) {
+    @PreAuthorize("@roleCheck.isRole('CASHIER')")
+    public RespResult listFixedDeposit(@RequestParam("id") Long card_id,@RequestParam("password")String password) {
+        ApiResult res = currentUserService.getCurrentCashierId(); 
+        if (!res.ok) 
+            return RespResult.fail(res.message);
+        Long operatorid = (Long) res.payload; 
         //验证权限
         ApiResult verify = cashierService.getAuthority(operatorid);
         if(!verify.ok||(int)verify.payload<1){

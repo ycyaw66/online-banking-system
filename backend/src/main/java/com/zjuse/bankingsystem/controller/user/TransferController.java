@@ -8,6 +8,7 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
 import io.micrometer.common.lang.NonNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -24,7 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TransferController {
 
     @Data
-    class Receiver {
+    @AllArgsConstructor
+    static class Receiver {
         
         @JsonProperty("target_card")
         @NonNull

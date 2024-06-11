@@ -5,7 +5,10 @@ import lombok.Getter;
 public enum LoginType {
     USER("USER"),
     ADMIN("ADMIN"),
-    INSPECTOR("INSPECTOR");
+    INSPECTOR("INSPECTOR"), 
+    CASHIER("CASHIER"), 
+    OFFICER("OFFICER"),
+    OPERATOR("OPERATOR");
 
     @Getter
     private final String role; 

@@ -29,6 +29,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         if (Objects.isNull(userDetails)) {
             throw new AuthenticationCredentialsNotFoundException("username not found");
         }
+        log.info("password: {}, current password: {}", password, userDetails.getPassword()); 
         if (!password.equals(userDetails.getPassword())) {
             throw new BadCredentialsException("Password error"); 
         }
