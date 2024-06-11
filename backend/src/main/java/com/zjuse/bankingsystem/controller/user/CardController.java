@@ -35,7 +35,7 @@ public class CardController {
 
     @Data
     @AllArgsConstructor
-    class Receiver {
+    static class Receiver {
         @JsonProperty("user_id")
         @NonNull
         Long userId;
@@ -65,7 +65,7 @@ public class CardController {
     }
 
     @GetMapping("/balance")
-    public RespResult getBalance(@RequestParam Long cardId,@RequestParam String password) {
+    public RespResult getBalance(@RequestParam("card_id") Long cardId,@RequestParam String password) {
         ApiResult apiResult = userAndCardService.getBalance(cardId, password);
         if (apiResult.ok) {
             return RespResult.success((((BigDecimal)apiResult.payload).toString()));
@@ -77,7 +77,7 @@ public class CardController {
 
     @Data
     @AllArgsConstructor
-    class LossReceiver {
+    static class LossReceiver {
         @JsonProperty("card_id")
         @NonNull
         Long cardId;
@@ -97,7 +97,7 @@ public class CardController {
     }
 
     @PostMapping("/history")
-    public RespResult history(@RequestBody HistoryCondition historyCondition) {
+    public RespResult history(@RequestBody(required=false) HistoryCondition historyCondition) {
         ApiResult apiResult = userAndCardService.history(historyCondition);
         if (apiResult.ok) {
             return RespResult.success((List<History>)apiResult.payload);
@@ -109,7 +109,7 @@ public class CardController {
 
     @Data
     @AllArgsConstructor
-    class ValidReceiver {
+    static class ValidReceiver {
         @JsonProperty("card_id")
         @NonNull
         Long cardId;

@@ -151,6 +151,15 @@ public class UserAndCardService {
     public ApiResult history(HistoryCondition condition) {
         try {
             QueryWrapper<History> wrapper = new QueryWrapper<>();
+            if (condition == null) {
+                List<History> list = historyMapper.selectList(wrapper);
+                if (list == null) {
+                    return new ApiResult(false, "database error");
+                }
+                ApiResult apiResult = new ApiResult(true, "success");
+                apiResult.payload = list;
+                return apiResult;
+            }
             // QueryWrapper<History> idWrapper = new QueryWrapper<>();
             if (condition.getCardId() == null) {
                 return new ApiResult(false, "card id can't be null");

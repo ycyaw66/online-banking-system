@@ -3,6 +3,7 @@ package com.zjuse.bankingsystem.entity.user;
 import java.math.BigDecimal;
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.micrometer.common.lang.NonNull;
@@ -24,5 +25,6 @@ public class HistoryCondition {
     Date startTime;
     @JsonProperty("end_time")
     Date endTime;
+    @JsonProperty("remark")
     String remark;
 }

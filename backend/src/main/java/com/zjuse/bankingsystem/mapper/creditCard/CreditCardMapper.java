@@ -29,7 +29,7 @@ public interface CreditCardMapper extends BaseMapper<CreditCard>{
     @Update("update credit_card set is_lost = 1 where id = #{card_id}")
     public void setCreditCardLost(Long card_id);
 
-    @Update("insert into credit_card (id, id_number, password, card_limit, loan, is_lost) VALUES (#{id},  #{idNumber}, #{password}, #{cardLimit}, #{loan}, 0)")
+    @Update("insert into credit_card (id, id_number, password, card_limit, loan, is_lost) VALUES (#{id}, #{idNumber}, #{password}, #{cardLimit}, #{loan}, 0)")
     public void insertCreditCard(CreditCard creditCard);
 
     @Update("delete from credit_card where id = #{card_id}")

@@ -101,7 +101,7 @@ public class UserLoginController {
     public RespResult postUserRegister(@RequestBody UserRegisterReq req) {
         ApiResult apiResult = emailValidService.validCode(req.getUuid(), req.getEmail(), req.getVerificationCode());
         if (!apiResult.ok) {
-            return RespResult.fail(apiResult.message);
+            return RespResult.fail("验证码错误");
         }
 
         User user = new User(null, req.getUsername(), req.getPassword(), 
