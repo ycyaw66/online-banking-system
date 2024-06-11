@@ -172,12 +172,12 @@ export default {
         case "officer": 
           try {
               console.log('Sending login request with data:', this.loginForm);
-              const response = await this.$axios.post('/officer/login', {
+              const response = await axios.post('/officer/login', {
                 username: this.loginForm.username,
                 password: encrypted
               });
               console.log('Login response:', response.data);
-              if (response.data.message === "登录成功") {
+              if (response.data.code === 0) {
                 const token = response.data.token;
                 localStorage.setItem('token', token);
                 Cookies.set('token',token);
