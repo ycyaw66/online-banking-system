@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-main style="background-color: #f1f1f1;">
+    <el-main style="background-color: white;">
       <br>
       <br>
       <div style="display: flex; justify-content: center;">
