@@ -171,6 +171,17 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+
 export default {
   data() {
     return {
@@ -214,13 +225,13 @@ export default {
         }
       }
 
-      axios.post("/fp/counter/fp/save",null,{
+      axiosInstance.post("/fp/counter/fp/save",null,{
         params:{
           id: this.id,
           amount: this.amount,
           Length: this.Length,
-          ifauto: this.ifauto,
-          operatorid: Cookies.get('operatorid')
+          isauto: this.ifauto,
+          // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
         if(response.data.code === 1){

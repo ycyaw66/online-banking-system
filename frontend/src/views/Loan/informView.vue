@@ -1,133 +1,122 @@
 <template>
-  <div class="repayment-reminder-page">
-    <el-form :model="reminderSettings" label-width="120px" class="reminder-form">
-      <el-form-item label="选择提醒时间">
-        <el-select v-model="reminderSettings.timeBefore" placeholder="请选择提醒时间">
-          <el-option label="1天" value="1_day"></el-option>
-          <el-option label="1周" value="1_week"></el-option>
-          <el-option label="1个月" value="1_month"></el-option>
-          <el-option label="2个月" value="2_months"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="saveSettings">保存设置</el-button>
-      </el-form-item>
-    </el-form>
-    <el-dialog v-model="reminderDialogVisible" title="还款提醒" width="400px">
-      <p>您的贷款ID: {{ upcomingLoanId }} 将于 {{ upcomingLoanDate }} 到期，请及时归还。</p>
-      <template v-slot:footer>
-    <span class="dialog-footer">
-        <el-button @click="reminderDialogVisible = false" type="primary">关闭</el-button>
-    </span>
-      </template>
-    </el-dialog>
+  <div class="page-container">
+    <div class="reminder-form">
+      <el-form ref="reminderForm" :model="reminderData" label-position="top">
+        <el-form-item label="提醒时间">
+          <el-select v-model="reminderData.time" placeholder="请选择提醒时间">
+            <el-option label="一天" value="1"></el-option>
+            <el-option label="一周" value="7"></el-option>
+            <el-option label="一月" value="30"></el-option>
+            <el-option label="两月" value="60"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="saveReminder">保存设置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="loan-history-table">
+      <el-table :data="loanHistoryList" border style="width: 100%">
+        <el-table-column prop="loan_id" label="贷款ID"></el-table-column>
+        <el-table-column prop="card_id" label="银行卡号"></el-table-column>
+        <el-table-column prop="amount" label="贷款金额"></el-table-column>
+        <el-table-column prop="rate" label="利率"></el-table-column>
+        <el-table-column prop="term" label="贷款期限"></el-table-column>
+        <el-table-column prop="status" label="贷款状态"></el-table-column>
+        <el-table-column prop="date_applied" label="申请日期"></el-table-column>
+        <el-table-column prop="date_approved" label="批准日期"></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
 <script>
-import {ref, onMounted} from 'vue';
-import {ElForm, ElFormItem, ElButton, ElSelect, ElOption, ElDialog, ElMessage} from 'element-plus';
-import axios from 'axios';
+
+import axios from "axios";
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
-  components: {
-    ElForm, ElFormItem, ElButton, ElSelect, ElOption, ElDialog
-  },
-  setup() {
-    const reminderSettings = ref({
-      timeBefore: '1_day'
-    });
-
-    const reminderDialogVisible = ref(false);
-    const upcomingLoanId = ref('');
-    const upcomingLoanDate = ref('');
-
-    const saveSettings = async () => {
-      try {
-        // Convert reminder time string to days
-        let timeBeforeInDays = 1; // Default value
-        switch (reminderSettings.value.timeBefore) {
-          case '1_day':
-            timeBeforeInDays = 1;
-            break;
-          case '1_week':
-            timeBeforeInDays = 7;
-            break;
-          case '1_month':
-            timeBeforeInDays = 30;
-            break;
-          case '2_months':
-            timeBeforeInDays = 60;
-            break;
-          default:
-            timeBeforeInDays = 1;
-        }
-
-        // Send the converted days to the backend
-        await axios.post('/save-reminder', {timeBefore: timeBeforeInDays});
-
-        // Check reminders after saving settings
-        checkReminders();
-      } catch (error) {
-        console.error('保存设置时发生错误:', error);
-        ElMessage.error('保存设置失败。');
-      }
-    };
-
-    const checkReminders = async () => {
-      try {
-        const response = await axios.get('/get-reminder');
-        const reminderTime = response.data.reminderTime;
-        const loans = response.data.loans;
-        const now = new Date();
-
-        for (const loan of loans) {
-          const dueDate = new Date(loan.due_date);
-          const reminderDate = new Date(dueDate);
-          reminderDate.setDate(dueDate.getDate() - reminderTime);
-
-          if (now >= reminderDate && now <= dueDate) {
-            upcomingLoanId.value = loan.loan_id;
-            upcomingLoanDate.value = loan.due_date;
-            reminderDialogVisible.value = true;
-            break;
-          }
-        }
-      } catch (error) {
-        console.error('检查提醒时发生错误:', error);
-        ElMessage.error('检查提醒失败。');
-      }
-    };
-
-    onMounted(() => {
-      checkReminders();
-    });
-
+  data() {
     return {
-      reminderSettings,
-      reminderDialogVisible,
-      upcomingLoanId,
-      upcomingLoanDate,
-      saveSettings
+      reminderData: {
+        time: ''
+      },
+      loanHistoryList: [] // 贷款历史记录列表
     };
+  },
+  methods: {
+    saveReminder() {
+      if (!this.reminderData.time) {
+        this.$message.error('请选择提醒时间');
+        return;
+      }
+
+      axiosInstance.post('/save-reminder', this.reminderData)
+          .then(response => {
+            if(response.data.code === 0){
+              this.$message.success('提醒设置已保存');
+              this.queryLoanHistory(this.reminderData.time);
+            }
+          })
+          .catch(error => {
+            console.error('保存提醒设置失败:', error);
+            this.$message.error('保存提醒设置失败');
+          });
+    },
+    queryLoanHistory(time) {
+      axiosInstance.get(`/loanget-reminder?time=${time}`)
+          .then(response => {
+            this.loanHistoryList = response.data;
+          })
+          .catch(error => {
+            console.error('查询贷款历史失败:', error);
+          });
+    },
+    getReminder() {
+      axiosInstance.get('/timeget-reminder')
+          .then(response => {
+            this.reminderData.time = response.data;
+            this.queryLoanHistory(this.reminderData.time);
+          })
+          .catch(error => {
+            console.error('获取提醒时间失败:', error);
+          });
+    }
+  },
+  mounted() {
+    // 页面加载时获取提醒设置并查询贷款历史记录
+    this.getReminder();
   }
 };
 </script>
 <style scoped>
-.repayment-reminder-page {
+.page-container {
+  max-width: 800px;
+  margin: 20px auto;
   padding: 20px;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow-y: auto; /* 增加纵向滚动 */
+  max-height: 100vh; /* 设置最大高度 */
 }
 
 .reminder-form {
-  width: 300px;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.dialog-footer {
-  text-align: right;
+.loan-history-table {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 50px; /* 添加空白区域 */
 }
 </style>

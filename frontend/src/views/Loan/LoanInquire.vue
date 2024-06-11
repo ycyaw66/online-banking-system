@@ -41,6 +41,18 @@
 import { ref } from 'vue';
 import { ElTable, ElTableColumn, ElForm, ElFormItem, ElInput, ElButton, ElMessage } from 'element-plus';
 import axios from 'axios';
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   components: {
@@ -67,7 +79,7 @@ export default {
 
     const searchLoans = async () => {
       try {
-        const formResponse = await axios.get(`/search-forms/${searchForm.value.id_number}`, {
+        const formResponse = await axiosInstance.get(`/search-forms/${searchForm.value.id_number}`, {
           params: {
             page: currentPage.value,
             pageSize: pageSize.value
@@ -78,7 +90,7 @@ export default {
         // 使用 map 将每个贷款的请求封装成 Promise
         const loanPromises = formsData.map(async loan => {
           try {
-            const loanResponse = await axios.get(`/search-loans/${loan.form_id}`);
+            const loanResponse = await axiosInstance.get(`/search-loans/${loan.form_id}`);
             return {
               ...loan,
               ...loanResponse.data

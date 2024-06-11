@@ -61,6 +61,8 @@
 
 import axios from "axios";
 import {HomeFilled} from "@element-plus/icons-vue";
+import CryptoJS from "crypto-js";
+import Cookies from "js-cookie";
 
 axios.defaults.baseURL = "http://localhost:8082";
 
@@ -86,11 +88,9 @@ export default {
         return;
       }
 
-      axios.post("/fc/admin/login", null, {
-        params: {
+      axios.post("/admin/login", {
           name: this.admin.name,
-          password: this.admin.password
-        }
+          password: CryptoJS.SHA256(this.admin.password).toString()
       }).then(response => {
         if (response.data.code === 1) {
           this.$message.error(response.data.err);
@@ -98,8 +98,8 @@ export default {
         } else {
           // 登录成功
           this.$message.success("登录成功");
+          Cookies.set('token',response.data.payload.token);
           this.$router.push('/fc/admin/home');
-
         }
       }).catch(error => {
         console.error('login error:', error);

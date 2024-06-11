@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-main style="background-color: #f1f1f1;">
+    <el-main style="background-color: white;">
       <br>
       <br>
       <div style="display: flex; justify-content: center;">
@@ -125,6 +125,19 @@
 <script>
 
 import axios from "axios";
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -183,11 +196,11 @@ export default {
       }
       //this.$message.success('修改id为' + this.modify_password.id + '的审查员密码成功，新密码为' + this.modify_password.new_password);
       this.modify_password_visible = false;
-      axios.post("/counter/cashier/modify", null, {
+      axiosInstance.post("/counter/cashier/modify", null, {
         params: {
-          id: this.modify_password.id,
-          newpassword: this.modify_password.new_password,
-          oldpassword: this.modify_password.old_password
+          // id: this.modify_password.id,
+          newpassword: CryptoJS.SHA256(this.modify_password.new_password).toString(),
+          oldpassword: CryptoJS.SHA256(this.modify_password.old_password).toString()
         }
       }).then(response => {
         if (response.data.code === 1) {
@@ -204,7 +217,7 @@ export default {
         this.$message.error('选择不能为空');
         return;
       }
-      axios.post("/admin/counter/admin/cashier/authority", null, {
+      axiosInstance.post("/admin/counter/admin/cashier/authority", null, {
         params: {
           id: this.modify_level.id,
           authority: this.modify_level.new_level
@@ -242,9 +255,9 @@ export default {
       //this.$message.success('创建成功，账号名为' + this.new_inspector.name + '；密码为：' + this.new_inspector.password + '；权限等级为:' + this.new_inspector.level)
       this.add_cashier_visible = false;
 
-      axios.post("/admin/counter/admin/cashier/add", null, {
+      axiosInstance.post("/admin/counter/admin/cashier/add", null, {
         params: {
-          password: this.new_cashier.password,
+          password: CryptoJS.SHA256(this.new_cashier.password).toString(),
           username: this.new_cashier.name,
           authority: this.new_cashier.authority
         }
@@ -258,7 +271,7 @@ export default {
       });
     },
     deleteCashier() {
-      axios.delete("/admin/counter/admin/cashier/delete", {
+      axiosInstance.delete("/admin/counter/admin/cashier/delete", {
         params: {
           id: this.delete_cashier_id
         }
@@ -273,7 +286,7 @@ export default {
       this.delete_cashier_visible = false;
     },
     queryCashier() {
-      axios.get("/admin/counter/admin/cashier").then(response => {
+      axiosInstance.get("/admin/counter/admin/cashier").then(response => {
         this.cashiers = [];
         let cashiers_ = response.data.payload;
         cashiers_.forEach(cashier => {

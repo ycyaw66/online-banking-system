@@ -34,7 +34,7 @@
               <br>
               <div>
                 <span>账号：</span>
-                <el-input v-model="cashier.id" style="width: 250px" placeholder="请输入出纳员id"/>
+                <el-input v-model="cashier.name" style="width: 250px" placeholder="请输入出纳员用户名"/>
               </div>
               <br>
               <div>
@@ -60,12 +60,13 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
 export default {
   data() {
     return {
       cashier: {
-        id: '',
+        name: '',
         password: ''
       }
     }
@@ -87,15 +88,16 @@ export default {
 
       axios.post("/counter/cashier/login",null,{
         params:{
-          id:this.cashier.id,
-          password:hashedPassword
+          username:this.cashier.name,
+          password:CryptoJS.SHA256(hashedPassword).toString()
         }
       }).then(response =>{
         if(response.data.code === 1){
           this.$message.error(response.data.err);
           return;
         }else{
-          Cookies.set('operatorid',this.cashier.id);
+          // Cookies.set('operatorid',this.cashier.id);
+          Cookies.set('token',response.data.payload.token);
           this.$message.success('出纳员登录成功');
           this.$router.push('/counter/cashier/openAccount');
         }

@@ -67,11 +67,22 @@
   </template>
   
   <script>
-  //import CryptoJS from 'crypto-js';
+  import CryptoJS from 'crypto-js';
   import axios from 'axios';
   import { ElMessage } from 'element-plus';
   import store from '@/store';
-  //import Cookies from 'js-cookie';
+  import Cookies from 'js-cookie';
+
+  const axiosInstance = axios.create();
+  axiosInstance.interceptors.request.use(config => {
+    const token = Cookies.get('token');
+    if (token) {
+      config.headers.Authorization = token;
+    }
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
   
   export default {
     data() {
@@ -153,13 +164,13 @@
             "new_password": encryptedNew
           })
         //axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-        axios.put("/fc/data_operator/update_info",
+        axiosInstance.put("/fc/data_operator/update_info",
           {
-            "data_operator_id": store.state.person.id,
-            "password": encryptedOld,
-            "phone_number": this.modifyForm.phone_number,
-            "email": this.modifyForm.email,
-            "new_password": encryptedNew
+            data_operator_id: store.state.person.id,
+            password: CryptoJS.SHA256(encryptedOld).toString(),
+            phone_number: this.modifyForm.phone_number,
+            email: this.modifyForm.email,
+            new_password: CryptoJS.SHA256(encryptedNew).toString()
           }
         )
         .then(response => {
@@ -179,7 +190,7 @@
       },
       async queryInfo() {
         //axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-        await axios.get("/fc/data_operator/account/"+store.state.person.id)
+        await axiosInstance.get("/fc/data_operator/account/"+Cookies.get('storePersonId'))
           .then(response => {
             if (response.data.code === 0) {
                 console.log(response.data.payload)
@@ -205,7 +216,7 @@
       }
     },
     mounted() {
-      console.log(store.state.person)
+      console.log(Cookies.get('storePersonId') + Cookies.get('storePersonName'));
       this.queryInfo();
     }
   }

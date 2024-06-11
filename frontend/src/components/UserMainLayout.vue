@@ -6,7 +6,7 @@
           <div style="margin-top: 12px; display: inline-block;">
             <img src="./icons/logo.png"
                  style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-            <span style="font-size: large; font-family: 'Microsoft YaHei';
+            <span style="font-size: large; font-family: 'Microsoft YaHei',serif;
                   color: black; font-weight: bold;">贷款模块</span>
             <span style="margin-left: 40px; color:rgba(0, 0, 0, 0.2)">在线银行系统/用户贷款系统</span>
           </div>
@@ -49,8 +49,11 @@
                 </el-icon>
                 <span>设置提醒还款</span>
               </el-menu-item>
-
+              <el-button class="logout-button" type="danger" @click="logoutVisible = true" style="margin-left: 30px;">
+                退出贷款系统
+              </el-button>
             </el-menu>
+
           </el-aside>
 
           <el-main style="height: 100%; width: 100%; ">
@@ -63,6 +66,16 @@
         </el-container>
       </el-container>
     </div>
+
+    <el-dialog title="提示" v-model="logoutVisible" width="30%" align-center>
+      确认退出贷款系统？
+      <template #footer>
+          <span>
+            <el-button @click="logoutVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleLogout">确定</el-button>
+          </span>
+      </template>
+    </el-dialog>
   </div>
 
 
@@ -70,7 +83,19 @@
 
 <script>
 
-export default {}
+export default {
+  data() {
+    return {
+      logoutVisible: false,
+    }
+  },
+  methods: {
+    handleLogout() {
+      this.$router.push('/personalBank/user/profile');
+    }
+  }
+};
+
 </script>
 
 <style scoped>
@@ -110,7 +135,7 @@ export default {}
 .aside {
   min-height: calc(100vh - 60px);
   width: 200px; /* 调整宽度 */
-  background-color: #2c3e50; /* 深蓝色背景 */
+  background-color: #0270c1; /* 深蓝色背景 */
   color: white; /* 文本颜色为白色 */
   border-right: 1px solid #bdc3c7; /* 添加右侧边框 */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 添加阴影 */

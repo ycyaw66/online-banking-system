@@ -17,62 +17,65 @@
   </div>
 </template>
 <script>
-  import { ElForm, ElFormItem, ElInput, ElButton, ElMessage } from 'element-plus';
+import {ElForm, ElFormItem, ElInput, ElButton, ElMessage} from 'element-plus';
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
-  export default {
-    components: {
-      ElForm, ElFormItem, ElInput, ElButton
-    },
-    data() {
-      return {
-        loginForm: {
-          username: '',
-          password: ''
-        },
-        rules: {
-          username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }
-          ],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'blur' }
-          ]
-        }
-      };
-    },
-    methods: {
-      async onSubmit() {
-        this.$refs.loginForm.validate(async (valid) => {
-          if (valid) {
-            try {
-              console.log('Sending login request with data:', this.loginForm);
-              const response = await this.$axios.post('/managerlogin', {
-                username: this.loginForm.username,
-                password: this.loginForm.password
-              });
-              console.log('Login response:', response.data);
-              if (response.data.message === "登录成功") {
-                const token = response.data.token;
-                localStorage.setItem('token', token);
-                console.log(localStorage.getItem('token'));
-
-                console.log('登录成功');
-                this.$router.push('/manager-main'); // 跳转到主页面
-              } else {
-                ElMessage.error(response.data.message);
-              }
-            } catch (error) {
-              console.error('登录失败', error);
-              ElMessage.error('登录失败，网络错误');
-            }
-          } else {
-            console.log('登录表单验证失败');
-            ElMessage.error('请完整填写表单');
-            return false;
-          }
-        });
+export default {
+  components: {
+    ElForm, ElFormItem, ElInput, ElButton
+  },
+  data() {
+    return {
+      loginForm: {
+        username: '',
+        password: ''
+      },
+      rules: {
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'}
+        ]
       }
+    };
+  },
+  methods: {
+    async onSubmit() {
+      this.$refs.loginForm.validate(async (valid) => {
+        if (valid) {
+          try {
+            console.log('Sending login request with data:', this.loginForm);
+            const response = await this.$axios.post('/admin/login', {
+              username: this.loginForm.username,
+              password: CryptoJS.SHA256(this.loginForm.password).toString()
+            });
+            console.log('Login response:', response.data);
+            if (response.data.message === "登录成功") {
+              const token = response.data.token;
+              localStorage.setItem('token', token);
+              Cookies.set('token', token);
+              console.log(localStorage.getItem('token'));
+
+              console.log('登录成功');
+              this.$router.push('/manager-main'); // 跳转到主页面
+            } else {
+              ElMessage.error(response.data.message);
+            }
+          } catch (error) {
+            console.error('登录失败', error);
+            ElMessage.error('登录失败，网络错误');
+          }
+        } else {
+          console.log('登录表单验证失败');
+          ElMessage.error('请完整填写表单');
+          return false;
+        }
+      });
     }
-  };
+  }
+};
 </script>
 
 <style scoped>

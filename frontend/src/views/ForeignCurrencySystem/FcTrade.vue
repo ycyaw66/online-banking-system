@@ -45,8 +45,19 @@
 
 <script>
 import {ElMessage} from 'element-plus';
-
 import axios from 'axios';
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 axios.defaults.baseURL = 'http://localhost:8082';
 
@@ -82,7 +93,7 @@ export default {
     mapping() {
       var rate
       this.fcTypes.forEach(fcType => {
-        if (fcType.fc_id == this.selectedFcType) {
+        if (fcType.fc_id === this.selectedFcType) {
           rate = fcType.fc_rate
         }
       })
@@ -98,7 +109,7 @@ export default {
           ElMessage.error('交易失败：请输入有效的金额')
         } else {
           // 向后端发送交易请求，执行交易逻辑
-          axios.post('/fc/trade/execute', {
+          axiosInstance.post('/fc/trade/execute', {
             trade_id: null,
             user_id: this.getuserId(),
             credit_card_id: this.accountId,
@@ -109,7 +120,7 @@ export default {
           })
               .then(response => {
                 // 处理后端返回的交易结果
-                if (response.data.code == 0) {
+                if (response.data.code === 0) {
                   ElMessage.success('交易成功');
                 }
               })
@@ -130,12 +141,12 @@ export default {
     },
     Query() {
       this.fcTypes = []
-      axios.get('/fc/currency/all') // 向/book发出GET请求
+      axiosInstance.get('/fc/currency/all') // 向/book发出GET请求
           .then(response => {
-            if (response.data.code == 0) {
+            if (response.data.code === 0) {
               let currencys = response.data.payload // 接收响应负载
               currencys.forEach(fc => { // 对于每个图书
-                if (fc.fc_rate == 0)
+                if (fc.fc_rate === 0)
                   fc.fc_rate = null
                 this.fcTypes.push({fc_id: fc.fc_id, fc_name: fc.fc_name, fc_rate: fc.fc_rate})
               })

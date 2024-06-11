@@ -157,6 +157,18 @@
 
 import axios from "axios";
 import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   data() {
@@ -196,13 +208,13 @@ export default {
           this.$message.error('金额小数部分最多两位');
         }
       }
-      axios.post("/transfer/counter/transfer",null,{
+      axiosInstance.post("/transfer/counter/transfer",null,{
         params:{
           id: this.account_id,
-          password: this.password,
+          password: CryptoJS.SHA256(this.password).toString(),
           toid: this.target_account_id,
           amount: this.money,
-          operatorid: Cookies.get('operatorid')
+          // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
         if(response.data.code === 1){

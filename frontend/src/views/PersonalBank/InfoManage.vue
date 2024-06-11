@@ -103,25 +103,8 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="PassVisible = false">取消</el-button>
-          <el-button type="primary" @click="getBalance(Row)"
+          <el-button type="primary" @click="getBalance()"
           :disabled="PasswordCheck.Password.length === 0">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
-
-    <el-dialog v-model="PassError" title="支付密码错误" width="30%">
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button type="primary" @click="PasswordError">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
-
-    <el-dialog v-model="LossVisible" title="确认挂失" width="30%">
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="LossVisible = false">取消</el-button>
-          <el-button type="primary" @click="ConfirmLoss">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -274,14 +257,16 @@ export default {
       try {
         const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
         axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-        let response = await axios.get("/card/balance", 
+        console.log(this.PasswordCheck.account_number); 
+        let response = await axios.get("/card/balance", { params:
           {
             "card_id": Number(this.PasswordCheck.account_number),
             "password": encrypted
-          });
-        this.PasswordCheck.Row.balance = parseFloat(response.data.balance).toFixed(2),
+          }});
+        this.PasswordCheck.Row.balance = parseFloat(response.data['payload']).toFixed(2),
         this.PassVisible = false,
         this.PasswordCheck.Row.showBalance = true
+        this.PasswordCheck.Password = ""
       } catch (error) {
         console.log(error);
       }
@@ -291,7 +276,7 @@ export default {
     },
     TransactionDetail() {
       this.$router.push({
-        path: '/personalBank/transfer',
+        path: '/personalBank/user/transfer',
         query: { account_number: this.PasswordCheck.account_number }
       });
     },
@@ -308,7 +293,7 @@ export default {
     Password_Check(){
       const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.post("/password/check", 
+      axios.post("/card/valid", 
         {
           "card_id": Number(this.PasswordCheck.account_number),
           "password": encrypted
@@ -320,11 +305,12 @@ export default {
               this.TransactionDetail();
             }
             if (this.PasswordCheck.op == '2') {
-              this.LossVisible = true;
+              this.ConfirmLoss();
             }
           }
           else {
-            this.PassError = true;
+            ElMessage.error(response.data.err);
+            return ;
           }
         })
         .catch(error => {
@@ -338,7 +324,7 @@ export default {
     async ConfirmTransfer(){ 
       const encrypted = CryptoJS.SHA256(this.Trans.password).toString();
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.post("/option/transfer",
+      axios.post("/transfer",
         {
           "target_card": Number(this.Trans.toaccount),
           "card_id": Number(this.Trans.fromaccount),
@@ -373,15 +359,18 @@ export default {
       this.PasswordVisible = true
     },
     async ConfirmLoss() { 
+      const encrypted = CryptoJS.SHA256(this.PasswordCheck.Password).toString();
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.post("/card/loss",
         {
-          "card_id": Number(this.Loss_account_number)
+          "card_id": Number(this.Loss_account_number),
+          "password": encrypted
         })
         .then(response => {
           if (response.data.code == 0) {
             ElMessage.success("挂失成功");
             this.LossVisible = false;
+            this.QueryAccount(); 
           } else {
             ElMessage.error(response.data.err);
             return;

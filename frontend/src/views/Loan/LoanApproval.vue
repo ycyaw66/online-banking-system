@@ -144,6 +144,18 @@ import {
   ElMessage
 } from 'element-plus';
 import axios from 'axios';
+import Cookies from "js-cookie";
+
+const axiosInstance = axios.create();
+axiosInstance.interceptors.request.use(config => {
+  const token = Cookies.get('token');
+  if (token) {
+    config.headers.Authorization = token;
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
 
 export default {
   components: {
@@ -175,12 +187,13 @@ export default {
 
     const fetchLoans = async () => {
       try {
-        const loanResponse = await axios.get('/get-loans', {
+        const loanResponse = await axiosInstance.get('/get-loans', {
           params: {
             page: currentPage.value,
             pageSize: pageSize.value
           }
         });
+        console.log(loanResponse);
 
         const loansData = loanResponse.data.records;
 
@@ -192,7 +205,7 @@ export default {
         // 创建所有表单请求的promise数组
         const formPromises = loansData.map(async loan => {
           try {
-            const formResponse = await axios.get(`/get-forms/${loan.form_id}`);
+            const formResponse = await axiosInstance.get(`/get-forms/${loan.form_id}`);
             return {
               ...loan,
               ...formResponse.data
@@ -231,7 +244,7 @@ export default {
 
     const approveLoan = async () => {
       try {
-        await axios.put(`/approve-loan/${selectedLoan.value.loan_id}`);
+        await axiosInstance.put(`/approve-loan/${selectedLoan.value.loan_id}`);
         fetchLoans();
         ElMessage.success('贷款申请已同意。');
         approvalDialogVisible.value = false;
@@ -243,7 +256,7 @@ export default {
 
     const rejectLoan = async () => {
       try {
-        await axios.put(`/reject-loan/${selectedLoan.value.loan_id}`);
+        await axiosInstance.put(`/reject-loan/${selectedLoan.value.loan_id}`);
         fetchLoans();
         ElMessage.success('贷款申请已拒绝。');
         approvalDialogVisible.value = false;
@@ -255,7 +268,7 @@ export default {
 
     const viewCreditReport = async (loan) => {
       try {
-        const creditResponse = await axios.get(`/get-credit/${loan.form_id}`);
+        const creditResponse = await axiosInstance.get(`/get-credit/${loan.form_id}`);
         selectedCredit.value = creditResponse.data;
         creditDialogVisible.value = true;
       } catch (error) {

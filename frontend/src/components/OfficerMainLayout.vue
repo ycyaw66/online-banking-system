@@ -41,6 +41,12 @@
                 </el-icon>
                 <span>修改密码</span>
               </el-menu-item>
+
+              <el-button type="danger"
+                         @click="exit"
+                         style="display: block; margin: auto;">
+                退出登录
+              </el-button>
              
             </el-menu>
           </el-aside>
@@ -58,10 +64,17 @@
 
 <script>
 import { RouterView } from 'vue-router';
+import Cookies from "js-cookie";
 
 export default {
   components: {
     RouterView
+  },
+  methods:{
+    exit() {
+      Cookies.remove('token');
+      this.$router.push('/personalBank/admin/login');
+    }
   }
 };
 </script>
@@ -101,7 +114,7 @@ export default {
 .aside {
   min-height: calc(100vh - 60px);
   width: 200px; /* 调整宽度 */
-  background-color: #520303; /* 深蓝色背景 */
+  background-color: #0270c1; /* 深蓝色背景 */
   color: white; /* 文本颜色为白色 */
   border-right: 1px solid #bdc3c7; /* 添加右侧边框 */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 添加阴影 */
