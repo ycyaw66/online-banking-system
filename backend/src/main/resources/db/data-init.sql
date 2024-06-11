@@ -65,34 +65,34 @@ INSERT INTO `card` (card_id, card_type) VALUES
 -- end of card
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(2, 1);
+(1, 2);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(3, 1);
+(1, 3);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(4, 2);
+(2, 4);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(5, 2);
+(2, 5);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(6, 3);
+(3, 6);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(7, 3);
+(3, 7);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(8, 4);
+(4, 8);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(9, 4);
+(4, 9);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(10, 5);
+(5, 10);
 
 INSERT INTO `cardofperson` (user_id, card_id) VALUES
-(11, 5);
+(5, 11);
 
 --end of cardofperson
 
@@ -134,34 +134,34 @@ insert into `cashier`(username, password, authority)values
 -- 储蓄账号
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(1,'testAccount1','12967777593',134015851838831650,1000000000000000,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(1,'testAccount1','12967777593','134015851838831650',1000000000000000,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(2,'testAccount2','12967777594',134015851838831651,1000000000000001,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(2,'testAccount2','12967777594','134015851838831651',1000000000000001,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(3,'testAccount3','12967777595',134015851838831652,1000000000000002,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(3,'testAccount3','12967777595','134015851838831652',1000000000000002,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(4,'testAccount4','12967777596',134015851838831653,1000000000000003,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(4,'testAccount4','12967777596','134015851838831653',1000000000000003,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `account`(id,name, phonenumber, citizenid ,card_id, password) values
-(5,'testAccount5','12967777597',134015851838831654,1000000000000004,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
+(5,'testAccount5','12967777597','134015851838831654',1000000000000004,'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92');
 
 insert into `deposite_card`(id, type, accountid)values
 (1000000000000000, 1, 1);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000000, 2, 2);
+(1000000000000001, 2, 2);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000000, 1, 3);
+(1000000000000002, 1, 3);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000000, 2, 4);
+(1000000000000003, 2, 4);
 
 insert into `deposite_card`(id, type, accountid)values
-(1000000000000000, 1, 5);
+(1000000000000004, 1, 5);
 
 
 Insert into `rate`values
