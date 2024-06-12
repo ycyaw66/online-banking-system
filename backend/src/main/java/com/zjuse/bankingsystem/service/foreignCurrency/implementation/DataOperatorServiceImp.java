@@ -12,9 +12,6 @@ import com.zjuse.bankingsystem.model.DataOperatorInfo;
 import com.zjuse.bankingsystem.model.UpdateInfo;
 import com.zjuse.bankingsystem.service.foreignCurrency.DataOperatorService;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class DataOperatorServiceImp implements DataOperatorService {
 
@@ -118,7 +115,7 @@ public class DataOperatorServiceImp implements DataOperatorService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateInfomation(UpdateInfo updateInfo) throws Exception {
-        DataOperator dto = dataOperatorMapper.selectDataOperatorById(updateInfo.data_operator_id);
+        DataOperator dto = dataOperatorMapper.selectDataOperatorByUsername(updateInfo.data_operator_id);
         if(dto.getPassword().equals(updateInfo.password)){
             dto.setEmail(updateInfo.email);
             dto.setPhone_number(updateInfo.phone_number);
