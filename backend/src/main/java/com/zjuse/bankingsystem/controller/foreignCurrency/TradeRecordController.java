@@ -1,7 +1,9 @@
 package com.zjuse.bankingsystem.controller.foreignCurrency;
 
 import com.zjuse.bankingsystem.entity.foreignCurrency.TradeRecord;
+import com.zjuse.bankingsystem.utils.RespResult;
 import com.zjuse.bankingsystem.service.foreignCurrency.TradeRecordService;
+import com.zjuse.bankingsystem.security.service.CurrentUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,22 +17,28 @@ import java.util.Map;
 public class TradeRecordController {
 
     @Autowired
-    private final TradeRecordService tradeRecordService;
+    private TradeRecordService tradeRecordService;
 
-    public TradeRecordController(TradeRecordService tradeRecordService) {
-        this.tradeRecordService = tradeRecordService;
-    }
+    @Autowired
+    private CurrentUserService currentUserService;
 
-    @GetMapping("/{userId}")
-    public List<TradeRecord> getTradeRecordsByUserId(@PathVariable String userId) {
+    @GetMapping("/query")
+    public RespResult getTradeRecordsByUserId() {
         // 调用Service层方法获取所有交易记录
         // 返回交易记录列表给前端
-        return tradeRecordService.getTradeRecordsByUserId(userId);
+        String userId = currentUserService.getCurrentUserId().toString();
+        List<TradeRecord> tradeRecords = tradeRecordService.getTradeRecordsByUserId(userId);
+        if(tradeRecords.isEmpty())
+            return RespResult.fail("No trade record");
+        return RespResult.success(tradeRecords);
     }
 
     @PostMapping("/search")
-    public List<TradeRecord> searchTradeRecords(@RequestBody Map<String, Object> params) {
-        return tradeRecordService.searchTradeRecords(params);
+    public RespResult searchTradeRecords(@RequestBody Map<String, Object> params) {
+        List<TradeRecord> trade = tradeRecordService.searchTradeRecords(params);
+        if(trade.isEmpty())
+            return RespResult.fail("No trade record");
+        return RespResult.success(trade);
     }
 }
 

@@ -24,7 +24,7 @@ public class Operation{
         double old_rate = opid == 0 ? 0 : currencyManagerService.getCurrencyRate(fc_name, dest_date);
         double new_rate = this.rate;
         LocalDateTime operation_time = LocalDateTime.now();
-        LocalDateTime dest_date = this.dest_date;
+        LocalDateTime dest_date = opid == 0 ? operation_time: this.dest_date;
         return new HistoryOperationRecord(record_id, data_operator_id, fc_id, operation, old_rate, new_rate, dest_date, operation_time);
     }
 
