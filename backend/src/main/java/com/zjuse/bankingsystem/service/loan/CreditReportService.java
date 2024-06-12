@@ -59,7 +59,7 @@ public class CreditReportService {
         
         // TODO 获取余额和                                             
         //需要用户所有卡的余额综合
-        double money = ((BigDecimal) userAndCardService.getAllBalance(userId).payload).doubleValue();  //用户总余额
+        double money = ((BigDecimal) userAndCardService.getBalance(userId).payload).doubleValue();  //用户总余额
         // double money = 10000; 
         double loan_money=0;      //用户未还的款
         List<Loan> loans = loanQueryMapper.getLoansByUserId(userId);

@@ -15,7 +15,7 @@ public class FormService {
     @Autowired
     FormMapper formMapper;
 
-    public Form getForm(int form_id) { return formMapper.selectById(form_id); }
+    public Form getForm(int form_id) { return formMapper.findByID(form_id); }
 
     public IPage searchForm(Page<Form> formPage,String id_number) {
         return formMapper.selectPage(formPage, new QueryWrapper<Form>().eq("id_number", id_number));

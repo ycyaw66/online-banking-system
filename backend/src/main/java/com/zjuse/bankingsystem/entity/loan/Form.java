@@ -1,73 +1,72 @@
 package com.zjuse.bankingsystem.entity.loan;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @TableName("form")
 public class Form {
 
-    @TableId(value = "form_id", type = IdType.AUTO)
-    private int form_id;
+    @JsonProperty("form_id")
+    private int formId;
 
-    @TableField("user_name")
-    private String user_name;
+    @JsonProperty("user_name")
+    private String userName;
 
-    @TableField("id_number")
-    private String id_number;
+    @JsonProperty("id_number")
+    private String idNumber;
 
-    @TableField("gender")
+    @JsonProperty("gender")
     private Gender gender;
 
-    @TableField("emotion")
+    @JsonProperty("emotion")
     private Emotion emotion;
 
-    @TableField("income")
+    @JsonProperty("income")
     private int income;
 
-    @TableField("address")
+    @JsonProperty("address")
     private String address;
 
-    @TableField("phone_number")
-    private String phone_number;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 
-    @TableField("email")
+    @JsonProperty("email")
     private String email;
 
-    @TableField("education")
+    @JsonProperty("education")
     private String education;
 
-    @TableField("purpose")
+    @JsonProperty("purpose")
     private String purpose;
 
-    @TableField("statement")
+    @JsonProperty("statement")
     private String statement;
 
     // Getters and setters
 
-    public int getForm_id() {
-        return form_id;
+    public int getFormId() {
+        return formId;
     }
 
-    public void setForm_id(int form_id) {
-        this.form_id = form_id;
+    public void setFormId(int formId) {
+        this.formId = formId;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getId_number() {
-        return id_number;
+    public String getIdNumber() {
+        return idNumber;
     }
 
-    public void setId_number(String id_number) {
-        this.id_number = id_number;
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 
     public Gender getGender() {
@@ -102,12 +101,12 @@ public class Form {
         this.address = address;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getEmail() {

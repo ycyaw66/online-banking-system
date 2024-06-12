@@ -34,7 +34,7 @@ public class OfficerController {
         String officerUsername;
         officerUsername = (String)currentUserService.getCurrentUsername().payload;
         Officer officer = loginService.findOfficerByUsername(officerUsername);
-        int officer_id = officer.getOfficer_id();
+        int officer_id = officer.getOfficerId();
 
         UpdateWrapper<Officer> updateWrapper = new UpdateWrapper<>();
         updateWrapper.and(wrapper->wrapper.eq("officer_id",officer_id).eq("Password", currentPassword)).set("password", newPassword);
