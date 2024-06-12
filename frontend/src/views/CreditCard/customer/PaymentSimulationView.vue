@@ -3,10 +3,10 @@
     <div class="demo-date-picker">
       <div class="block">
         <el-date-picker v-model="start_date" type="date" placeholder="请选择您的开始日期"
-                        :default-value="new Date(2024, 5, 1)"/>
+                        :default-value="new Date(2024, 7, 14)"/>
         -----
         <el-date-picker v-model="end_date" type="date" placeholder="请选择您的结束日期"
-                        :default-value="new Date(2024, 5, 1)"/>
+                        :default-value="new Date(2024, 7, 14)"/>
       </div>
     </div>
     <div class="mb-4" style="text-align: center;">
@@ -103,7 +103,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-menu-item > a {
   color: inherit;
   text-decoration: none !important;

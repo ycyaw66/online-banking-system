@@ -49,11 +49,11 @@
       <el-form :model="modify_password">
         <el-form-item label="请输入新密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="modify_password.new_password" autocomplete="off"
-                    style="width: 12.5vw;"></el-input>
+                    style="width: 12.5vw;" show-password></el-input>
         </el-form-item>
         <el-form-item label="请再次输入新密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="modify_password.new_password_again" autocomplete="off"
-                    style="width: 12.5vw;"></el-input>
+                    style="width: 12.5vw;" show-password></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -90,11 +90,11 @@
         </el-form-item>
         <el-form-item label="请输入密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="new_inspector.password" autocomplete="off"
-                    style="width: 12.5vw;"></el-input>
+                    style="width: 12.5vw;" show-password></el-input>
         </el-form-item>
         <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
           <el-input type="password" v-model="new_inspector.password_again" autocomplete="off"
-                    style="width: 12.5vw;"></el-input>
+                    style="width: 12.5vw;" show-password></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -311,7 +311,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-menu-item > a {
   color: inherit;
   text-decoration: none !important;
