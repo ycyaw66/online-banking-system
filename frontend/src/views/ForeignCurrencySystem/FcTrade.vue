@@ -111,33 +111,32 @@ export default {
           // 向后端发送交易请求，执行交易逻辑
           axiosInstance.post('/fc/trade/execute', {
             trade_id: null,
-            user_id: this.getuserId(),
+            user_id: this.getuserId(), // 无效语句
             credit_card_id: this.accountId,
             fc_id: this.selectedFcType,
             amount_cny: this.amount_cny,
             amount_foreign_currency: this.amount,
             is_buy_in: this.tradeType
           })
-              .then(response => {
-                // 处理后端返回的交易结果
-                if (response.data.code === 0) {
-                  ElMessage.success('交易成功');
-                }
-              })
-              .catch(error => {
-                ElMessage.error('交易失败：' + error.message);
-              });
+          .then(response => {
+            // 处理后端返回的交易结果
+            if (response.data.code === 0) {
+              ElMessage.success('交易成功');
+            }else{
+              ElMessage.error('交易失败：' + response.data.err);
+            }
+          })
+          .catch(error => {
+            ElMessage.error('交易失败：' + error.message);
+          });
         }
       } else {
         ElMessage.error('交易失败:账号ID无效');
       }
     },
     isValidAccountId(accountId) {
-      // 模拟验证账号ID的有效性
-      if (accountId.length !== 6) {
-        return false;
-      }
-      return true; // 假设有效的账号ID长度为6
+      console.log(accountId);
+      return true;
     },
     Query() {
       this.fcTypes = []
