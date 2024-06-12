@@ -157,7 +157,7 @@ export default {
         this.searchForm.userId = this.getUserId()
         const response = await axiosInstance.post('/fc/trade/history/search', this.searchForm);
         console.log(response);
-        this.tableData = response.data.payload;
+        this.tableData = response.data;
         this.isShow = true // 显示结果列表
       } catch (error) {
         console.error("Error fetching trade records:", error);
