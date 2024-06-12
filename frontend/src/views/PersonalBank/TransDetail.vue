@@ -97,11 +97,12 @@ export default {
           })
         let querydata = response.data
         if (querydata.code === 0) {
-          querydata.payload.forEach(item => {
-            this.Date.push({
+          console.log(querydata['payload'])
+          querydata['payload'].forEach(item => {
+            this.Data.push({
               card_id: item.card_id,
               target_id: item.target_id,
-              amout: parseFloat(item.amout).toFixed(2),
+              amount: parseFloat(item.amount).toFixed(2),
               date: item.time,
               message: item.remark
             });
@@ -114,6 +115,9 @@ export default {
         console.log(error);
       }
     }
+  },
+  mounted() {
+    this.QueryData(); 
   }
 }
 </script>
