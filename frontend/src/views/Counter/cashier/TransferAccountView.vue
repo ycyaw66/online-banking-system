@@ -122,7 +122,7 @@
               <br>
               <div>
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账户：&nbsp;&nbsp;&nbsp;</span>
-                <el-input v-model="account_id" style="width: 250px" placeholder="输入您的存款账户" />
+                <el-input v-model="account_id" style="width: 250px" placeholder="输入您的发起转账账户" />
               </div>
               <br>
               <div>
@@ -130,14 +130,25 @@
                 <el-input v-model="password" style="width: 250px" type="password" placeholder="输入您的密码" />
               </div>
               <br>
+              <div class="mb-4" style="text-align: center;">
+                <el-button type="primary" round @click="find_current_account">查询余额</el-button>
+              </div>
+              <br>
+              <div style="display: flex; justify-content: center;">
+                <span>您的活期存款余额为:&nbsp;
+                  {{ the_amount }} &nbsp;元
+                </span>
+              </div>
+              <br>
+              <br>
               <div>
                 <span>目标账户：&nbsp;&nbsp;&nbsp;</span>
-                <el-input v-model="target_account_id" style="width: 250px" placeholder="输入您的目标账户" />
+                <el-input v-model="target_account_id" style="width: 250px" placeholder="输入您的目标转账账户" />
               </div>
               <br>
               <div>
-                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金额：&nbsp;&nbsp;&nbsp;</span>
-                <el-input v-model="money" style="width: 250px" placeholder="输入您的存款金额" />
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;金额：&nbsp;&nbsp;</span>
+                <el-input v-model="money" style="width: 250px" placeholder="输入您的转账金额（单位为元）" />
               </div>
               <br>
               <div class="mb-4" style="text-align: center;">
@@ -175,6 +186,7 @@ export default {
     return {
       account_id: '',
       password: '',
+      the_amount : '0',
       money: '',
       target_account_id: ''
     }
@@ -182,6 +194,30 @@ export default {
   methods: {
     exit() {
       this.$router.push('/counter/cashier/login');
+    },
+    find_current_account() {
+      if (this.id === '') {
+        this.$message.error('账户ID不能为空');
+        return;
+      }
+      if (this.password === '') {
+        this.$message.error('密码不能为空');
+        return;
+      }
+      axiosInstance.get("/dp/counter/dp/show", {
+        params:{
+          id: this.account_id,
+          password: CryptoJS.SHA256(this.password).toString(),
+          // operatorid: Cookies.get('operatorid')
+        }
+      }).then(response => {
+        if(response.data.code === 1){
+          this.$message.error(response.data.err);
+        }
+        else {
+          this.the_amount = response.data.payload
+        }
+      })
     },
     transfer() {
       // 检查卡号、密码、转账金额是否为空
@@ -197,15 +233,19 @@ export default {
         this.$message.error('金额不能为空或为0');
         return;
       }
+      if (this.account_id === this.target_account_id) {
+        this.$message.error('目标账户不可为原账户');
+        return;
+      }
 
-      let numMoney = Number(this.money);
-      if (isNaN(numMoney)) {
+      if (isNaN(this.money)) {
         this.$message.error('输入的金额不是一个有效的数字');
       } else {
-        var money_10 = numMoney * 100;
+        var money_10 = this.money * 100;
         var isInt = money_10 % 1 === 0;
         if(!isInt){
           this.$message.error('金额小数部分最多两位');
+          return;
         }
       }
       axiosInstance.post("/transfer/counter/transfer",null,{
@@ -221,6 +261,10 @@ export default {
           this.$message.error(response.data.err);
         }else{
           this.$message.success('转账成功');
+          this.find_current_account();
+          this.password = "";
+          this.target_account_id = "";
+          this.money = "";
         }
       })
     },

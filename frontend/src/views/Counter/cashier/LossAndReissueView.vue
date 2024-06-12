@@ -251,7 +251,7 @@ export default {
             this.$message.error(response.data.err);
             this.$alert("您的账户未挂失，无法补发");
           }else{
-            this.$alert('补发成功' + response.data.payload);
+            this.$alert('补发成功，您的新卡号为：' + response.data.payload);
           }
         })
       }

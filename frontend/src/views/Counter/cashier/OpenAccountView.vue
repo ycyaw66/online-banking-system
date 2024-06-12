@@ -247,6 +247,12 @@ export default {
           this.$alert("开户成功，您的账户卡号为： " + response.data.payload.card_id);
         }
       })
+      this.name= '';
+      this.ID_number= '';
+      this.phone_number= '';
+      this.account_type= '';
+      this.password='';
+      this.password_again= '';
     },
   },
   mounted() {

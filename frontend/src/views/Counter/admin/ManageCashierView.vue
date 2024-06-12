@@ -199,8 +199,8 @@ export default {
       axiosInstance.post("/admin/counter/admin/cashier/modify", null, {
         params: {
           id: this.modify_password.id,
-          newpassword: CryptoJS.SHA256(this.modify_password.new_password).toString(),
-          oldpassword: CryptoJS.SHA256(this.modify_password.old_password).toString()
+          oldpassword: CryptoJS.SHA256(this.modify_password.old_password).toString(),
+          newpassword: CryptoJS.SHA256(this.modify_password.new_password).toString()
         }
       }).then(response => {
         if (response.data.code === 1) {
