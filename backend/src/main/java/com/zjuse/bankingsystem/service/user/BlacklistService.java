@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zjuse.bankingsystem.entity.user.Blacklist;
 import com.zjuse.bankingsystem.mapper.user.BlacklistMapper;
+import com.zjuse.bankingsystem.mapper.user.UserMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 
 
