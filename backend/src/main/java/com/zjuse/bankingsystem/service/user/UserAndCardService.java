@@ -166,7 +166,7 @@ public class UserAndCardService {
                     }
                 }
             }
-            return new ApiResult(true, "success", new MoneyStream(income, consume));
+            return new ApiResult(true, "success", income.add(consume));
         }
         catch (Exception e) {
             return new ApiResult(false, e.getMessage());

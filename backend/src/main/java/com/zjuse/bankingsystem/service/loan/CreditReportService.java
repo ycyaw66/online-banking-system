@@ -47,8 +47,8 @@ public class CreditReportService {
     public double calculateCreditLimit(Long userId) {
 
         // TODO 需要三个月内的流水
-        // double moneyin = ((BigDecimal) userAndCardService.getMoneyStream(userId).payload).doubleValue();
-        double moneyin = 10000; 
+        double moneyin = ((BigDecimal) userAndCardService.getMoneyStream(userId).payload).doubleValue();
+        // double moneyin = 10000; 
         double innum;
         //计算流水系数
         if(moneyin<=10000) innum=0.2;
@@ -59,8 +59,8 @@ public class CreditReportService {
         
         // TODO 获取余额和                                             
         //需要用户所有卡的余额综合
-        // double money = ((BigDecimal) userAndCardService.getBalance(userId).payload).doubleValue();  //用户总余额
-        double money = 10000; 
+        double money = ((BigDecimal) userAndCardService.getBalance(userId).payload).doubleValue();  //用户总余额
+        // double money = 10000; 
         double loan_money=0;      //用户未还的款
         List<Loan> loans = loanQueryMapper.getLoansByUserId(userId);
         for (Loan loan : loans) {
