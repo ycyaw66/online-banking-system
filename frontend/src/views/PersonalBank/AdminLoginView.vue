@@ -169,13 +169,14 @@ export default {
         case "operator":
           axios.post('/fc/data_operator/start/login', {
             username: this.loginForm.username,
-            password: encrypted
+            password: this.loginForm.password
           }).then(res => {
             console.log(res)
             if (res.data.code === 0) {
               ElMessage.success('登录成功')
               setTimeout(() => {
-                this.$router.push({name: 'opability'})
+                this.$router.push({name: 'opaccount'})
+                Cookies.set('token', res.data.payload.token);
                 Cookies.set('storePersonId',res.data.payload.data_operator_id);
                 Cookies.set('storePersonName',res.data.payload.username);
                 // store.state.person.id = res.data.payload.data_operator_id
