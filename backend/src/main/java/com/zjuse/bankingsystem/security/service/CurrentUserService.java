@@ -46,12 +46,7 @@ public class CurrentUserService {
             return new ApiResult(false, "登陆过期");
         }
         String username = (String) authentication.getPrincipal(); 
-        ApiResult apiResult = userService.getUserByUsername(username.split("-")[1]);
-        if (!apiResult.ok) {
-            return new ApiResult(false, "登录状态错误");
-        }
-        User user = (User) apiResult.payload;
-        return new ApiResult(true, "", user.getUsername()); 
+        return new ApiResult(true, "", username.split("-")[1]);
     }
 
     public ApiResult getCurrentUserIdNumber() {
