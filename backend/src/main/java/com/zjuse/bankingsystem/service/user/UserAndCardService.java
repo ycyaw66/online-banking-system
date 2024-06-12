@@ -343,8 +343,8 @@ public class UserAndCardService {
                 return apiResult;
             }
             else {
-                // ApiResult apiResult = debitcardService.valid(cardId, password);
-                return new ApiResult(false, "not implemented");
+                ApiResult apiResult = accountService.VerifyPassword(cardId, password);
+                return apiResult;
             }
         }
         catch(Exception e) {
