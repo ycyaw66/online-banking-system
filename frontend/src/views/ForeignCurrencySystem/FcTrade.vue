@@ -111,7 +111,7 @@ export default {
           // 向后端发送交易请求，执行交易逻辑
           axiosInstance.post('/fc/trade/execute', {
             trade_id: null,
-            user_id: this.getuserId(),
+            user_id: this.getuserId(), // 无效语句
             credit_card_id: this.accountId,
             fc_id: this.selectedFcType,
             amount_cny: this.amount_cny,
@@ -136,7 +136,7 @@ export default {
     },
     isValidAccountId(accountId) {
       console.log(accountId);
-      return true; // 假设有效的账号ID长度为6
+      return true;
     },
     Query() {
       this.fcTypes = []
