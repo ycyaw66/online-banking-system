@@ -59,7 +59,7 @@ export default {
         amount: 999.99
       }],
       userId: "0",
-      creditCardId: "1234567890",
+      creditCardId: "",
       toQuery: '', // 待查询内容(对某一借书证号进行查询)
       toSearch: '', // 待搜索内容(对查询到的结果进行搜索)
       Search
