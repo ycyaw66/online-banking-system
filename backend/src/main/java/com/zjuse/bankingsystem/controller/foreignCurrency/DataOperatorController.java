@@ -35,8 +35,7 @@ public class DataOperatorController {
     public RespResult delete(String data_operator_id) {
         ApiResult result = new ApiResult(false, "");
         try{
-            DataOperator data_operator = dataOperatorService.selectDataOperatorByUsername(data_operator_id);
-            dataOperatorService.deleteDataOperator(data_operator.getData_operator_id());
+            dataOperatorService.deleteDataOperator(data_operator_id);
         }catch(Exception e){
             return RespResult.fail(e.getMessage());
         }
@@ -51,8 +50,7 @@ public class DataOperatorController {
             if(!update_info.new_password.equals(""))
             {
                 try{
-                    DataOperatorInfo data_operator = dataOperatorService.selectDataOperatorByUsernameAndPassword(update_info.data_operator_id, update_info.password);
-                    dataOperatorService.updateDataOperatorPassword(data_operator.getData_operator_id(), update_info.new_password, update_info.password);
+                    dataOperatorService.updateDataOperatorPassword(update_info.data_operator_id, update_info.new_password, update_info.password);
                 }catch(Exception e){
                     return RespResult.fail(e.getMessage());
                 }
@@ -69,7 +67,7 @@ public class DataOperatorController {
     public RespResult getInfomation(@PathVariable String data_operator_id) {
         try{
             
-        return RespResult.success(dataOperatorService.selectDataOperatorByUsername(data_operator_id));
+        return RespResult.success(dataOperatorService.selectDataOperatorById(data_operator_id));
         }catch(Exception e){
             return RespResult.fail(e.getMessage());
         }
