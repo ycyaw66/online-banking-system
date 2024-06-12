@@ -3,7 +3,6 @@ package com.zjuse.bankingsystem.controller.foreignCurrency;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zjuse.bankingsystem.entity.foreignCurrency.HistoryOperationRecord;
-import com.zjuse.bankingsystem.entity.foreignCurrency.DataOperator;
 import com.zjuse.bankingsystem.model.Currency;
 import com.zjuse.bankingsystem.model.DataOperatorInfo;
 import com.zjuse.bankingsystem.model.Operation;
@@ -61,20 +60,19 @@ public class CurrencyManagerController {
     public RespResult operatorCurrency(@RequestBody Operation operation) {
         ApiResult result = new ApiResult(false, "fail to ");
         try{
-            DataOperator dataOperator = dataOperatorService.selectDataOperatorByUsername(operation.getData_operator_id());
-            operation.setData_operator_id(dataOperator.getData_operator_id());
+            DataOperatorInfo dataOperator = dataOperatorService.selectDataOperatorById(operation.getData_operator_id());
             if(operation.getOpid() == Operation.OPERATION.ADD.getValue()){
-                if(dataOperator.getAdd_permission()!=1)
+                if(!dataOperator.getAdd_permission())
                     throw new Exception("No permission");
-                if(currencyManagerService.addCurrencyRate(operation.getRate(), operation.getFc_name(), dataOperator.getData_operator_id())) {
+                if(currencyManagerService.addCurrencyRate(operation.getRate(), operation.getFc_name(), operation.getData_operator_id())) {
                     result.ok = true;
                     result.message = "Success";
                 }   
             }
             else if(operation.getOpid() == Operation.OPERATION.UPDATE.getValue()){
-                if(1!=dataOperator.getAdd_permission())
+                if(!dataOperator.getAdd_permission())
                     throw new Exception("No permission");
-                if(currencyManagerService.updateCurrencyRate(operation.getDest_date(),operation.getRate(), operation.getFc_name(), dataOperator.getData_operator_id())) {
+                if(currencyManagerService.updateCurrencyRate(operation.getDest_date(),operation.getRate(), operation.getFc_name(), operation.getData_operator_id())) {
                     result.ok = true;
                     result.message = "Success";
                 }
@@ -83,7 +81,7 @@ public class CurrencyManagerController {
             }
         }catch(Exception e){
             return RespResult.fail( e.getMessage());
-        };
+        }
         HistoryOperationRecord historyOperationRecord = operation.toHistoryOperationRecord(currencyManagerService);
         if(result.ok){
             try{
