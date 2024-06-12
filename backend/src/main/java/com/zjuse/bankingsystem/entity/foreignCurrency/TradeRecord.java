@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Setter
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @TableName("trade_record")
 public class TradeRecord {
     private String trade_id;
