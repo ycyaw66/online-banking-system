@@ -13,7 +13,7 @@
     <el-table :data="paginatedData" style="width: 100%">
       <el-table-column prop="user_id" label="账号ID" width="180"></el-table-column>
       <el-table-column prop="username" label="账号姓名" width="180"></el-table-column>
-      <el-table-column prop="phone" label="电话号码" width="180"></el-table-column>
+      <el-table-column prop="reason" label="封禁原因" width="180"></el-table-column>
       <el-table-column label="黑名单操作" width="calc(100% - 540px)">
         <template #default="scope">
           <el-button @click="confirmRemoveBlacklist(scope.row)" type="primary">移除</el-button>
@@ -38,17 +38,13 @@
         <el-input v-model="newBlacklistInfo.user_id" clearable />
       </div>
       <div class="dialog-item">
-        账号姓名：
-        <el-input v-model="newBlacklistInfo.username" clearable />
-      </div>
-      <div class="dialog-item">
-        电话号码：
-        <el-input v-model="newBlacklistInfo.phone" clearable />
+        封禁原因：
+        <el-input v-model="newBlacklistInfo.reason" clearable />
       </div>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="addBlacklistVisible = false">取消</el-button>
-          <el-button type="primary" @click="confirmAddBlacklist" :disabled="!newBlacklistInfo.user_id || !newBlacklistInfo.username || !newBlacklistInfo.phone">确定</el-button>
+          <el-button type="primary" @click="confirmAddBlacklist" :disabled="!newBlacklistInfo.user_id || !newBlacklistInfo.reason">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -90,21 +86,20 @@ export default {
       removeBlacklistVisible: false,
       rowToRemove: null,
       blacklist: [
-        { user_id: '322010000', username: 'aa', phone: 'aa' },
-        { user_id: '322010001', username: 'bb', phone: 'bb' },
-        { user_id: '322010002', username: 'cc', phone: 'cc' },
-        { user_id: '322010003', username: 'dd', phone: 'dd' },
-        { user_id: '322010004', username: 'ee', phone: 'ee' },
-        { user_id: '322010005', username: 'ff', phone: 'ff' },
-        { user_id: '322010006', username: 'gg', phone: 'gg' },
-        { user_id: '322010007', username: 'hh', phone: 'hh' },
-        { user_id: '322010008', username: 'ii', phone: 'ii' },
-        { user_id: '322010009', username: 'jj', phone: 'jj' }
+        { user_id: '322010000', username: 'aa', reason: 'aa' },
+        { user_id: '322010001', username: 'bb', reason: 'bb' },
+        { user_id: '322010002', username: 'cc', reason: 'cc' },
+        { user_id: '322010003', username: 'dd', reason: 'dd' },
+        { user_id: '322010004', username: 'ee', reason: 'ee' },
+        { user_id: '322010005', username: 'ff', reason: 'ff' },
+        { user_id: '322010006', username: 'gg', reason: 'gg' },
+        { user_id: '322010007', username: 'hh', reason: 'hh' },
+        { user_id: '322010008', username: 'ii', reason: 'ii' },
+        { user_id: '322010009', username: 'jj', reason: 'jj' }
       ],
       newBlacklistInfo: {
         user_id: '',
-        username: '',
-        phone: ''
+        reason: '',
       }
     };
   },
@@ -129,9 +124,10 @@ export default {
       // 获取黑名单目录
       // this.blacklist = [] // 清空列表
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.get('/administrator/blacklist/get') // 向黑名单发出GET请求
+      axios.get('/blacklist/get') // 向黑名单发出GET请求
         .then(response => {
-          let blacklist = response.data // 接收响应负载
+          let blacklist = response.data.payload // 接收响应负载
+          this.blacklist = []
           blacklist.forEach(account => { // 对于每个账号
             this.blacklist.push(account);// 将其加入到列表中
           })
@@ -148,17 +144,16 @@ export default {
     confirmAddBlacklist() {
       // 发POST
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.post("/administrator/blacklist/add", {
+      axios.post("/blacklist/add", {
         user_id: this.newBlacklistInfo.user_id,
-        username: this.newBlacklistInfo.username,
-        phone: this.newBlacklistInfo.phone
+        reason: this.newBlacklistInfo.reason,
       })
         .then(response => {
           if (response.status === 200) {
             // 响应成功
             this.$message.success('已添加到黑名单');
             this.addBlacklistVisible = false;
-            this.newBlacklistInfo = { user_id: '', username: '', phone: '' };
+            this.newBlacklistInfo = { user_id: '', username: '', reason: '' };
             this.fetchBlacklist(); // 重新查询黑名单以刷新页面
           }
         })
@@ -174,9 +169,10 @@ export default {
 // 移除黑名单
     removeFromBlacklistConfirmed() {
       // 发出 DELETE 请求
-      axios.delete("/administrator/blacklist/remove", {
-        user_id: this.rowToRemove.user_id
-      })
+      axios.delete("/blacklist/remove", {
+        data: {
+          user_id: this.rowToRemove.user_id
+        }})
           .then(response => {
             if (response.status === 200) {
               // 响应成功
