@@ -170,7 +170,7 @@
                 <div style="display: inline-block;">
                   <div>
                     <span>定期资产id:&nbsp;&nbsp;&nbsp;</span>
-                    <el-input v-model="propertyid" style="width: 250px;" placeholder="输入您的定期资产id"/>
+                    <el-input v-model="propertyid" style="width: 250px;" placeholder="输入您需要取款的定期资产id"/>
                   </div>
                   <br>
                   <div class="mb-4" style="text-align: center;">
@@ -244,18 +244,27 @@ export default {
           // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
-        this.request_responses = []
-        let responses = response.data.payload
-        if (responses !== null) {
-          responses.forEach(element => {
-            this.request_responses.push(element)
-        })
+        if(response.data.code === 1){
+          this.$message.error(response.data.err);
+        }
+        else {
+          this.request_responses = []
+          let responses = response.data.payload
+          if (responses !== null) {
+            responses.forEach(element => {
+              this.request_responses.push(element)
+          })
+          }
         }
       })
     },
     timeWithdraw() {
       if (this.propertyid === '') {
         this.$message.error('资产id不能为空');
+        return;
+      }
+      if (this.password === '') {
+        this.$message.error('密码不能为空');
         return;
       }
       let flag = 0
@@ -278,6 +287,8 @@ export default {
           }else{
             this.$alert("取款成功，您取出的金额是：" + response.data.payload.toFixed(2) + " 元");
             this.find_time_account()
+            this.password = '';
+            this.propertyid = '';
           }
         })
       }
