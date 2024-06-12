@@ -169,7 +169,7 @@ export default {
         case "operator":
           axios.post('/fc/data_operator/start/login', {
             username: this.loginForm.username,
-            password: this.loginForm.password
+            password: encrypted
           }).then(res => {
             console.log(res)
             if (res.data.code === 0) {
