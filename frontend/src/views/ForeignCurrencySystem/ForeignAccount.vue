@@ -11,7 +11,7 @@
 
     <!-- 查询按钮 -->
     <div style="width:100%; margin:0 auto; padding-top:5vh; align-items: center;">
-      <el-input style="width: 10vw; margin-left: 50px;" v-model.number="this.creditCardId"
+      <el-input style="width: 10vw; margin-left: 50px;" v-model="this.creditCardId"
                 placeholder="输入信用卡ID"></el-input>
       <el-button v-if="!AccountVisible" style="margin-left: 50px;" type="primary" @click="QueryAccount"
                  :disabled="this.creditCardId.length === 0">显示余额
