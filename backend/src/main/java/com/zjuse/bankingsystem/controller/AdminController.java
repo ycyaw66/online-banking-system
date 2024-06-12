@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zjuse.bankingsystem.entity.deposite.Cashier;
 import com.zjuse.bankingsystem.entity.loan.Officer;
+import com.zjuse.bankingsystem.security.service.UserCacheManager;
 import com.zjuse.bankingsystem.service.creditCard.CreditCardAdminService;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.service.loan.OfficerService;
@@ -33,7 +35,9 @@ public class AdminController {
     @Autowired
     private CashierService cashierService; 
     @Autowired
-    private OfficerService officerService; 
+    private OfficerService officerService;
+    @Autowired
+    private UserCacheManager userCacheManager;  
 
     @GetMapping("/inspector")
     public RespResult queryInspectors() {
@@ -110,7 +114,14 @@ public class AdminController {
         ApiResult apiResult1 = cashierService.verifyCashier(id, oldpassword);
         if(!apiResult1.ok)
             return RespResult.fail(apiResult1.message);
+        ApiResult apiResult2 = cashierService.getCashierById(id); 
+        if(!apiResult2.ok)
+            return RespResult.fail(apiResult2.message);
+        Cashier cashier = (Cashier) apiResult2.payload;
+        userCacheManager.cleanUserCache("CASHIER-" + cashier.getUsername());
         ApiResult apiResult = cashierService.changePassword(id, newpassword);
+
+        
         if(!apiResult.ok)
             return RespResult.fail(apiResult.message);
         else
