@@ -58,7 +58,7 @@ export default {
         fc_id: 'CNY',
         amount: 999.99
       }],
-      userId: "0",
+      userId: "0", // no use
       creditCardId: "",
       toQuery: '', // 待查询内容(对某一借书证号进行查询)
       toSearch: '', // 待搜索内容(对查询到的结果进行搜索)
@@ -75,6 +75,10 @@ export default {
       this.tableData = [] // 清空列表
       await axiosInstance.get(`/fc/account/${this.creditCardId}`).then(response => {
         console.log(response);
+        if(response.data.code === 1){
+          ElMessage.error(response.data.err);
+          return;
+        }
         let accounts = response.data.payload // 获取响应负载
         accounts.forEach(record => { // 对于每一个交易记录
           this.tableData.push(record) // 将它加入到列表项中
