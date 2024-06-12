@@ -43,6 +43,12 @@
               </el-icon>
               <span>管理贷款审查员</span>
             </el-menu-item>
+            <el-menu-item index="foreign">
+              <el-icon>
+                <Avatar />
+              </el-icon>
+              <span>管理数据审查员</span>
+            </el-menu-item>
             <el-button class="logout-button" type="danger" @click="logoutVisible = true">
               退出登录
             </el-button>

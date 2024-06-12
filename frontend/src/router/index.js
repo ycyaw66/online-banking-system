@@ -288,6 +288,10 @@ const routes = [
             {
                 path: 'manageLoan',
                 redirect: '/manager-main/add',
+            },
+            {
+                path: 'foreign',
+                redirect: '/fc/admin/home',
             }
         ]
     },

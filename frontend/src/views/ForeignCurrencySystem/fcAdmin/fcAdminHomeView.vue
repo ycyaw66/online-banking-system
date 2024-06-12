@@ -253,7 +253,7 @@ export default {
   },
   methods: {
     exit() {
-      this.$router.push('/fc/admin/login');
+      this.$router.push('/onlineBank/admin/privilege');
     },
     modifyPermission() {
       this.modify_permission_visible = false;

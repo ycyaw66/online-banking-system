@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     exit() {
-      this.$router.push('/fc/admin/login');
+      this.$router.push('/onlineBank/admin/privilege');
     },
     queryOperationRecord() {
       axiosInstance.get("fc/admin/operationRecord").then(response => {
