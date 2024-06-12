@@ -256,7 +256,7 @@ const routes = [
                 redirect: '/fc/user/record',
             },
             {
-                path:'load',
+                path: 'load',
                 redirect: '/user-main/inform',
             }
         ]
@@ -285,6 +285,10 @@ const routes = [
                 name: 'adminManageCashier',
                 component: () => import('../views/Counter/admin/ManageCashierView.vue')
             },
+            {
+                path: 'manageLoan',
+                redirect: '/manager-main/add',
+            }
         ]
     },
     {
@@ -346,7 +350,7 @@ const routes = [
     {
         path: '/counter/cashier/login',
         name: 'loginCashier',
-        redirect: '/personalBank/admin/login',  
+        redirect: '/personalBank/admin/login',
         // component: () => import('../views/Counter/login/CashierLoginView.vue')
     },
     {

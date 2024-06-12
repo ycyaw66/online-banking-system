@@ -57,7 +57,7 @@ export default {
   methods: {
     async fetchOfficers() {
       try {
-        const response = await axiosInstance.get('/get-officers', {
+        const response = await axiosInstance.get('/admin/get-officers', {
           params: {
             page: this.currentPage,
             pageSize: this.pageSize

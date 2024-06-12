@@ -37,6 +37,12 @@
               </el-icon>
               <span>管理出纳员</span>
             </el-menu-item>
+            <el-menu-item index="manageLoan">
+              <el-icon>
+                <Avatar />
+              </el-icon>
+              <span>管理贷款审查员</span>
+            </el-menu-item>
             <el-button class="logout-button" type="danger" @click="logoutVisible = true">
               退出登录
             </el-button>
