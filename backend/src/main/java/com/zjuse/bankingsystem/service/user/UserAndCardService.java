@@ -334,6 +334,25 @@ public class UserAndCardService {
         }
     }
 
+    public ApiResult getAllBalance(Long userId) {
+        try {
+            ApiResult apiResult = cardService.getAllCardbyUserId(userId);;
+            if (!apiResult.ok) {
+                return apiResult; 
+            }
+            List<Card> cardList = (List<Card>)apiResult.payload;
+            BigDecimal sum = new BigDecimal(0);
+            for (Card card : cardList) {
+                apiResult = getBalance(card.getCardId());
+                if (!apiResult.ok) return apiResult;
+                sum.add((BigDecimal) apiResult.payload);
+            }
+            return new ApiResult(true, sum);
+        } catch(Exception e) {
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
 
 
     public ApiResult valid(Long cardId, String password) {
