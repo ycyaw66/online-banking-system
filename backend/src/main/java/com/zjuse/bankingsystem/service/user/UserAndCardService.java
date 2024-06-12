@@ -343,8 +343,8 @@ public class UserAndCardService {
                 return apiResult;
             }
             else {
-                // ApiResult apiResult = debitcardService.valid(cardId, password);
-                return new ApiResult(false, "not implemented");
+                ApiResult apiResult = accountService.VerifyPassword(cardId, password);
+                return apiResult;
             }
         }
         catch(Exception e) {
@@ -418,7 +418,7 @@ public class UserAndCardService {
                 System.out.println("### ok2" + targetCardId);
             }
             else {
-                apiResult = demandDepositService.changeAmount(cardId, amount);
+                apiResult = demandDepositService.changeAmount(targetCardId, amount);
                 if (apiResult.ok == false) {
                     Rollback(cardId, amount);
                     return apiResult;
