@@ -82,7 +82,7 @@ export default {
         if (valid) {
           try {
             this.adminData.password = CryptoJS.SHA256(this.adminData.password).toString();
-            await axiosInstance.post('/add-officer', this.adminData);
+            await axiosInstance.post('/admin/add-officer', this.adminData);
             this.$message.success('管理员添加成功！');
           } catch (error) {
 

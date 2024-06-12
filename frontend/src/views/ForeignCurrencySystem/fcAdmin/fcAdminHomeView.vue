@@ -253,7 +253,7 @@ export default {
   },
   methods: {
     exit() {
-      this.$router.push('/fc/admin/login');
+      this.$router.push('/onlineBank/admin/privilege');
     },
     modifyPermission() {
       this.modify_permission_visible = false;
@@ -364,7 +364,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-menu-item > a {
   color: inherit;
   text-decoration: none !important;

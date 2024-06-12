@@ -336,6 +336,7 @@ export default {
           if (response.data.code == 0) {
             ElMessage.success("转账成功");
             this.TransVisible = false;
+            this.QueryAccount(); 
           } else {
             ElMessage.error(response.data.err);
             return;

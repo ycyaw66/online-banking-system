@@ -21,7 +21,7 @@
       <br>
       <div>
         <span>&nbsp;&nbsp;&nbsp;支付密码：&nbsp;&nbsp;&nbsp;</span>
-        <el-input v-model="password" type="password" style="width: 250px" placeholder="输入您支付的信用卡密码"/>
+        <el-input v-model="password" type="password" style="width: 250px" placeholder="输入您支付的信用卡密码" show-password/>
       </div>
       <br>
       <div class="mb-4" style="text-align: center;">
@@ -121,7 +121,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-menu-item > a {
   color: inherit;
   text-decoration: none !important;

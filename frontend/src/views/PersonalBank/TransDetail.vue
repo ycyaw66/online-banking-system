@@ -16,8 +16,8 @@
           <el-input v-model="this.Cond.MaxAmount" style="display:inline; margin-left: 0;" placeholder="交易金额最大值"></el-input>
         </div>
         <div style="padding-top:2vh;">
-          <el-date-picker v-model="this.Cond.MinDate" type="date" :style="{marginLeft: '20px', width: '192.29px'}" placeholder="开始日期" value-format="yyyy-MM-dd"></el-date-picker> - 
-          <el-date-picker v-model="this.Cond.MaxDate" type="date" :style="{marginLeft: '4px', width: '192.29px'}" placeholder="结束日期" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker v-model="this.Cond.MinDate" type="date" :style="{marginLeft: '20px', width: '192.29px'}" placeholder="开始日期"></el-date-picker> -
+          <el-date-picker v-model="this.Cond.MaxDate" type="date" :style="{marginLeft: '4px', width: '192.29px'}" placeholder="结束日期"></el-date-picker>
           <el-input v-model="this.Cond.Remark" :style="{marginLeft: '20px', width: '320px'}" placeholder="备注"></el-input>
           <el-button style="margin-left: 20px;" type="primary" @click="QueryCond">查询</el-button>
         </div>

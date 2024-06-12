@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     exit() {
-      this.$router.push('/fc/admin/login');
+      this.$router.push('/onlineBank/admin/privilege');
     },
     queryOperationRecord() {
       axiosInstance.get("fc/admin/operationRecord").then(response => {
@@ -151,7 +151,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-menu-item > a {
   color: inherit;
   text-decoration: none !important;

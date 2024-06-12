@@ -57,7 +57,7 @@ export default {
         if (valid) {
           try {
             this.passwordData.newPassword = CryptoJS.SHA256(this.passwordData.newPassword).toString();
-            await axiosInstance.put('/update-officer-password', null, {params: this.passwordData});
+            await axiosInstance.put('/admin/update-officer-password', null, {params: this.passwordData});
             this.$message.success('密码修改成功！');
           } catch (error) {
             console.error('修改密码时发生错误:', error);
