@@ -70,11 +70,10 @@ export default {
           value: "cashier",
           label: "出纳员"
         },
-        // TODO not merge
-        // {
-        //   value: "operator",
-        //   label: "数据操纵员"
-        // },
+        {
+          value: "operator",
+          label: "数据操纵员"
+        },
         {
           value: "officer",
           label: "贷款审查员"
@@ -168,6 +167,24 @@ export default {
           })
           break ;
         case "operator":
+          axios.post('/fc/data_operator/start/login', {
+            username: this.loginForm.username,
+            password: encrypted
+          }).then(res => {
+            console.log(res)
+            if (res.data.code === 0) {
+              ElMessage.success('登录成功')
+              setTimeout(() => {
+                this.$router.push({name: 'opability'})
+                Cookies.set('storePersonId',res.data.payload.data_operator_id);
+                Cookies.set('storePersonName',res.data.payload.username);
+                // store.state.person.id = res.data.payload.data_operator_id
+                // store.state.person.name = res.data.payload.username
+              }, 1000)
+            } else {
+              ElMessage.error(res.data.err)
+            }
+          })
           break ;
         case "officer": 
           try {
