@@ -28,7 +28,7 @@ public class History {
     @JsonProperty("card_id")
     Long cardId;
 
-    @JsonProperty("target_card")
+    @JsonProperty("target_id")
     Long targetCard;
 
     BigDecimal amount;

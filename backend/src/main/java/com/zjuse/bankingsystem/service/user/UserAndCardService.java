@@ -418,7 +418,7 @@ public class UserAndCardService {
                 System.out.println("### ok2" + targetCardId);
             }
             else {
-                apiResult = demandDepositService.changeAmount(cardId, amount);
+                apiResult = demandDepositService.changeAmount(targetCardId, amount);
                 if (apiResult.ok == false) {
                     Rollback(cardId, amount);
                     return apiResult;

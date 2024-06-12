@@ -110,7 +110,7 @@ public class AccountService {
     public ApiResult VerifyPassword(Long cardid,String password){
         try{
             QueryWrapper<Account> wrapper = new QueryWrapper<>();
-            wrapper.eq("card_id",cardid);
+            wrapper.eq("id",cardid);
             List<Account> account = accountMapper.selectList(wrapper);
             if(account.size()==0) {
                 return new ApiResult(false,"卡片不存在");

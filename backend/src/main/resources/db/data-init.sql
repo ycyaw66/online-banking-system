@@ -96,6 +96,23 @@ INSERT INTO `cardofperson` (user_id, card_id) VALUES
 
 --end of cardofperson
 
+-- 用户权限
+
+INSERT INTO `user_privilege` (user_id, payment, transfer, receive) VALUES
+    (1, true, true, true); 
+
+INSERT INTO `user_privilege` (user_id, payment, transfer, receive) VALUES
+    (2, true, true, true); 
+
+INSERT INTO `user_privilege` (user_id, payment, transfer, receive) VALUES
+    (3, true, true, true); 
+
+INSERT INTO `user_privilege` (user_id, payment, transfer, receive) VALUES
+    (4, true, true, true); 
+
+INSERT INTO `user_privilege` (user_id, payment, transfer, receive) VALUES
+    (5, true, true, true); 
+
 INSERT INTO `admin` (id, username, password, role) VALUES
 (1, "admin", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", "ADMIN"); 
 
