@@ -59,7 +59,7 @@ export default {
         amount: 999.99
       }],
       userId: "0",
-      creditCardId: "1234567890",
+      creditCardId: "",
       toQuery: '', // 待查询内容(对某一借书证号进行查询)
       toSearch: '', // 待搜索内容(对查询到的结果进行搜索)
       Search
@@ -73,7 +73,7 @@ export default {
     },
     async QueryAccount() {
       this.tableData = [] // 清空列表
-      await axiosInstance.get(`/fc/account/${this.creditCardId}/$(this.userId)`).then(response => {
+      await axiosInstance.get(`/fc/account/${this.creditCardId}`).then(response => {
         console.log(response);
         let accounts = response.data.payload // 获取响应负载
         accounts.forEach(record => { // 对于每一个交易记录
