@@ -115,7 +115,7 @@ public class DataOperatorServiceImp implements DataOperatorService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateInfomation(UpdateInfo updateInfo) throws Exception {
-        DataOperator dto = dataOperatorMapper.selectDataOperatorByUsername(updateInfo.data_operator_id);
+        DataOperator dto = dataOperatorMapper.selectDataOperatorById(updateInfo.data_operator_id);
         if(dto.getPassword().equals(updateInfo.password)){
             dto.setEmail(updateInfo.email);
             dto.setPhone_number(updateInfo.phone_number);
