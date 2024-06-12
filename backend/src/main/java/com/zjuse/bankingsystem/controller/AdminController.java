@@ -21,7 +21,9 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/admin")
 @PreAuthorize("@roleCheck.isRole('ADMIN')")
@@ -105,6 +107,7 @@ public class AdminController {
     // 外汇相关
     @PostMapping("/add-officer")
     public String insertOfficer(@RequestBody Officer officer, HttpServletRequest request) {
+        log.info(officer.toString()); 
         return officerService.insertOfficer(officer);
     }
 

@@ -12,6 +12,9 @@ import com.zjuse.bankingsystem.model.DataOperatorInfo;
 import com.zjuse.bankingsystem.model.UpdateInfo;
 import com.zjuse.bankingsystem.service.foreignCurrency.DataOperatorService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class DataOperatorServiceImp implements DataOperatorService {
 

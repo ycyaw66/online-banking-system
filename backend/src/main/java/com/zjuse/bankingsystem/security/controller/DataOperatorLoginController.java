@@ -73,9 +73,16 @@ public class DataOperatorLoginController {
 
         String token = jwtTokenProvider.createToken(authentication, LoginType.OPERATOR);
         final JwtUserDto jwtUserDto = (JwtUserDto) authentication.getPrincipal();
+        DataOperator dt; 
+        try {
+            dt = dataOperatorService.selectDataOperatorByUsername(username); 
+        } catch(Exception e) {
+            return RespResult.fail(e.getMessage());
+        }
         Map<String, Object> authInfo = new HashMap<String, Object>(2) {{
             put("token", jwtConfig.getTokenStartWith() + " " + token);
             put("username", jwtUserDto.getUsername());
+            put("data_operator_id", dt.getData_operator_id());
         }}; 
         onlineUserService.save(jwtUserDto, token);
         return RespResult.success(authInfo);
