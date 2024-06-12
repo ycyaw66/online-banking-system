@@ -70,7 +70,6 @@
   import CryptoJS from 'crypto-js';
   import axios from 'axios';
   import { ElMessage } from 'element-plus';
-  import store from '@/store';
   import Cookies from 'js-cookie';
 
   const axiosInstance = axios.create();
@@ -155,9 +154,9 @@
         // const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
         // const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
         const encryptedOld = this.modifyForm.password
-        const encryptedNew = this.modifyForm.new_password
+        const encryptedNew = this.modifyForm.new_password === '' ? '' : CryptoJS.SHA256(this.modifyForm.new_password).toString();
         console.log({
-            "data_operator_id": store.state.person.id,
+            "data_operator_id": Cookies.get('storePersonId'),
             "password": encryptedOld,
             "phone_number": this.modifyForm.phone_number,
             "email": this.modifyForm.email,
@@ -166,11 +165,11 @@
         //axios.defaults.headers.common['Authorization'] = Cookies.get('token');
         axiosInstance.put("/fc/data_operator/update_info",
           {
-            data_operator_id: store.state.person.id,
-            password: CryptoJS.SHA256(encryptedOld).toString(),
+            data_operator_id: Cookies.get('storePersonId'),
+            password: encryptedOld,//CryptoJS.SHA256(encryptedOld).toString(),
             phone_number: this.modifyForm.phone_number,
             email: this.modifyForm.email,
-            new_password: CryptoJS.SHA256(encryptedNew).toString()
+            new_password: encryptedNew
           }
         )
         .then(response => {
