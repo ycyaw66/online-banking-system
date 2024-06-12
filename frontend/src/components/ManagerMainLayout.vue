@@ -41,6 +41,10 @@
                 </el-icon>
                 <span>删除审查员账号</span>
               </el-menu-item>
+
+              <el-button class="logout-button" type="danger" @click="exit">
+                返回上一级页面
+              </el-button>
              
             </el-menu>
           </el-aside>
@@ -62,6 +66,11 @@ import { RouterView } from 'vue-router';
 export default {
   components: {
     RouterView
+  },
+  methods:{
+    exit(){
+      this.$router.push('/onlineBank/admin/privilege');
+    }
   }
 };
 </script>
@@ -119,5 +128,12 @@ export default {
 
 .el-menu-item:not(.is-disabled):hover {
   background-color: #c7ab0d; /* 悬停时的背景色 */
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>
