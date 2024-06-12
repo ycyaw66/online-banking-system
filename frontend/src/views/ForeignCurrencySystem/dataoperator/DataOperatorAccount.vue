@@ -151,10 +151,10 @@
         } else {
           this.modifyForm.new_password = ''
         }
-        // const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
-        // const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
-        const encryptedOld = this.modifyForm.password
-        const encryptedNew = this.modifyForm.new_password === '' ? '' : CryptoJS.SHA256(this.modifyForm.new_password).toString();
+        const encryptedOld = CryptoJS.SHA256(this.modifyForm.password).toString();
+        const encryptedNew = CryptoJS.SHA256(this.modifyForm.new_password).toString();
+        // const encryptedOld = this.modifyForm.password
+        // const encryptedNew = this.modifyForm.new_password === '' ? '' : CryptoJS.SHA256(this.modifyForm.new_password).toString();
         console.log({
             "data_operator_id": Cookies.get('storePersonId'),
             "password": encryptedOld,
