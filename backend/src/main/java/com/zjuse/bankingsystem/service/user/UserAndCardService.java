@@ -341,13 +341,14 @@ public class UserAndCardService {
                 return apiResult; 
             }
             List<Card> cardList = (List<Card>)apiResult.payload;
-            BigDecimal sum = new BigDecimal(0);
+            double sum = 0;
             for (Card card : cardList) {
                 apiResult = getBalance(card.getCardId());
                 if (!apiResult.ok) return apiResult;
-                sum.add((BigDecimal) apiResult.payload);
+                BigDecimal balance = (BigDecimal)apiResult.payload;
+                sum = sum + balance.doubleValue();
             }
-            return new ApiResult(true, sum);
+            return new ApiResult(true, new BigDecimal(sum));
         } catch(Exception e) {
             return new ApiResult(false, e.getMessage());
         }
