@@ -62,7 +62,7 @@ public class DepositeTransferController {
             return RespResult.fail("转账账户状态异常");
 
         //检验卡号，获得账号
-        ApiResult account1Result  = accountService.getAccountByCardId(card_id);
+        ApiResult account1Result  = accountService.getAccountByCardId(to_id);
         if(!account1Result.ok)
             return RespResult.fail(account1Result.message);
         Long toid=((Account)account1Result.payload).getId();
