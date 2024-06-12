@@ -139,7 +139,7 @@
 
               <div>
                 <span>金额：&nbsp;&nbsp;&nbsp;</span>
-                <el-input v-model="amount" style="width: 250px" placeholder="输入您的存款金额" />
+                <el-input v-model="amount" style="width: 250px" placeholder="输入您的存款金额(单位为元)" />
               </div>
               <br>
 
@@ -230,7 +230,7 @@ export default {
           id: this.id,
           amount: this.amount,
           Length: this.Length,
-          isauto: this.ifauto,
+          ifauto: this.ifauto,
           // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
@@ -240,6 +240,10 @@ export default {
           this.$message.success(response.data.payload);
         }
       })
+      this.id = '';
+      this.Length = '';
+      this.amount = '';
+      this.ifauto = '';
     },
   },
   mounted() {

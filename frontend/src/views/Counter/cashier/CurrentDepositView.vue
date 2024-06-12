@@ -127,7 +127,7 @@
               <br>
               <div>
                 <span>金额：&nbsp;&nbsp;&nbsp;</span>
-                <el-input v-model="amount" style="width: 250px" placeholder="输入您的存款金额" />
+                <el-input v-model="amount" style="width: 250px" placeholder="输入您的存款金额（单位为元）" />
               </div>
               <br>
               <div class="mb-4" style="text-align: center;">
@@ -181,12 +181,11 @@ export default {
         return;
       }
 
-      let numMoney = Number(this.amount);
       if (isNaN(this.amount) || this.amount === '') {
         this.$message.error('输入的存款金额不是一个有效的数字');
         return;
       } else {
-        var money_10 = numMoney * 100;
+        var money_10 = this.amount * 100;
         var isInt = money_10 % 1 === 0;
         if(!isInt){
           this.$message.error('存款金额小数部分最多两位');
@@ -207,6 +206,8 @@ export default {
           this.$message.success('活期存款成功');
         }
       })
+      this.id = "";
+      this.amount = "";
     },
   },
   mounted() {

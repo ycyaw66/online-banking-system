@@ -140,8 +140,6 @@
                 </div>
               </div>
               <br>
-              <br>
-              <br>
               <div style="display: flex; justify-content: center;">
                 <span>您的活期存款余额为:&nbsp;
                   {{ amount }} &nbsp;元
@@ -154,7 +152,7 @@
                 <div style="display: inline-block;">
                   <div>
                     <span>取款金额:&nbsp;&nbsp;&nbsp;</span>
-                    <el-input v-model="withdraw_amount" style="width: 250px;" placeholder="输入您的取款金额"/>
+                    <el-input v-model="withdraw_amount" style="width: 250px;" placeholder="输入您的取款金额（单位为元）"/>
                   </div>
                   <br>
                   <div class="mb-4" style="text-align: center;">
@@ -218,7 +216,12 @@ export default {
           // operatorid: Cookies.get('operatorid')
         }
       }).then(response => {
-        this.amount = response.data.payload
+        if(response.data.code === 1){
+          this.$message.error(response.data.err);
+        }
+        else {
+          this.amount = response.data.payload
+        }
       })
     },
     currentWithdraw() {
@@ -250,10 +253,12 @@ export default {
         if(response.data.code === 1){
           this.$message.error(response.data.err);
         }else{
-          this.$message.success(response.data.payload);
+          this.$message.success("成功取款：" + this.withdraw_amount +" 元");
           this.find_current_account();
+          this.password = "";
         }
       })
+      this.withdraw_amount = "";
     }
   },
   mounted() {

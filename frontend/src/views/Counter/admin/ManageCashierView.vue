@@ -196,11 +196,11 @@ export default {
       }
       //this.$message.success('修改id为' + this.modify_password.id + '的审查员密码成功，新密码为' + this.modify_password.new_password);
       this.modify_password_visible = false;
-      axiosInstance.post("/counter/cashier/modify", null, {
+      axiosInstance.post("/admin/counter/admin/cashier/modify", null, {
         params: {
-          // id: this.modify_password.id,
-          newpassword: CryptoJS.SHA256(this.modify_password.new_password).toString(),
-          oldpassword: CryptoJS.SHA256(this.modify_password.old_password).toString()
+          id: this.modify_password.id,
+          oldpassword: CryptoJS.SHA256(this.modify_password.old_password).toString(),
+          newpassword: CryptoJS.SHA256(this.modify_password.new_password).toString()
         }
       }).then(response => {
         if (response.data.code === 1) {
