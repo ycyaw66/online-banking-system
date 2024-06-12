@@ -120,9 +120,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             jwtUserDto = new JwtUserDto(
                                 dt.getUsername(),  
                                 dt.getPassword(), 
-                                Collections.singletonList(new AuthorityDto("OFFICER"))
+                                Collections.singletonList(new AuthorityDto("OPERATOR"))
                             );
                         }
+                        break ;
                     default:
                         return null; 
                 }
