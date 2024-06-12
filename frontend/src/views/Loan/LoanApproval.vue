@@ -4,7 +4,7 @@
       <el-table :data="loans" style="width: 100%" class="loan-table" header-align="center" align="center">
         <el-table-column prop="loan_id" label="贷款编号" width="180"></el-table-column>
         <el-table-column prop="amount" label="贷款金额" width="180"></el-table-column>
-        <el-table-column prop="user_name" label="贷款人" width="180"></el-table-column>
+        <el-table-column prop="borrow_id" label="借款人编号" width="180"></el-table-column>
         <el-table-column prop="date_applied" label="贷款时间" width="180"></el-table-column>
         <el-table-column label="操作" width="450">
           <template #default="scope">
@@ -26,67 +26,60 @@
       </el-pagination>
     </div>
 
-    <!-- 贷款详情对话框 -->
-    <el-dialog v-model="dialogVisible" title="贷款详情" width="600px" :modal-append-to-body="false">
+    <!-- 表单详情对话框 -->
+    <el-dialog v-model="formDialogVisible" title="表单详情" width="600px" :modal-append-to-body="false">
       <div class="dialog-content">
-        <el-form :model="selectedLoan" label-position="top" label-width="120px" class="loan-form">
+        <el-form :model="selectedForm" label-position="top" label-width="120px" class="form-details-form">
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="姓名(Name)">
-                <el-input v-model="selectedLoan.user_name" disabled/>
+                <el-input v-model="selectedForm.user_name" disabled/>
               </el-form-item>
               <el-form-item label="身份证号(ID Number)">
-                <el-input v-model="selectedLoan.id_number" disabled/>
-              </el-form-item>
-              <el-form-item label="贷款日期(Date of Apply)">
-                <el-date-picker v-model="selectedLoan.date_applied" type="date" placeholder="选择日期" disabled/>
+                <el-input v-model="selectedForm.id_number" disabled/>
               </el-form-item>
               <el-form-item label="性别(Gender)">
-                <el-select v-model="selectedLoan.gender" placeholder="请选择性别" disabled>
+                <el-select v-model="selectedForm.gender" placeholder="请选择性别" disabled>
                   <el-option label="男" value="male"></el-option>
                   <el-option label="女" value="female"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="婚姻情况(Marital Status)">
-                <el-select v-model="selectedLoan.emotion" placeholder="请选择婚姻情况" disabled>
+                <el-select v-model="selectedForm.emotion" placeholder="请选择婚姻情况" disabled>
                   <el-option label="已婚" value="married"></el-option>
                   <el-option label="未婚" value="single"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="贷款金额(Loan Amount)">
-                <el-input v-model="selectedLoan.amount" disabled/>
+              <el-form-item label="收入(Income)">
+                <el-input v-model="selectedForm.income" disabled/>
+              </el-form-item>
+              <el-form-item label="贷款用途(Loan Purpose)">
+                <el-input v-model="selectedForm.purpose" disabled/>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="住宅地址(Residential Address)">
-                <el-input v-model="selectedLoan.address" disabled/>
+                <el-input v-model="selectedForm.address" disabled/>
               </el-form-item>
               <el-form-item label="电话号码(Phone Number)">
-                <el-input v-model="selectedLoan.phone_number" disabled/>
+                <el-input v-model="selectedForm.phone_number" disabled/>
               </el-form-item>
               <el-form-item label="电子邮件地址(Email Address)">
-                <el-input v-model="selectedLoan.email" disabled/>
+                <el-input v-model="selectedForm.email" disabled/>
               </el-form-item>
               <el-form-item label="教育背景(Education Background)">
-                <el-input v-model="selectedLoan.education" disabled/>
+                <el-input v-model="selectedForm.education" disabled/>
               </el-form-item>
-              <el-form-item label="贷款用途(Loan Purpose)">
-                <el-input v-model="selectedLoan.purpose" disabled/>
-              </el-form-item>
-              <el-form-item label="贷款期限(Loan Term)">
-                <el-input v-model="selectedLoan.term" disabled/>
+              <el-form-item label="声明(Statement)">
+                <el-input type="textarea" v-model="selectedForm.statement" disabled/>
               </el-form-item>
             </el-col>
           </el-row>
-          <el-form-item label="个人情况声明(Personal Statement)">
-            <el-input type="textarea" :autosize="{ minRows: 7, maxRows: 14 }" v-model="selectedLoan.statement"
-                      disabled/>
-          </el-form-item>
         </el-form>
       </div>
       <template v-slot:footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">关闭</el-button>
+          <el-button @click="formDialogVisible = false">关闭</el-button>
         </span>
       </template>
     </el-dialog>
@@ -96,9 +89,9 @@
       <p>是否同意此贷款申请？</p>
       <template v-slot:footer>
         <span class="dialog-footer">
-            <el-button type="success" @click="approveLoan">同意</el-button>
-            <el-button type="danger" @click="rejectLoan">拒绝</el-button>
-            <el-button @click="approvalDialogVisible = false">关闭</el-button>
+          <el-button type="success" @click="approveLoan">同意</el-button>
+          <el-button type="danger" @click="rejectLoan">拒绝</el-button>
+          <el-button @click="approvalDialogVisible = false">关闭</el-button>
         </span>
       </template>
     </el-dialog>
@@ -107,9 +100,6 @@
     <el-dialog v-model="creditDialogVisible" title="征信情况" width="600px" :modal-append-to-body="false">
       <div class="dialog-content">
         <el-form :model="selectedCredit" label-position="top" label-width="120px" class="credit-form">
-          <el-form-item label="姓名(Name)">
-            <el-input v-model="selectedCredit.name" disabled/>
-          </el-form-item>
           <el-form-item label="信用评分(Credit Score)">
             <el-input v-model="selectedCredit.creditScore" disabled/>
           </el-form-item>
@@ -120,12 +110,13 @@
       </div>
       <template v-slot:footer>
         <span class="dialog-footer">
-            <el-button @click="creditDialogVisible = false">关闭</el-button>
+          <el-button @click="creditDialogVisible = false">关闭</el-button>
         </span>
       </template>
     </el-dialog>
   </div>
 </template>
+
 <script>
 import {ref} from 'vue';
 import {
@@ -138,7 +129,6 @@ import {
   ElInput,
   ElRow,
   ElCol,
-  ElDatePicker,
   ElSelect,
   ElOption,
   ElMessage
@@ -168,7 +158,6 @@ export default {
     ElInput,
     ElRow,
     ElCol,
-    ElDatePicker,
     ElSelect,
     ElOption
   },
@@ -178,7 +167,9 @@ export default {
     const dialogVisible = ref(false);
     const approvalDialogVisible = ref(false);
     const creditDialogVisible = ref(false);
+    const formDialogVisible = ref(false);
     const selectedLoan = ref({});
+    const selectedForm = ref({});
     const selectedCredit = ref({});
 
     const currentPage = ref(1);
@@ -193,38 +184,8 @@ export default {
             pageSize: pageSize.value
           }
         });
-        console.log(loanResponse);
 
-        const loansData = loanResponse.data.records;
-
-        if (!loansData || loansData.length === 0) {
-          ElMessage.warning('没有贷款申请数据。');
-          return;
-        }
-
-        // 创建所有表单请求的promise数组
-        const formPromises = loansData.map(async loan => {
-          try {
-            const formResponse = await axiosInstance.get(`/get-forms/${loan.form_id}`);
-            return {
-              ...loan,
-              ...formResponse.data
-            };
-          } catch (formError) {
-            console.error(`获取表单数据时发生错误: ${formError}`);
-            ElMessage.error('无法加载表单数据。');
-            return loan; // 返回原始贷款数据，避免丢失
-          }
-        });
-
-        // 等待所有请求完成并合并数据
-        const loansWithForms = await Promise.all(formPromises);
-
-        // 打印合并后的数据进行调试
-        console.log('合并后的贷款数据:', loansWithForms);
-
-        loans.value = loansWithForms;
-        console.log(loans);
+        loans.value = loanResponse.data.records;
         totalLoans.value = loanResponse.data.total;
       } catch (error) {
         console.error('获取贷款申请时发生错误:', error);
@@ -232,9 +193,15 @@ export default {
       }
     };
 
-    const viewLoanDetails = (loan) => {
-      selectedLoan.value = loan;
-      dialogVisible.value = true;
+    const viewLoanDetails = async (loan) => {
+      try {
+        const formResponse = await axiosInstance.get(`/get-forms/${loan.loan_id}`);
+        selectedForm.value = formResponse.data;
+        formDialogVisible.value = true;
+      } catch (error) {
+        console.error('获取表单数据时发生错误:', error);
+        ElMessage.error('无法加载表单数据。');
+      }
     };
 
     const openApprovalDialog = (loan) => {
@@ -267,28 +234,36 @@ export default {
     };
 
     const viewCreditReport = async (loan) => {
-      try {
-        const creditResponse = await axiosInstance.get(`/get-credit/${loan.form_id}`);
-        selectedCredit.value = creditResponse.data;
-        creditDialogVisible.value = true;
-      } catch (error) {
-        console.error('查看征信报告时发生错误:', error);
-        ElMessage.error('无法加载征信报告。');
-      }
+  try {
+    const creditResponse = await axiosInstance.put('/get-credit', {
+      form_id: loan.form_id
+    });
+
+    selectedCredit.value = {
+      creditScore: creditResponse.data.creditScore,
+      creditLimit: creditResponse.data.creditLimit
     };
+    creditDialogVisible.value = true;
+  } catch (error) {
+    console.error('查看征信报告时发生错误:', error);
+    ElMessage.error('无法加载征信报告。');
+  }
+};
+
 
     const handlePageChange = (page) => {
       currentPage.value = page;
       fetchLoans();
     };
 
-
     return {
       loans,
       dialogVisible,
       approvalDialogVisible,
       creditDialogVisible,
+      formDialogVisible,
       selectedLoan,
+      selectedForm,
       selectedCredit,
       fetchLoans,
       viewLoanDetails,
@@ -308,6 +283,7 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 .loan-query-page {
   padding: 20px;
