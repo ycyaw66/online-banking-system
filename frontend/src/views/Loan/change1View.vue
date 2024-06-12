@@ -59,7 +59,7 @@ export default {
       this.$refs.permissionForm.validate(async (valid) => {
         if (valid) {
           try {
-            await axiosInstance.put('/update-officer-permission', null, {params: this.permissionData});
+            await axiosInstance.put('/admin/update-officer-permission', null, {params: this.permissionData});
             this.$message.success('权限修改成功！');
           } catch (error) {
             console.error('修改权限时发生错误:', error);
