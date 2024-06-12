@@ -8,6 +8,7 @@ import UserFcBaseLayout from '../components/UserFcLayout.vue';
 import ManagerMainLayout from "@/components/ManagerMainLayout.vue";
 import OfficerMainLayout from "@/components/OfficerMainLayout.vue";
 import UserMainLayout from "@/components/UserMainLayout.vue";
+import CounterBaseLayout from "@/components/CounterBaseLayout.vue";
 
 // loan
 import LoginSelector from '@/views/Loan/LoginSelector.vue';
@@ -358,44 +359,50 @@ const routes = [
         // component: () => import('../views/Counter/login/CashierLoginView.vue')
     },
     {
-        path: '/counter/cashier/currentDeposit',
-        name: 'cashierCurrentDeposit',
-        component: () => import('../views/Counter/cashier/CurrentDepositView.vue')
-    },
-    {
-        path: '/counter/cashier/currentWithdrawal',
-        name: 'cashierCurrentWithdrawal',
-        component: () => import('../views/Counter/cashier/CurrentWithdrawalView.vue')
-    },
-    {
-        path: '/counter/cashier/freeAndUnfreeze',
-        name: 'cashierFreeAndUnfreeze',
-        component: () => import('../views/Counter/cashier/FreezeAndUnfreezewView.vue')
-    },
-    {
-        path: '/counter/cashier/lossAndReissue',
-        name: 'cashierLossAndReissue',
-        component: () => import('../views/Counter/cashier/LossAndReissueView.vue')
-    },
-    {
-        path: '/counter/cashier/openAccount',
-        name: 'cashierOpenAccount',
-        component: () => import('../views/Counter/cashier/OpenAccountView.vue')
-    },
-    {
-        path: '/counter/cashier/timeDeposit',
-        name: 'cashierTimeDeposit',
-        component: () => import('../views/Counter/cashier/TimeDepositView.vue')
-    },
-    {
-        path: '/counter/cashier/timeWithdrawal',
-        name: 'cashierTimeWithdrawal',
-        component: () => import('../views/Counter/cashier/TimeWithdrawalView.vue')
-    },
-    {
-        path: '/counter/cashier/transferAccount',
-        name: 'cashierTransferAccount',
-        component: () => import('../views/Counter/cashier/TransferAccountView.vue')
+        path:'/counter/cashier',
+        component: CounterBaseLayout,
+        children:[
+            {
+                path: 'currentDeposit',
+                name: 'cashierCurrentDeposit',
+                component: () => import('../views/Counter/cashier/CurrentDepositView.vue')
+            },
+            {
+                path: 'currentWithdrawal',
+                name: 'cashierCurrentWithdrawal',
+                component: () => import('../views/Counter/cashier/CurrentWithdrawalView.vue')
+            },
+            {
+                path: 'freeAndUnfreeze',
+                name: 'cashierFreeAndUnfreeze',
+                component: () => import('../views/Counter/cashier/FreezeAndUnfreezewView.vue')
+            },
+            {
+                path: 'lossAndReissue',
+                name: 'cashierLossAndReissue',
+                component: () => import('../views/Counter/cashier/LossAndReissueView.vue')
+            },
+            {
+                path: 'openAccount',
+                name: 'cashierOpenAccount',
+                component: () => import('../views/Counter/cashier/OpenAccountView.vue')
+            },
+            {
+                path: 'timeDeposit',
+                name: 'cashierTimeDeposit',
+                component: () => import('../views/Counter/cashier/TimeDepositView.vue')
+            },
+            {
+                path: 'timeWithdrawal',
+                name: 'cashierTimeWithdrawal',
+                component: () => import('../views/Counter/cashier/TimeWithdrawalView.vue')
+            },
+            {
+                path: 'transferAccount',
+                name: 'cashierTransferAccount',
+                component: () => import('../views/Counter/cashier/TransferAccountView.vue')
+            },
+        ]
     },
 
 ];
