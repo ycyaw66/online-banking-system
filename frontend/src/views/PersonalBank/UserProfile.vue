@@ -135,14 +135,18 @@ export default {
     },
     submitForm() {
       // 表单校验
-      this.$refs["modifyForm"].validate((valid) => {
-        if (!valid) {
-          ElMessage.error("修改失败，请检查修改信息");
-          return;
-        } else {
-          this.handleModify();
-        }
-      });
+      if (this.modifyInfoVisible) {
+        this.$refs["modifyForm"].validate((valid) => {
+          if (!valid) {
+            ElMessage.error("修改失败，请检查修改信息");
+            return;
+          } else {
+            this.handleModify();
+          }
+        });
+      } else {
+        this.handleModify();
+      }
     },
     handleModify() {
       if (this.modifyPasswordVisible) {

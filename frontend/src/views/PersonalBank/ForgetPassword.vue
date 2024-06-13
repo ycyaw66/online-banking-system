@@ -20,7 +20,7 @@
             </div>
           </template>
           <!-- 忘记密码卡片的body -->
-          <el-form :model="forgetForm" :rules="forgetRules" label-width="80px">
+          <el-form :model="forgetForm" :rules="forgetRules" ref="forgetForm" label-width="80px">
             <el-form-item label="邮箱" prop="email" style="margin-top: 20px">
               <el-input v-model="forgetForm.email" placeholder="邮箱" style="width: 200px"></el-input>
               <el-button v-if="isCounting" type="primary" style="margin-left: 5px; width: 95px" :disabled="isCounting">{{countDown}}秒后重试</el-button>
@@ -36,7 +36,7 @@
               <el-input v-model="forgetForm.repassword" placeholder="请再次输入密码" style="width: 300px" show-password></el-input> 
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="handleForget" style="width: 300px">重置密码</el-button>
+              <el-button type="primary" @click="submitForm" style="width: 300px">重置密码</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -96,6 +96,17 @@ export default {
   methods: {
     jumpLogin() {
       this.$router.push('/personalBank/user/login');
+    },
+    submitForm() {
+      // 表单校验
+      this.$refs["forgetForm"].validate((valid) => {
+        if (!valid) {
+          ElMessage.error("重置失败，请检查信息");
+          return;
+        } else {
+          this.handleForget();
+        }
+      });
     },
     handleForget() {
       // 加密后传给后端
