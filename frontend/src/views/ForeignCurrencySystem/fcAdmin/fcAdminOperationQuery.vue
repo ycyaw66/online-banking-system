@@ -78,7 +78,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import {Avatar, UserFilled} from "@element-plus/icons-vue";
-
+axios.defaults.baseURL = "http://localhost:8082";
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use(config => {
   const token = Cookies.get('token');
