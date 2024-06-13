@@ -37,9 +37,7 @@ public class TradeRecordController {
     public RespResult searchTradeRecords(@RequestBody Map<String, Object> params) {
         String userId = currentUserService.getCurrentUserId().payload.toString();
         params.put("userId", userId);
-        System.out.println(params);
         List<TradeRecord> trade = tradeRecordService.searchTradeRecords(params);
-        System.out.println(trade);
         if(trade.isEmpty())
             return RespResult.fail("No trade record");
         return RespResult.success(trade);
