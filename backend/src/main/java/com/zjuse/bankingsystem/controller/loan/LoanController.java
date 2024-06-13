@@ -34,8 +34,8 @@ public class LoanController {
     private CreditReportService creditReportService;
     @Autowired
     private AmountService amountService;
-    @Autowired 
-    private CurrentUserService currentUserService; 
+    @Autowired
+    private CurrentUserService currentUserService;
     @Autowired
     private OfficerLoginService loginService;
     @Autowired
@@ -47,46 +47,47 @@ public class LoanController {
         int result;
         Map<String, Object> response = new HashMap<>();
 
-        Long userId = (Long)currentUserService.getCurrentUserId().payload; 
-        loan.setBorrow_id(userId);
+        Long userId = (Long)currentUserService.getCurrentUserId().payload;
+        loan.setBorrowId(userId);
 
         //set date
-        loan.setDate_applied(LocalDate.now());
+        loan.setDateApplied(LocalDate.now());
 
-
-        Double credit= creditReportService.calculateCreditLimit(loan.getBorrow_id());
+        Double credit= creditReportService.calculateCreditLimit(loan.getBorrowId());
 
         String permission;double rate;
-        if(loan.getAmount()>100000) {permission="large";rate=0.03;}
-        else {permission="small";rate=0.01;}
-        rate+=0.02*(1-credit/loan.getAmount());
-        loan.setRate(rate);
+        System.out.println(loan.getAmount());
+        System.out.println(credit);
+        if(loan.getAmount()>500) {permission="large";rate=0.01;}
+        else {permission="small";rate=0.03;}
 
         //artificial
         if(loan.getAmount()>credit){
+            rate+=0.02*(1-credit/loan.getAmount());
+            loan.setRate(rate);
             loan.setStatus(0);
             //get random suitable officer_id from officer_tanble
             int id=loanApplyService.getofficerid(permission);
-            loan.setOfficer_id(id);
+            loan.setOfficerId(id);
             result=loanApplyService.insertloan(loan);
         }
         //automic
         else{
-            amountService.addAmount(loan.getCard_id(), BigDecimal.valueOf(loan.getAmount()));
+            amountService.addAmount(loan.getCardId(), BigDecimal.valueOf(loan.getAmount()));
             loan.setStatus(2);
-            loan.setDate_approved(LocalDate.now());
+            loan.setDateApproved(LocalDate.now());
+            loan.setRate(rate);
             result=loanApplyService.autoloan(loan);
         }
 
         if (result > 0) {
             response.put("message", "Loan created successfully!");
-            response.put("loan_id", loan.getLoan_id());
+            response.put("loan_id", loan.getLoanId());
         } else {
             response.put("message", "Failed to create loan.");
         }
         return response;
     }
-
 
     @GetMapping("/get-loans")
     public IPage<Loan> getLoans(@RequestParam int page, @RequestParam int pageSize, HttpServletRequest request) {
@@ -94,7 +95,7 @@ public class LoanController {
         officerUsername = (String)currentUserService.getCurrentUsername().payload;
         Officer officer = loginService.findOfficerByUsername(officerUsername);
 
-        int officer_id = officer.getOfficer_id();
+        int officer_id = officer.getOfficerId();
         Page<Loan> loanPage = new Page<>(page, pageSize);
         return loanApprovalService.getLoan(loanPage, officer_id);
     }
@@ -130,7 +131,7 @@ public class LoanController {
         officerUsername = (String)currentUserService.getCurrentUsername().payload;
         Officer officer = loginService.findOfficerByUsername(officerUsername);
 
-        int officer_id = officer.getOfficer_id();
+        int officer_id = officer.getOfficerId();
         Page<Loan> loanPage = new Page<>(page, pageSize);
         return loanApprovalService.getApprovalHistory(loanPage, officer_id);
     }

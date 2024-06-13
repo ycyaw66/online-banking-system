@@ -1,30 +1,41 @@
 package com.zjuse.bankingsystem.entity.loan;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 public class Report {
-    private int report_id;
-    private Long user_id;
+    @JsonProperty("report_id")
+    private int reportId;
+
+    @JsonProperty("user_id")
+    private Long userId;
+
+    @JsonProperty("creditLimit")
     private double creditLimit;
+
+    @JsonProperty("date")
     private LocalDate date;
+
+    @JsonProperty("credit_score")
     private double creditScore;
 
     // Getters and Setters
 
-    public int getReport_id() {
-        return report_id;
+    public int getReportId() {
+        return reportId;
     }
 
-    public void setReport_id(int report_id) {
-        this.report_id = report_id;
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public double getCreditLimit() {
@@ -35,7 +46,10 @@ public class Report {
         this.creditLimit = creditLimit;
     }
 
-    public void setCreditScore(double creditScore) {this.creditScore = creditScore;}
+    public void setCreditScore(double creditScore) {
+        this.creditScore = creditScore;
+    }
+
 
     public LocalDate getDate() {
         return date;

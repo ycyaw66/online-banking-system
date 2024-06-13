@@ -23,7 +23,7 @@ public class BlacklistService {
 
     public ApiResult getBlacklist() {
         try {
-            QueryWrapper wrapper = new QueryWrapper(); 
+            QueryWrapper wrapper = new QueryWrapper();
             List<Blacklist> blacklist = blacklistMapper.selectList(wrapper);
             ApiResult apiResult = new ApiResult(true, "success");
             apiResult.payload = blacklist;
@@ -35,7 +35,7 @@ public class BlacklistService {
     }
     public ApiResult isInblacklist(Long userId) {
         try {
-            QueryWrapper wrapper = new QueryWrapper(); 
+            QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("user_id", userId);
             Boolean isIn = blacklistMapper.selectCount(wrapper) > 0;
 
@@ -66,9 +66,9 @@ public class BlacklistService {
     }
     public ApiResult removeBlacklist(Long userId) {
         try {
-            QueryWrapper wrapper = new QueryWrapper(); 
+            QueryWrapper wrapper = new QueryWrapper();
             wrapper.eq("user_id", userId);
-            
+
             if (blacklistMapper.selectCount(wrapper) == 0) {
                 return new ApiResult(false, "user not in blacklist");
             }

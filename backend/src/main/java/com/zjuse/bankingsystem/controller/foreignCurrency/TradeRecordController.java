@@ -26,7 +26,7 @@ public class TradeRecordController {
     public RespResult getTradeRecordsByUserId() {
         // 调用Service层方法获取所有交易记录
         // 返回交易记录列表给前端
-        String userId = currentUserService.getCurrentUserId().toString();
+        String userId = currentUserService.getCurrentUserId().payload.toString();
         List<TradeRecord> tradeRecords = tradeRecordService.getTradeRecordsByUserId(userId);
         if(tradeRecords.isEmpty())
             return RespResult.fail("No trade record");
@@ -35,6 +35,8 @@ public class TradeRecordController {
 
     @PostMapping("/search")
     public RespResult searchTradeRecords(@RequestBody Map<String, Object> params) {
+        String userId = currentUserService.getCurrentUserId().payload.toString();
+        params.put("userId", userId);
         List<TradeRecord> trade = tradeRecordService.searchTradeRecords(params);
         if(trade.isEmpty())
             return RespResult.fail("No trade record");

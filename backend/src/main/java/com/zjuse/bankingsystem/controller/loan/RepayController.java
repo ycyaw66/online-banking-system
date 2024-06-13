@@ -5,11 +5,7 @@ import com.zjuse.bankingsystem.service.loan.AmountService;
 import com.zjuse.bankingsystem.service.loan.CardgetService;
 import com.zjuse.bankingsystem.service.loan.LoanQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -27,7 +23,7 @@ public class RepayController {
     @Autowired
     private CardgetService bankCardService;
     @Autowired
-    private CurrentUserService currentUserService; 
+    private CurrentUserService currentUserService;
 
     @GetMapping("/bank-cards")
     public List<String> getUserBankCards() {
@@ -38,14 +34,20 @@ public class RepayController {
     }
 
     @PostMapping("/confirm-repayment")
-    public Map<String, Object> Repayment(@RequestParam int loan_id,@RequestParam String info, @RequestParam String password) {
-        Long card_id=0l;
+    public Map<String, Object> Repayment(@RequestBody Map<String, String> request) {
+        int loan_id = Integer.parseInt(request.get("loan_id"));
+        String info = request.get("info");
+        String password = request.get("password");
+
+        Long card_id = 0L;
+        System.out.println("aaa");
         String[] parts = info.split(" - ");
         if (parts.length > 0) {
             try {
                 // 将提取的字符串转换为整数
                 int number = Integer.parseInt(parts[0]);
-                System.out.println(number); // 输出：66025
+                System.out.println("id" + number); // 输出：66025
+                card_id = (long) number;
             } catch (NumberFormatException e) {
                 System.out.println("未找到匹配的数字部分");
             }
@@ -53,23 +55,23 @@ public class RepayController {
             System.out.println("未找到匹配的数字部分");
         }
 
-        double loan_amount=loanQueryService.getamount(loan_id);
+        double loan_amount = loanQueryService.getamount(loan_id);
 
         double amount = amountService.getamount(card_id, password).doubleValue();
 
-        double repay_amount=loan_amount*(1+loanQueryService.getrate(loan_id)*0.01);
+        double repay_amount = loan_amount * (1 + loanQueryService.getrate(loan_id) * 0.01);
 
-        int result = amountService.subAmount(card_id, BigDecimal.valueOf(amount-repay_amount), password);
+        // System.out.println("repay_amount:" + repay_amount);
+        int result = amountService.subAmount(card_id, BigDecimal.valueOf(repay_amount), password);
 
         loanQueryService.updatestatus(loan_id);
 
         Map<String, Object> response = new HashMap<>();
-        
-        if(amount>repay_amount){
+
+        if (amount > repay_amount) {
             if (result > 0) response.put("message", "Repayment successfully!");
             else response.put("message", "fail to repay!");
-        }    
-        else response.put("message", "Lack of balance!");
+        } else response.put("message", "Lack of balance!");
 
         return response;
     }

@@ -1,86 +1,82 @@
 package com.zjuse.bankingsystem.entity.loan;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
 @TableName("loan")
 public class Loan {
 
-    @TableId(value = "loan_id", type = IdType.AUTO)
-    private Long loan_id;
+    @JsonProperty("loan_id")
+    private Long loanId;
 
-    @TableField("borrow_id")
-    private Long borrow_id;
+    @JsonProperty("borrow_id")
+    private Long borrowId;
 
-    @TableField("card_id")
-    private Long card_id;
+    @JsonProperty("card_id")
+    private Long cardId;
 
-    @TableField("officer_id")
-    private int officer_id;
+    @JsonProperty("officer_id")
+    private int officerId;
 
-    @TableField("amount")
+    @JsonProperty("amount")
     private double amount;
 
-    @TableField("rate")
+    @JsonProperty("rate")
     private double rate;
 
-    @TableField("term")
+    @JsonProperty("term")
     private int term;
 
-    @TableField("status")
+    @JsonProperty("status")
     private LoanStatus status;
 
-    @TableField("date_applied")
-    private LocalDate date_applied;
+    @JsonProperty("date_applied")
+    private LocalDate dateApplied;
 
-    @TableField("date_approved")
-    private LocalDate date_approved;
+    @JsonProperty("date_approved")
+    private LocalDate dateApproved;
 
 
-    @TableField("form_id")
-    private int form_id;
+    @JsonProperty("form_id")
+    private int formId;
 
     // Getters and Setters
 
 
-    public Long getLoan_id() {
-        return loan_id;
+    public Long getLoanId() {
+        return loanId;
     }
 
-    public void setLoan_id(Long loan_id) {
-        this.loan_id = loan_id;
+    public void setLoanId(Long loanId) {
+        this.loanId = loanId;
     }
 
-    public Long getBorrow_id() {
-        return borrow_id;
+    public Long getBorrowId() {
+        return borrowId;
     }
 
-    public void setBorrow_id(Long borrow_id) {
-        this.borrow_id = borrow_id;
+    public void setBorrowId(Long borrowId) {
+        this.borrowId = borrowId;
     }
 
-    public Long getCard_id() {
-        return card_id;
+    public Long getCardId() {
+        return cardId;
     }
 
-    public void setCard_id(Long card_id) {
-        this.card_id = card_id;
+    public void setCardId(Long cardId) {
+        this.cardId = cardId;
     }
 
-    public int getOfficer_id() {
-        return officer_id;
+    public int getOfficerId() {
+        return officerId;
     }
 
-    public void setOfficer_id(int officer_id) {
-        this.officer_id = officer_id;
+    public void setOfficerId(int officerId) {
+        this.officerId = officerId;
     }
 
     public double getAmount() {
@@ -133,44 +129,44 @@ public class Loan {
         return -1;
     }
 
-    public LocalDate getDate_applied() {
-        return date_applied;
+    public LocalDate getDateApplied() {
+        return dateApplied;
     }
 
-    public void setDate_applied(LocalDate date_applied) {
-        this.date_applied = date_applied;
+    public void setDateApplied(LocalDate dateApplied) {
+        this.dateApplied = dateApplied;
     }
 
-    public LocalDate getDate_approved() {
-        return date_approved;
+    public LocalDate getDateApproved() {
+        return dateApproved;
     }
 
-    public void setDate_approved(LocalDate date_approved) {
-        this.date_approved = date_approved;
+    public void setDateApproved(LocalDate dateApproved) {
+        this.dateApproved = dateApproved;
     }
 
-    public int getForm_id() {
-        return form_id;
+    public int getFormId() {
+        return formId;
     }
 
-    public void setForm_id(int form_id) {
-        this.form_id = form_id;
+    public void setFormId(int formId) {
+        this.formId = formId;
     }
 
     @Override
     public String toString() {
         return "Loan{" +
-                "loan_id=" + loan_id +
-                ", borrow_id=" + borrow_id +
-                ", card_id=" + card_id +
-                ", officer_id=" + officer_id +
+                "loan_id=" + loanId +
+                ", borrow_id=" + borrowId +
+                ", card_id=" + cardId +
+                ", officer_id=" + officerId +
                 ", amount=" + amount +
                 ", rate=" + rate +
                 ", term=" + term +
                 ", status=" + status +
-                ", date_applied=" + date_applied +
-                ", date_approved=" + date_approved +
-                ", form_id=" + form_id +
+                ", date_applied=" + dateApplied +
+                ", date_approved=" + dateApproved +
+                ", form_id=" + formId +
                 '}';
     }
 }

@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface IdgetMapper  {
 
-    @Select("SELECT id FROM officer WHERE permission = #{permission} ORDER BY RAND() LIMIT 1")
+    @Select("SELECT officer_id FROM officer WHERE permissions = #{permission} ORDER BY RAND() LIMIT 1")
 
     int idrandomget(@Param("permission") String permission);
 

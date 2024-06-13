@@ -25,7 +25,7 @@ public class FormController {
         Map<String, Object> response = new HashMap<>();
         if (result > 0) {
             response.put("message", "Form created successfully!");
-            response.put("id", form.getForm_id()); // 返回生成的表单ID
+            response.put("id", form.getFormId()); // 返回生成的表单ID
         } else {
             response.put("message", "Failed to create form.");
         }
