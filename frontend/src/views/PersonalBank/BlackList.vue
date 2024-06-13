@@ -3,12 +3,12 @@
     <div class="header">
       <el-button type="primary" @click="addBlacklistVisible = true">添加黑名单</el-button>
       <div style="font-size: 2em; font-weight: bold; display: flex; justify-content: flex-end; width: 100%;">
-      <el-input v-model="searchQuery" placeholder="根据用户名/用户ID搜索" class="search-input">
-        <template #prefix>
-          <el-icon><Search /></el-icon>
-        </template>
-      </el-input>
-    </div>
+        <el-input v-model="searchQuery" placeholder="根据用户名/用户ID搜索" class="search-input">
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
+        </el-input>
+      </div>
     </div>
     <el-table :data="paginatedData" style="width: 100%">
       <el-table-column prop="user_id" label="账号ID" width="180"></el-table-column>
@@ -65,8 +65,6 @@
 </template>
 
 <script>
-// import { ref, computed, onMounted } from 'vue';
-// import { ElMessage } from 'element-plus';
 import 'element-plus/dist/index.css';
 import { Search } from '@element-plus/icons-vue';
 import axios from 'axios';
@@ -100,7 +98,8 @@ export default {
       newBlacklistInfo: {
         user_id: '',
         reason: '',
-      }
+      },
+      previousBlacklist: []
     };
   },
   computed: {
@@ -110,7 +109,7 @@ export default {
     filteredData() {
       const query = this.searchQuery.toLowerCase();
       return this.blacklist.filter(
-          item => item.username.toLowerCase().includes(query) || item.user_id.includes(query)
+          item => item.username.toLowerCase().includes(query) || String(item.user_id).includes(query)
       );
     },
     paginatedData() {
@@ -121,76 +120,79 @@ export default {
   },
   methods: {
     fetchBlacklist() {
-      // 获取黑名单目录
-      // this.blacklist = [] // 清空列表
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.get('/blacklist/get') // 向黑名单发出GET请求
-        .then(response => {
-          let blacklist = response.data.payload // 接收响应负载
-          this.blacklist = []
-          blacklist.forEach(account => { // 对于每个账号
-            this.blacklist.push(account);// 将其加入到列表中
+      axios.get('/blacklist/get')
+          .then(response => {
+            this.blacklist = response.data.payload;
           })
-        })
-        .catch(error => {
-          console.error('Error fetching blacklist:', error);
-        });
+          .catch(error => {
+            console.error('Error fetching blacklist:', error);
+          });
     },
-    // 切换页码
     handlePageChange(page) {
       this.currentPage = page;
     },
-    // 添加黑名单
     confirmAddBlacklist() {
-      // 发POST
+      // 检查用户是否已在黑名单中
+      const userIdToCheck = String(this.newBlacklistInfo.user_id);
+
+      const existingUser = this.blacklist.some(user => {
+        return String(user.user_id) === userIdToCheck;
+      });
+
+
+      if (existingUser) {
+        this.$message.error('该用户已在黑名单中');
+        return;
+      }
+
+
+      this.previousBlacklist = [...this.blacklist];
+
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.post("/blacklist/add", {
         user_id: this.newBlacklistInfo.user_id,
         reason: this.newBlacklistInfo.reason,
       })
-        .then(response => {
-          if (response.status === 200) {
-            // 响应成功
-            this.$message.success('已添加到黑名单');
-            this.addBlacklistVisible = false;
-            this.newBlacklistInfo = { user_id: '', username: '', reason: '' };
-            this.fetchBlacklist(); // 重新查询黑名单以刷新页面
-          }
-        })
-        .catch(error => {
-          // 响应失败
-          this.$message.error('添加黑名单失败：' + error.response.data); // 显示错误消息
-        });
+          // eslint-disable-next-line no-unused-vars
+          .then(response => {
+            this.fetchBlacklist();
+            // 如果黑名单列表没有变化，说明添加失败（用户不存在）
+            // eslint-disable-next-line no-unused-vars
+            axios.get('/blacklist/get').then(response => {
+              if (JSON.stringify(this.blacklist) === JSON.stringify(this.previousBlacklist)) {
+                this.$message.error('添加黑名单失败：用户不存在');
+              } else {
+                this.$message.success('已添加到黑名单');
+                this.addBlacklistVisible = false;
+                this.newBlacklistInfo = { user_id: '', reason: '' };
+              }
+            });
+          });
     },
     confirmRemoveBlacklist(row) {
       this.rowToRemove = row;
       this.removeBlacklistVisible = true;
     },
-// 移除黑名单
     removeFromBlacklistConfirmed() {
-      // 发出 DELETE 请求
       axios.delete("/blacklist/remove", {
-        data: {
-          user_id: this.rowToRemove.user_id
-        }})
+        data: { user_id: this.rowToRemove.user_id }
+      })
           .then(response => {
             if (response.status === 200) {
-              // 响应成功
               this.$message.success(`已移除黑名单: ${this.rowToRemove.username}`);
               this.removeBlacklistVisible = false;
               this.rowToRemove = null;
-              this.fetchBlacklist(); // 刷新页面
+              this.fetchBlacklist();
             }
           })
           .catch(error => {
-            // 响应失败
-            this.$message.error('移除黑名单失败：' + error.response.data); // 显示错误消息
+            this.$message.error('移除黑名单失败：' + error.response.data);
           });
     }
-
   },
   mounted() {
-    this.fetchBlacklist();  // Fetch blacklist from server on mount
+    this.fetchBlacklist();
   }
 };
 </script>

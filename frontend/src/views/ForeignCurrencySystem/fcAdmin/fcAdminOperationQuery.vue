@@ -1,83 +1,30 @@
 <template>
-  <div>
-    <div class="common-layout">
-      <el-container class="layout-container-demo" style="height: 700px">
-        <!--标题区域-->
-        <el-header
-            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
-          <div style="display: inline-block;">
-            <img src="../icons/logo.png"
-                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-          </div>
-          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">在线银行系统————外汇系统</span>
-        </el-header>
-        <el-container>
-          <!--侧边栏区域-->
-          <el-aside width="200px" style="height: 87vh; display: flex; flex-direction: column;">
-            <el-scrollbar style="flex: 1">
-              <el-menu :default-openeds="['1', '3']">
-                <el-sub-menu index="1">
-                  <template #title>
-                    <el-icon style="color: white;">
-                      <UserFilled/>
-                    </el-icon>
-                    <span style="color: white;">外汇系统管理员</span>
-                  </template>
-                  <el-menu-item index="1-2">
-                    <router-link to="/fc/admin/home">
-                      <el-icon style="color: white;">
-                        <Avatar/>
-                      </el-icon>
-                      <span style="color: white;">数据操作员管理</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-2">
-                    <router-link to="fc/admin/operationRecord">
-                      <el-icon style="color: white;">
-                        <Avatar/>
-                      </el-icon>
-                      <span style="color: white;">操作历史查询</span>
-                    </router-link>
-                  </el-menu-item>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-            <el-button type="danger"
-                       @click="exit"
-                       style="display: block; margin-bottom: 40px;margin-left:50px;width:100px">
-              退出登录
-            </el-button>
-          </el-aside>
-          <el-main style="background-color: #f1f1f1;">
-            <br>
-            <br>
-            <div style="display: flex; justify-content: center;">
-              <el-table :data="operationRecords" stripe style="width: 1200px;">
-                <el-table-column prop="record_id" label="操作编号" width="200px"/>
-                <el-table-column prop="data_operator_id" label="操作员编号" width="200px"/>
-                <el-table-column prop="fc_id" label="外币ID" width="100px"/>
-                <el-table-column prop="operation" label="操作" width="100px"/>
-                <el-table-column prop="old_rate" label="原汇率" width="100px"/>
-                <el-table-column prop="new_rate" label="新汇率" width="100px"/>
-                <el-table-column prop="dest_date" label="目标日期" width="200px"/>
-                <el-table-column prop="operation_time" label="操作日期" width="200px"/>
-              </el-table>
-            </div>
-            <br><br>
-            <div style="display: flex; justify-content: center; align-items: center;">
-            </div>
-          </el-main>
-        </el-container>
-      </el-container>
+  <el-main style="background-color: #f1f1f1;">
+    <br>
+    <br>
+    <div style="display: flex; justify-content: center;">
+      <el-table :data="operationRecords" stripe style="width: 1200px;">
+        <el-table-column prop="record_id" label="操作编号" width="200px"/>
+        <el-table-column prop="data_operator_id" label="操作员编号" width="200px"/>
+        <el-table-column prop="fc_id" label="外币ID" width="100px"/>
+        <el-table-column prop="operation" label="操作" width="100px"/>
+        <el-table-column prop="old_rate" label="原汇率" width="100px"/>
+        <el-table-column prop="new_rate" label="新汇率" width="100px"/>
+        <el-table-column prop="dest_date" label="目标日期" width="200px"/>
+        <el-table-column prop="operation_time" label="操作日期" width="200px"/>
+      </el-table>
     </div>
-  </div>
+    <br><br>
+    <div style="display: flex; justify-content: center; align-items: center;">
+    </div>
+  </el-main>
 </template>
 
 <script>
 
 import axios from "axios";
 import Cookies from "js-cookie";
-import {Avatar, UserFilled} from "@element-plus/icons-vue";
+axios.defaults.baseURL = "http://localhost:8082";
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use(config => {
@@ -91,7 +38,6 @@ axiosInstance.interceptors.request.use(config => {
 });
 
 export default {
-  components: {Avatar, UserFilled},
   data() {
     return {
       formLabelWidth: '150px',

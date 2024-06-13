@@ -47,7 +47,7 @@
               <el-icon>
                 <Avatar />
               </el-icon>
-              <span>管理数据审查员</span>
+              <span>管理数据操纵员</span>
             </el-menu-item>
             <el-button class="logout-button" type="danger" @click="logoutVisible = true">
               退出登录
