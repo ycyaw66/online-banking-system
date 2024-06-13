@@ -40,13 +40,11 @@
 </template>
 
 <script>
-//import { ref, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import 'element-plus/dist/index.css';
 import { Search } from '@element-plus/icons-vue';
 import axios from "axios";
 import Cookies from "js-cookie";
-//import axios from 'axios';
 
 export default {
   name: 'AuthorityManagement',
@@ -63,99 +61,19 @@ export default {
           user_id: '322010000',
           username: 'aa',
           permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: false },
-            { name: '收款', enabled: true }
+            {name: '支付', enabled: true},
+            {name: '转账', enabled: false},
+            {name: '收款', enabled: true}
           ]
         },
-        {
-          user_id: '322010001',
-          username: 'bb',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: true },
-            { name: '收款', enabled: false }
-          ]
-        },
-        {
-          user_id: '322010002',
-          username: 'cc',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: false },
-            { name: '收款', enabled: true }
-          ]
-        },
-        {
-          user_id: '322010003',
-          username: 'dd',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: true },
-            { name: '收款', enabled: false }
-          ]
-        },
-        {
-          user_id: '322010004',
-          username: 'ee',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: false },
-            { name: '收款', enabled: true }
-          ]
-        },
-        {
-          user_id: '322010005',
-          username: 'ff',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: true },
-            { name: '收款', enabled: false }
-          ]
-        },
-        {
-          user_id: '322010006',
-          username: 'gg',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: false },
-            { name: '收款', enabled: true }
-          ]
-        },
-        {
-          user_id: '322010007',
-          username: 'hh',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: true },
-            { name: '收款', enabled: false }
-          ]
-        },
-        {
-          user_id: '322010008',
-          username: 'ii',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: false },
-            { name: '收款', enabled: true }
-          ]
-        },
-        {
-          user_id: '322010009',
-          username: 'ii1',
-          permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: false },
-            { name: '收款', enabled: true }
-          ]
-        },
+        // ... more users
         {
           user_id: '322010010',
           username: 'jj',
           permissions: [
-            { name: '支付', enabled: true },
-            { name: '转账', enabled: true },
-            { name: '收款', enabled: false }
+            {name: '支付', enabled: true},
+            {name: '转账', enabled: true},
+            {name: '收款', enabled: false}
           ]
         }
       ]
@@ -163,15 +81,14 @@ export default {
   },
   methods: {
     fetchPermission() {
-      // this.users = []
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
       axios.get('/privilege/get')
-        .then(response => {
-          this.users = response.data.payload;
-        })
-        .catch(error => {
-          console.error('Error fetching users permission:', error);
-        });
+          .then(response => {
+            this.users = response.data.payload;
+          })
+          .catch(error => {
+            console.error('Error fetching users permission:', error);
+          });
     },
     togglePermission(user, permissionName) {
       const permission = user.permissions.find(perm => perm.name === permissionName);
@@ -185,8 +102,8 @@ export default {
           receive: user.permissions.find(perm => perm.name === "收款").enabled,
         }).then((response) => {
           if (response.status === 200) {
-          this.fetchPermission();
-          ElMessage.success(`${permissionName} 权限已 ${permission.enabled ? '启用' : '禁用'}`);
+            this.fetchPermission();
+            ElMessage.success(`${permissionName} 权限已 ${permission.enabled ? '启用' : '禁用'}`);
           }
         }).catch(error => {
           ElMessage.error('权限更新失败：' + error.response.data);
@@ -206,7 +123,7 @@ export default {
       const query = this.searchQuery.toLowerCase();
       return this.users.filter(item =>
           item.username.toLowerCase().includes(query) ||
-          item.user_id.includes(query)
+          String(item.user_id).includes(query)
       );
     },
     paginatedData() {
