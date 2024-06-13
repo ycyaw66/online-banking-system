@@ -35,6 +35,8 @@ public class TradeRecordController {
 
     @PostMapping("/search")
     public RespResult searchTradeRecords(@RequestBody Map<String, Object> params) {
+        String userId = currentUserService.getCurrentUserId().toString();
+        params.put("userId", userId);
         List<TradeRecord> trade = tradeRecordService.searchTradeRecords(params);
         if(trade.isEmpty())
             return RespResult.fail("No trade record");
