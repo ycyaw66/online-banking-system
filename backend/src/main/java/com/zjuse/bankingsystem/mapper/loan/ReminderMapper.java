@@ -8,13 +8,13 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface ReminderMapper extends BaseMapper<Reminder> {
 
-    @Select("SELECT time FROM Reminder WHERE user_id = #{userId}")
+    @Select("SELECT time FROM reminder WHERE user_id = #{userId}")
     Integer getReminderTime(@Param("userId") int userId);
 
-    @Insert("INSERT INTO Reminder (user_id, time) VALUES (#{userId}, #{reminderTime})")
+    @Insert("INSERT INTO reminder (user_id, time) VALUES (#{userId}, #{reminderTime})")
     int insertReminder(@Param("userId") int userId, @Param("reminderTime") int reminderTime);
 
-    @Update("UPDATE Reminder SET time = #{reminderTime} WHERE user_id = #{userId}")
+    @Update("UPDATE reminder SET time = #{reminderTime} WHERE user_id = #{userId}")
     int updateReminder(@Param("userId") int userId, @Param("reminderTime") int reminderTime);
 }
 
