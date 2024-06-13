@@ -58,7 +58,7 @@ public class CardService {
         }
         return card.getCardType();
     }
-    
+
     public boolean existCard(Long cardid) throws Exception {
         QueryWrapper<CardOfPerson> wrapper = new QueryWrapper<>();
         wrapper.eq("card_id", cardid);

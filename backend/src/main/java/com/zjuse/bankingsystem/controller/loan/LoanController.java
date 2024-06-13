@@ -34,8 +34,8 @@ public class LoanController {
     private CreditReportService creditReportService;
     @Autowired
     private AmountService amountService;
-    @Autowired 
-    private CurrentUserService currentUserService; 
+    @Autowired
+    private CurrentUserService currentUserService;
     @Autowired
     private OfficerLoginService loginService;
     @Autowired
@@ -47,23 +47,24 @@ public class LoanController {
         int result;
         Map<String, Object> response = new HashMap<>();
 
-        Long userId = (Long)currentUserService.getCurrentUserId().payload; 
+        Long userId = (Long)currentUserService.getCurrentUserId().payload;
         loan.setBorrowId(userId);
 
         //set date
         loan.setDateApplied(LocalDate.now());
 
-
         Double credit= creditReportService.calculateCreditLimit(loan.getBorrowId());
 
         String permission;double rate;
-        if(loan.getAmount()>100000) {permission="large";rate=0.03;}
-        else {permission="small";rate=0.01;}
-        rate+=0.02*(1-credit/loan.getAmount());
-        loan.setRate(rate);
+        System.out.println(loan.getAmount());
+        System.out.println(credit);
+        if(loan.getAmount()>500) {permission="large";rate=0.01;}
+        else {permission="small";rate=0.03;}
 
         //artificial
         if(loan.getAmount()>credit){
+            rate+=0.02*(1-credit/loan.getAmount());
+            loan.setRate(rate);
             loan.setStatus(0);
             //get random suitable officer_id from officer_tanble
             int id=loanApplyService.getofficerid(permission);
@@ -75,6 +76,7 @@ public class LoanController {
             amountService.addAmount(loan.getCardId(), BigDecimal.valueOf(loan.getAmount()));
             loan.setStatus(2);
             loan.setDateApproved(LocalDate.now());
+            loan.setRate(rate);
             result=loanApplyService.autoloan(loan);
         }
 
@@ -86,7 +88,6 @@ public class LoanController {
         }
         return response;
     }
-
 
     @GetMapping("/get-loans")
     public IPage<Loan> getLoans(@RequestParam int page, @RequestParam int pageSize, HttpServletRequest request) {

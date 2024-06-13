@@ -7,9 +7,9 @@ import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface FormMapper extends BaseMapper<Form> {
-    @Insert("INSERT INTO form (user_name, id_number, gender, emotion, income, address, phone_number, email, education, purpose, statement) " +
-            "VALUES (#{user_name}, #{id_number}, #{gender}, #{emotion}, #{income}, #{address}, #{phone_number}, #{email}, #{education}, #{purpose}, #{statement})")
-    @Options(useGeneratedKeys = true, keyProperty = "form_id")
+    @Insert("INSERT INTO form ( user_name, id_number, gender, emotion, income, address, phone_number, email, education, purpose, statement) " +
+            "VALUES (#{userName}, #{idNumber}, #{gender}, #{emotion}, #{income}, #{address}, #{phoneNumber}, #{email}, #{education}, #{purpose}, #{statement})")
+    @Options(useGeneratedKeys = true, keyProperty = "formId")
     int insert(Form form);
 
     @Select("SELECT * FROM form WHERE form_id = #{ss}")

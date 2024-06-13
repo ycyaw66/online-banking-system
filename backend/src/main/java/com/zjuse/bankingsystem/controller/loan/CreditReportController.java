@@ -35,7 +35,7 @@ public class CreditReportController {
         System.out.println(credit_limit);
         // 插入报告
         Report report = new Report();
-        report.setUser_id(userId);
+        report.setUserId(userId);
         report.setCreditScore(credit_score);
         report.setCreditLimit(credit_limit);
         report.setDate(LocalDate.now());
@@ -61,7 +61,7 @@ public class CreditReportController {
         System.out.println(creditLimit);
         // 插入报告
         Report report = new Report();
-        report.setUser_id(userId);
+        report.setUserId(userId);
         report.setCreditScore(creditScore);
         report.setCreditLimit(creditLimit);
         report.setDate(LocalDate.now());

@@ -18,19 +18,19 @@ public class ReminderController {
     private ReminderService reminderService;
 
     @Autowired
-    private CurrentUserService currentUserService; 
+    private CurrentUserService currentUserService;
 
     @PostMapping("/save-reminder")
     public ResponseEntity<String> saveReminder(@RequestBody Reminder reminder) {
-        int user_id = (int)currentUserService.getCurrentUserId().payload; 
-        reminder.setUser_id(user_id);
+        int user_id = ((Number)currentUserService.getCurrentUserId().payload).intValue();;
+        reminder.setUserId(user_id);
         reminderService.saveOrUpdateReminder(reminder);
         return ResponseEntity.ok("Reminder saved successfully");
     }
 
     @GetMapping("/timeget-reminder")
     public ResponseEntity<Integer> getReminder() {
-        int userId = (int) currentUserService.getCurrentUserId().payload;
+        int userId =  ((Number)currentUserService.getCurrentUserId().payload).intValue();;
         Integer time = reminderService.gettime(userId);
         if (time != null) {
             return ResponseEntity.ok(time);
@@ -41,7 +41,7 @@ public class ReminderController {
 
     @GetMapping("/loanget-reminder")
     public List<Loan> getLoanHistory(@RequestParam int time) {
-        int userId = (int) currentUserService.getCurrentUserId().payload;
+        int userId = ((Number)currentUserService.getCurrentUserId().payload).intValue();;
         return reminderService.getLoansToRemind(userId, time);
     }
 }

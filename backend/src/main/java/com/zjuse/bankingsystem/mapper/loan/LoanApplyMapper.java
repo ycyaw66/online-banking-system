@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Options;
 @Mapper
 public interface LoanApplyMapper extends BaseMapper<Loan> {
     @Insert("INSERT INTO loan (borrow_id,card_id,officer_id,amount,rate,term,status,date_applied,date_approved,form_id) " +
-            "VALUES (#{borrow_id}, #{card_id}, #{officer_id}, #{amount}, #{rate}, #{term}, #{status}, #{date_applied}, null, #{form_id})")
-    @Options(useGeneratedKeys = true, keyProperty = "loan_id")
+            "VALUES (#{borrowId}, #{cardId}, #{officerId}, #{amount}, #{rate}, #{term}, #{status}, #{dateApplied}, null, #{formId})")
+    @Options(useGeneratedKeys = true, keyProperty = "loanId")
     int insert(Loan loan);
 }

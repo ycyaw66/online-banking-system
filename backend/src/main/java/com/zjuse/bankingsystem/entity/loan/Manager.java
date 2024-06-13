@@ -1,49 +1,47 @@
 package com.zjuse.bankingsystem.entity.loan;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Manager {
-    @TableId(value = "manager_id", type = IdType.AUTO)
-    private int manager_id;
+    @JsonProperty("manager_id")
+    private int managerId;
 
-    @TableField("manager_name")
-    private String manager_name;
+    @JsonProperty("manager_name")
+    private String managerName;
 
-    @TableField("phone_number")
-    private String phone_number;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 
-    @TableField("username")
+    @JsonProperty("username")
     private String username;
 
-    @TableField("password")
+    @JsonProperty("password")
     private String password;
 
     // Getters and setters
 
-    public int getManager_id() {
-        return manager_id;
+    public int getManagerId() {
+        return managerId;
     }
 
-    public void setManager_id(int manager_id) {
-        this.manager_id = manager_id;
+    public void setManagerId(int managerId) {
+        this.managerId = managerId;
     }
 
-    public String getManager_name() {
-        return manager_name;
+    public String getManagerName() {
+        return managerName;
     }
 
-    public void setManager_name(String manager_name) {
-        this.manager_name = manager_name;
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUsername() {
@@ -65,9 +63,9 @@ public class Manager {
     @Override
     public String toString() {
         return "Manager{" +
-                "managerId=" + manager_id +
-                ", managerName='" + manager_name + '\'' +
-                ", phoneNumber='" + phone_number + '\'' +
+                "managerId=" + managerId +
+                ", managerName='" + managerName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';

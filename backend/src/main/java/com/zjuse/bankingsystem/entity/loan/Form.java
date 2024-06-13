@@ -1,6 +1,5 @@
 package com.zjuse.bankingsystem.entity.loan;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

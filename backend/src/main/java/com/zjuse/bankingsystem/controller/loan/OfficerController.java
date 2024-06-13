@@ -27,7 +27,7 @@ public class OfficerController {
     @Autowired
     private OfficerLoginService loginService;
     @Autowired
-    private CurrentUserService currentUserService; 
+    private CurrentUserService currentUserService;
 
     @PutMapping("/officer-main/update-officer-password-by-officer")
     public String updateOfficerPasswordByOfficer(@RequestParam String currentPassword, @RequestParam String newPassword) {

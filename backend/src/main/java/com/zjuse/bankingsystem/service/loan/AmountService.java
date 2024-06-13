@@ -20,6 +20,7 @@ public class AmountService {
         userAndCardService.income(card_id, amount, "贷款");
     }
     public int subAmount(Long card_id,BigDecimal amount, String password){
+        // System.out.println(amount);
         ApiResult res = userAndCardService.consume(card_id, amount, password, "贷款还款");
         if (!res.ok) return 0;
         else return 1;

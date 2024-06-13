@@ -1,36 +1,34 @@
 package com.zjuse.bankingsystem.entity.loan;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Reminder {
-    @TableId(value = "reminder_id", type = IdType.AUTO)
-    private int reminder_id;
+    @JsonProperty("reminder_id")
+    private int reminderId;
 
-    @TableField("user_id")
-    private int user_id;
+    @JsonProperty("user_id")
+    private int userId;
 
-    @TableField("time")
+    @JsonProperty("time")
     private int time;
 
     // Getters and setters
 
 
-    public int getReminder_id() {
-        return reminder_id;
+    public int getReminderId() {
+        return reminderId;
     }
 
-    public void setReminder_id(int reminder_id) {
-        this.reminder_id = reminder_id;
+    public void setReminderId(int reminderId) {
+        this.reminderId = reminderId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getTime() {
