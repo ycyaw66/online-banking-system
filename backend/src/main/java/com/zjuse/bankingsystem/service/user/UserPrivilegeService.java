@@ -1,5 +1,7 @@
 package com.zjuse.bankingsystem.service.user;
 
+import java.util.List;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,24 @@ import com.zjuse.bankingsystem.utils.ApiResult;
 public class UserPrivilegeService {
     @Autowired
     UserPrivilegeMapper userprivilegeMapper;
+    public ApiResult getAllUserPrivilege() {
+        try {
+            QueryWrapper<UserPrivilege> wrapper = new QueryWrapper();
+            List<UserPrivilege> userPrivilege = userprivilegeMapper.selectList(wrapper);
+            if (userPrivilege == null) {
+                return new ApiResult(false, "user not find");
+            }
+            ApiResult apiResult = new ApiResult(true, "success");
+            apiResult.payload = userPrivilege;
+            return apiResult;
+        }
+        catch (Exception e) {
+            
+            System.out.println(e.getMessage());
+            return new ApiResult(false, e.getMessage());
+        }
+    }
+
     public ApiResult getUserPrivilege(Long userId) {
         try {
             QueryWrapper wrapper = new QueryWrapper();

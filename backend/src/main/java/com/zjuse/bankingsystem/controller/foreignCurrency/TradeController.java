@@ -11,7 +11,6 @@ import com.zjuse.bankingsystem.utils.RespResult;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -39,11 +38,13 @@ public class TradeController {
     @PostMapping("/execute")
     public RespResult executeTrade(
             @RequestBody TradeRecord record) {
+        // NO id will come fron front end so we need to get it from current user
         // Check record.getUserId() 与 record.getCreditCardId() 是否合法
         Long userId = (Long)currentUserService.getCurrentUserId().payload;
         if (String.valueOf(userId).equals(record.getUser_id())) 
             return RespResult.fail("用户id不符合");
         ApiResult res = cardService.getAllCardbyUserId(userId);
+        record.setUser_id(String.valueOf(userId));
         if (!res.ok)
             return RespResult.fail(res.message); 
         List<Card> cardList = (List<Card>) res.payload; 

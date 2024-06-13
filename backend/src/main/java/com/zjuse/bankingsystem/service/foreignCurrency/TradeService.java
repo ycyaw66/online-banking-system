@@ -4,7 +4,6 @@ import com.zjuse.bankingsystem.entity.foreignCurrency.ForeignCurrencyAccount;
 import com.zjuse.bankingsystem.entity.foreignCurrency.TradeRecord;
 import com.zjuse.bankingsystem.mapper.foreignCurrency.ForeignCurrencyAccountMapper;
 import com.zjuse.bankingsystem.mapper.foreignCurrency.TradeRecordMapper;
-import com.zjuse.bankingsystem.service.user.CardService;
 import com.zjuse.bankingsystem.service.user.UserAndCardService;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.RespResult;
@@ -27,9 +26,6 @@ public class TradeService {
 
     @Autowired
     private TradeRecordMapper tradeRecordMapper;
-
-    @Autowired
-    private CurrencyManagerService currencyManagerService;
 
     @Autowired
     private UserAndCardService cardService; 
@@ -70,7 +66,7 @@ public class TradeService {
             fAccount.setAmount(fAccount.getAmount() - record.getAmount_foreign_currency());
             fcAccountMapper.updateForeignCurrencyAccount(fAccount);
             // TODO: 更新人民币账户余额
-            //userAccountMapper.updateBalance(userId, userBalance + receivedCNY);
+            cardService.income(cardId, new BigDecimal(record.getAmount_cny()), "买卖外币");
         }
 
         // 设置交易时间

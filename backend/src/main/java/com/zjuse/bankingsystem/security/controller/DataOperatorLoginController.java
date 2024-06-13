@@ -11,11 +11,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zjuse.bankingsystem.entity.foreignCurrency.DataOperator;
-import com.zjuse.bankingsystem.model.DataOperatorRegister;
 import com.zjuse.bankingsystem.model.LoginInfo;
 import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
@@ -41,20 +39,6 @@ public class DataOperatorLoginController {
     private JwtConfig jwtConfig; 
     @Autowired 
     private OnlineUserService onlineUserService; 
-
-    @PostMapping("/start/register")
-    public RespResult register(@RequestBody DataOperatorRegister dataOperatorRegister) {
-        DataOperator entity = new DataOperator("", dataOperatorRegister.getUsername(), dataOperatorRegister.getPassword(), dataOperatorRegister.getEmail(), dataOperatorRegister.getPhone(), 0, 0, 0);
-        if(!dataOperatorRegister.getConfirm().equals("111")){
-            return RespResult.fail("邀请码错误");
-        }
-        try{
-            dataOperatorService.register(entity);
-        }catch(Exception e){
-            return RespResult.fail(e.getMessage());
-        }
-        return RespResult.success("注册成功");
-    }
 
     @PostMapping("/start/login")
     public RespResult loginDataOperator(@RequestBody LoginInfo loginInfo) {

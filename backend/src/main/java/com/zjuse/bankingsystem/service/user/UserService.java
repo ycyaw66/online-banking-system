@@ -76,7 +76,7 @@ public class UserService {
         }
     }
 
-    public ApiResult getUserById(String id) {
+    public ApiResult getUserById(Long id) {
         try {
             User res = userMapper.selectById(id);
             if (res == null)

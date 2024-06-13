@@ -123,7 +123,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                                 Collections.singletonList(new AuthorityDto("OPERATOR"))
                             );
                         }
-                        break ;
+                        break;
                     default:
                         return null; 
                 }

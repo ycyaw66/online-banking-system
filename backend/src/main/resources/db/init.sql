@@ -350,6 +350,7 @@ CREATE TABLE report (
     report_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     credit_limit DECIMAL(12, 2) NOT NULL,
+    credit_score DECIMAL(12, 2) NOT NULL, 
     date DATE NOT NULL
 );
 

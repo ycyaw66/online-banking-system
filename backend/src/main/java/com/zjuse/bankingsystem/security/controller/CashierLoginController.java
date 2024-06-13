@@ -6,6 +6,7 @@ import com.zjuse.bankingsystem.security.config.JwtConfig;
 import com.zjuse.bankingsystem.security.security.JwtTokenProvider;
 import com.zjuse.bankingsystem.security.security.enums.LoginType;
 import com.zjuse.bankingsystem.security.service.OnlineUserService;
+import com.zjuse.bankingsystem.security.service.UserCacheManager;
 import com.zjuse.bankingsystem.security.service.dto.JwtUserDto;
 import com.zjuse.bankingsystem.service.deposite.CashierService;
 import com.zjuse.bankingsystem.utils.ApiResult;
@@ -42,6 +43,8 @@ public class CashierLoginController {
     private JwtConfig jwtConfig; 
     @Autowired 
     private OnlineUserService onlineUserService; 
+    @Autowired
+    private UserCacheManager userCacheManager; 
 
     @PostMapping("/login")
     public RespResult loginCashier(@RequestParam("username") String username, @RequestParam("password") String password) {
@@ -82,6 +85,7 @@ public class CashierLoginController {
         if(!apiResult1.ok)
             return RespResult.fail(apiResult1.message);
         ApiResult apiResult = cashierService.changePassword(id, newpassword);
+        userCacheManager.cleanUserCache(username.split("-")[1]);
         if(!apiResult.ok)
             return RespResult.fail(apiResult.message);
         else

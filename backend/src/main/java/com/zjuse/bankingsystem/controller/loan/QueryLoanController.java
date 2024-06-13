@@ -27,8 +27,8 @@ public class QueryLoanController {
                                               @RequestParam(defaultValue = "10") int size) {
         QueryWrapper<Loan> queryWrapper = new QueryWrapper<>();
                                                                                  
-        int userId = (int) currentUserService.getCurrentUserId().payload;
-        queryWrapper.eq("borrower_id", userId);
+        Long userId = (Long) currentUserService.getCurrentUserId().payload;
+        queryWrapper.eq("borrow_id", userId);
         
         if (filter.getAmount() != null) {
             queryWrapper.eq("amount", filter.getAmount());

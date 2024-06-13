@@ -17,6 +17,9 @@ import com.zjuse.bankingsystem.mapper.user.UserPrivilegeMapper;
 import com.zjuse.bankingsystem.utils.ApiResult;
 import com.zjuse.bankingsystem.utils.CardType;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class CardService {
     @Autowired
@@ -201,6 +204,7 @@ public class CardService {
             throw new Exception(apiResult.message);
         }
         Long userId = (Long) apiResult.payload;
+        log.info(userId.toString());
         return userPrivilegeService.checkPayment(userId);
     }
 
