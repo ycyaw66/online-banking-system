@@ -37,7 +37,7 @@
       <template #footer>
         <span>
           <el-button @click="modifyInfoVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleModify">确定</el-button>
+          <el-button type="primary" @click="submitForm">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -58,7 +58,7 @@
       <template #footer>
         <span>
           <el-button @click="modifyPasswordVisible = false">取消</el-button>
-          <el-button type="primary" @click="handleModify">确定</el-button>
+          <el-button type="primary" @click="submitForm">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -132,6 +132,17 @@ export default {
   methods: {
     handleLogout() {
       this.$router.push('/personalBank/user/login');
+    },
+    submitForm() {
+      // 表单校验
+      this.$refs["modifyForm"].validate((valid) => {
+        if (!valid) {
+          ElMessage.error("修改失败，请检查修改信息");
+          return;
+        } else {
+          this.handleModify();
+        }
+      });
     },
     handleModify() {
       if (this.modifyPasswordVisible) {
