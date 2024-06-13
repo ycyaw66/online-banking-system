@@ -8,6 +8,7 @@ import com.zjuse.bankingsystem.mapper.loan.ReminderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,12 +33,13 @@ public class ReminderService {
 
     public List<Loan> getLoansToRemind(int userId, int time) {
         // 获取当前日期
-
         // 查询符合条件的贷款记录
         return loanQueryMapper.selectList(new QueryWrapper<Loan>()
+                .eq("borrow_id", userId)
                 .eq("status", "repayment") // 未还款状态
                 .apply("DATE_ADD(date_approved, INTERVAL term DAY) - INTERVAL {0} DAY <= NOW()", time));
     }
+
 
     public Integer gettime(int user_id){ return reminderMapper.getReminderTime(user_id);}
 }
