@@ -1,202 +1,149 @@
 <template>
-  <div>
-    <div class="common-layout">
-      <el-container class="layout-container-demo" style="height: 700px">
-        <!--标题区域-->
-        <el-header
-            style="font-size: 30px; background-color: white; font-family: 'Lato', sans-serif; color: rgb(43, 47, 58); line-height: 60px;">
-          <div style="display: inline-block;">
-            <img src="../icons/logo.png"
-                 style=" margin-right: 20px; height: 40px;vertical-align: middle;"/>
-          </div>
-          <span style="font-size: large; font-family: 'Microsoft YaHei',serif;color: black; font-weight: bold;">在线银行系统————外汇系统</span>
-        </el-header>
-        <el-container>
-          <!--侧边栏区域-->
-          <el-aside width="200px" style="height: 87vh; display: flex; flex-direction: column;">
-            <el-scrollbar style="flex: 1">
-              <el-menu :default-openeds="['1', '3']">
-                <el-sub-menu index="1">
-                  <template #title>
-                    <el-icon style="color: white;">
-                      <UserFilled/>
-                    </el-icon>
-                    <span style="color: white;">外汇系统管理员</span>
-                  </template>
-                  <el-menu-item index="1-2">
-                    <router-link to="/fc/admin/home">
-                      <el-icon style="color: white;">
-                        <Avatar/>
-                      </el-icon>
-                      <span style="color: white;">数据操作员管理</span>
-                    </router-link>
-                  </el-menu-item>
-                  <el-menu-item index="1-2">
-                    <router-link to="/fc/admin/operationRecord">
-                      <el-icon style="color: white;">
-                        <Avatar/>
-                      </el-icon>
-                      <span style="color: white;">操作历史查询</span>
-                    </router-link>
-                  </el-menu-item>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-            <el-button type="danger"
-                       @click="exit"
-                       style="display: block; margin-bottom: 40px;margin-left:50px;width:100px">
-              退出登录
+  <!--主展示区域-->
+  <el-main style="background-color: #f1f1f1;">
+    <br>
+    <br>
+    <div style="display: flex; justify-content: center;">
+      <el-table :data="operators" stripe style="width: 1290px;">
+        <el-table-column prop="data_operator_id" label="编号" width="200px"/>
+        <el-table-column prop="username" label="姓名" width="200px"/>
+        <el-table-column label="邮箱" width="200px">
+          <template v-slot="{ row }">
+            <span>{{ row.email }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="添加权限" width="130px">
+          <template v-slot="{ row }">
+            <span v-if="row.add_permission === 1">是</span>
+            <span v-else-if="row.add_permission === 0">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="修改权限" width="130px">
+          <template v-slot="{ row }">
+            <span v-if="row.update_permission === 1">是</span>
+            <span v-else-if="row.update_permission === 0">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="删除权限" width="130px">
+          <template v-slot="{ row }">
+            <span v-if="row.delete_permission === 1">是</span>
+            <span v-else-if="row.delete_permission === 0">否</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="300px">
+          <template v-slot="{ row }">
+            <el-button type="primary" size="small"
+                       @click="modify_permission_visible=true, modify_permission.id=row.data_operator_id, modify_permission.addPermission='',modify_permission.deletePermission='', modify_permission.updatePermission=''">
+              修改权限
             </el-button>
-          </el-aside>
-          <!--主展示区域-->
-          <el-main style="background-color: #f1f1f1;">
-            <br>
-            <br>
-            <div style="display: flex; justify-content: center;">
-              <el-table :data="operators" stripe style="width: 1290px;">
-                <el-table-column prop="data_operator_id" label="编号" width="200px"/>
-                <el-table-column prop="username" label="姓名" width="200px"/>
-                <el-table-column label="邮箱" width="200px">
-                  <template v-slot="{ row }">
-                    <span>{{ row.email }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="添加权限" width="130px">
-                  <template v-slot="{ row }">
-                    <span v-if="row.add_permission === 1">是</span>
-                    <span v-else-if="row.add_permission === 0">否</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="修改权限" width="130px">
-                  <template v-slot="{ row }">
-                    <span v-if="row.update_permission === 1">是</span>
-                    <span v-else-if="row.update_permission === 0">否</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="删除权限" width="130px">
-                  <template v-slot="{ row }">
-                    <span v-if="row.delete_permission === 1">是</span>
-                    <span v-else-if="row.delete_permission === 0">否</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="300px">
-                  <template v-slot="{ row }">
-                    <el-button type="primary" size="small"
-                               @click="modify_permission_visible=true, modify_permission.id=row.data_operator_id, modify_permission.addPermission='',modify_permission.deletePermission='', modify_permission.updatePermission=''">
-                      修改权限
-                    </el-button>
-                    <el-button type="primary" size="small"
-                               @click="delete_operator_id=row.data_operator_id, delete_operator_visible=true ">删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <br><br>
-            <div style="display: flex; justify-content: center; align-items: center;">
-              <el-button type="primary"
-                         @click="add_operator_visible = true,new_operator.id='',new_operator.deletePermission='', new_operator.name='', new_operator.password='',new_operator.phoneNumber='', new_operator.email='',new_operator.updatePermission='',new_operator.password_again='', new_operator.addPermission=''">
-                新建数据操作员
-              </el-button>
-            </div>
-
-            <!--表单-->
-
-            <el-dialog title="权限修改" v-model="modify_permission_visible" style="width: 25vw;">
-              <el-form :model="modify_permission">
-                <el-form-item label="请选择新的权限" :label-width="formLabelWidth">
-                  <el-form-item label="增添权限">
-                    <el-select v-model="modify_permission.addPermission" style="width: 12.5vw;">
-                      <el-option label="是" value=1></el-option>
-                      <el-option label="否" value=0></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="修改权限">
-                    <el-select v-model="modify_permission.updatePermission" style="width: 12.5vw;">
-                      <el-option label="是" value=1></el-option>
-                      <el-option label="否" value=0></el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="删除权限">
-                    <el-select v-model="modify_permission.deletePermission" style="width: 12.5vw;">
-                      <el-option label="是" value=1></el-option>
-                      <el-option label="否" value=0></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-form-item>
-              </el-form>
-              <template #footer>
-                <el-button @click="modify_permission_visible = false">取 消</el-button>
-                <el-button type="primary" @click="modifyPermission">确 定</el-button>
-              </template>
-            </el-dialog>
-            <el-dialog title="新建数据操作员" v-model="add_operator_visible" style="width: 25vw;">
-              <el-form :model="new_operator">
-                <el-form-item label="请输入账号" :label-width="formLabelWidth">
-                  <el-input v-model="new_operator.id" autocomplete="off" style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请输入姓名" :label-width="formLabelWidth">
-                  <el-input v-model="new_operator.name" autocomplete="off" style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请输入邮箱" :label-width="formLabelWidth">
-                  <el-input v-model="new_operator.email" autocomplete="off" style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请输入手机号" :label-width="formLabelWidth">
-                  <el-input v-model="new_operator.phoneNumber" autocomplete="off" style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="增加权限" :label-width="formLabelWidth">
-                  <el-select v-model="new_operator.addPermission" style="width: 12.5vw;">
-                    <el-option label="是" value=1></el-option>
-                    <el-option label="否" value=0></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="修改权限" :label-width="formLabelWidth">
-                  <el-select v-model="new_operator.updatePermission" style="width: 12.5vw;">
-                    <el-option label="是" value=1></el-option>
-                    <el-option label="否" value=0></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="删除权限" :label-width="formLabelWidth">
-                  <el-select v-model="new_operator.deletePermission" style="width: 12.5vw;">
-                    <el-option label="是" value=1></el-option>
-                    <el-option label="否" value=0></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="请输入密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="new_operator.password" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-                <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
-                  <el-input type="password" v-model="new_operator.password_again" autocomplete="off"
-                            style="width: 12.5vw;"></el-input>
-                </el-form-item>
-              </el-form>
-              <template #footer>
-                <el-button @click="add_operator_visible = false">取 消</el-button>
-                <el-button type="primary" @click="addOperator">确 定</el-button>
-              </template>
-            </el-dialog>
-            <el-dialog title="删除数据操作员" v-model="delete_operator_visible" style="width: 25vw;">
-              <span>确定删除编号为&nbsp;<span style="font-weight: bold;">{{ delete_operator_id }}</span>&nbsp;的数据操作员吗？</span>
-              <template #footer>
-                <el-button @click="delete_operator_visible = false">取 消</el-button>
-                <el-button type="danger" @click="deleteOperator">确 定</el-button>
-              </template>
-            </el-dialog>
-
-          </el-main>
-
-        </el-container>
-      </el-container>
+            <el-button type="primary" size="small"
+                       @click="delete_operator_id=row.data_operator_id, delete_operator_visible=true ">删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-  </div>
+    <br><br>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <el-button type="primary"
+                 @click="add_operator_visible = true,new_operator.id='',new_operator.deletePermission='', new_operator.name='', new_operator.password='',new_operator.phoneNumber='', new_operator.email='',new_operator.updatePermission='',new_operator.password_again='', new_operator.addPermission=''">
+        新建数据操作员
+      </el-button>
+    </div>
+
+    <!--表单-->
+
+    <el-dialog title="权限修改" v-model="modify_permission_visible" style="width: 25vw;">
+      <el-form :model="modify_permission">
+        <el-form-item label="请选择新的权限" :label-width="formLabelWidth">
+          <el-form-item label="增添权限">
+            <el-select v-model="modify_permission.addPermission" style="width: 12.5vw;">
+              <el-option label="是" value=1></el-option>
+              <el-option label="否" value=0></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="修改权限">
+            <el-select v-model="modify_permission.updatePermission" style="width: 12.5vw;">
+              <el-option label="是" value=1></el-option>
+              <el-option label="否" value=0></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="删除权限">
+            <el-select v-model="modify_permission.deletePermission" style="width: 12.5vw;">
+              <el-option label="是" value=1></el-option>
+              <el-option label="否" value=0></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="modify_permission_visible = false">取 消</el-button>
+        <el-button type="primary" @click="modifyPermission">确 定</el-button>
+      </template>
+    </el-dialog>
+    <el-dialog title="新建数据操作员" v-model="add_operator_visible" style="width: 25vw;">
+      <el-form :model="new_operator">
+        <el-form-item label="请输入账号" :label-width="formLabelWidth">
+          <el-input v-model="new_operator.id" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入姓名" :label-width="formLabelWidth">
+          <el-input v-model="new_operator.name" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入邮箱" :label-width="formLabelWidth">
+          <el-input v-model="new_operator.email" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入手机号" :label-width="formLabelWidth">
+          <el-input v-model="new_operator.phoneNumber" autocomplete="off" style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="增加权限" :label-width="formLabelWidth">
+          <el-select v-model="new_operator.addPermission" style="width: 12.5vw;">
+            <el-option label="是" value=1></el-option>
+            <el-option label="否" value=0></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="修改权限" :label-width="formLabelWidth">
+          <el-select v-model="new_operator.updatePermission" style="width: 12.5vw;">
+            <el-option label="是" value=1></el-option>
+            <el-option label="否" value=0></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="删除权限" :label-width="formLabelWidth">
+          <el-select v-model="new_operator.deletePermission" style="width: 12.5vw;">
+            <el-option label="是" value=1></el-option>
+            <el-option label="否" value=0></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="请输入密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="new_operator.password" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+        <el-form-item label="请再次输入密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="new_operator.password_again" autocomplete="off"
+                    style="width: 12.5vw;"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="add_operator_visible = false">取 消</el-button>
+        <el-button type="primary" @click="addOperator">确 定</el-button>
+      </template>
+    </el-dialog>
+    <el-dialog title="删除数据操作员" v-model="delete_operator_visible" style="width: 25vw;">
+      <span>确定删除编号为&nbsp;<span style="font-weight: bold;">{{
+          delete_operator_id
+        }}</span>&nbsp;的数据操作员吗？</span>
+      <template #footer>
+        <el-button @click="delete_operator_visible = false">取 消</el-button>
+        <el-button type="danger" @click="deleteOperator">确 定</el-button>
+      </template>
+    </el-dialog>
+
+  </el-main>
 </template>
 
 <script>
 
 import axios from "axios";
 import Cookies from "js-cookie";
-import {Avatar, UserFilled} from "@element-plus/icons-vue";
 import CryptoJS from "crypto-js";
 
 axios.defaults.baseURL = "http://localhost:8082";
@@ -213,7 +160,6 @@ axiosInstance.interceptors.request.use(config => {
 });
 
 export default {
-  components: {Avatar, UserFilled},
   data() {
     return {
       formLabelWidth: '150px',
