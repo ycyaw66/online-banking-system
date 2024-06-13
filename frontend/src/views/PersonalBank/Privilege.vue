@@ -165,9 +165,9 @@ export default {
     fetchPermission() {
       // this.users = []
       axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-      axios.get('/administrator/get')
+      axios.get('/privilege/get')
         .then(response => {
-          this.users = response.data;
+          this.users = response.data.payload;
         })
         .catch(error => {
           console.error('Error fetching users permission:', error);
@@ -178,10 +178,11 @@ export default {
       if (permission) {
         permission.enabled = !permission.enabled;
         axios.defaults.headers.common['Authorization'] = Cookies.get('token');
-        axios.post('/administrator/privilege/update', {
+        axios.post('/privilege/update', {
           user_id: user.user_id,
-          permission_name: permission.name,
-          enabled: permission.enabled
+          payment: user.permissions.find(perm => perm.name === "支付").enabled,
+          transfer: user.permissions.find(perm => perm.name === "转账").enabled,
+          receive: user.permissions.find(perm => perm.name === "收款").enabled,
         }).then((response) => {
           if (response.status === 200) {
           this.fetchPermission();

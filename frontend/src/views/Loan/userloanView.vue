@@ -176,7 +176,7 @@ export default {
             const response = await axiosInstance.post('/add-loan', loanData);
             if (response.data.message === "Loan created successfully!") {
               this.dialogVisible = true; // 显示弹窗
-              this.resetForm(); // 清空表单数据
+              // this.resetForm(); // 清空表单数据
               this.$message.success('贷款申请已提交!');
             } else {
               this.$message.error('贷款信息错误!');

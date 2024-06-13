@@ -11,7 +11,7 @@
 
     <!-- 查询按钮 -->
     <div style="width:100%; margin:0 auto; padding-top:5vh; align-items: center;">
-      <el-input style="width: 10vw; margin-left: 50px;" v-model.number="this.creditCardId"
+      <el-input style="width: 10vw; margin-left: 50px;" v-model="this.creditCardId"
                 placeholder="输入信用卡ID"></el-input>
       <el-button v-if="!AccountVisible" style="margin-left: 50px;" type="primary" @click="QueryAccount"
                  :disabled="this.creditCardId.length === 0">显示余额
@@ -58,8 +58,8 @@ export default {
         fc_id: 'CNY',
         amount: 999.99
       }],
-      userId: "0",
-      creditCardId: "1234567890",
+      userId: "0", // no use
+      creditCardId: "",
       toQuery: '', // 待查询内容(对某一借书证号进行查询)
       toSearch: '', // 待搜索内容(对查询到的结果进行搜索)
       Search
@@ -73,8 +73,12 @@ export default {
     },
     async QueryAccount() {
       this.tableData = [] // 清空列表
-      await axiosInstance.get(`/fc/account/${this.creditCardId}/$(this.userId)`).then(response => {
+      await axiosInstance.get(`/fc/account/${this.creditCardId}`).then(response => {
         console.log(response);
+        if(response.data.code === 1){
+          ElMessage.error(response.data.err);
+          return;
+        }
         let accounts = response.data.payload // 获取响应负载
         accounts.forEach(record => { // 对于每一个交易记录
           this.tableData.push(record) // 将它加入到列表项中

@@ -49,6 +49,7 @@
           <el-form-item label="外币汇率">
             <el-input v-model="operationInfo.rate"/>
           </el-form-item>
+          <el-button type="primary" @click="operationInfo.rate = predictNextExchangeRate(this.tuple_data)">汇率预测</el-button>
         </el-form>
         <template #footer>
       <span class="dialog-footer">
@@ -174,6 +175,7 @@ export default {
       ],
       id: "",
       toSearchCurrencyInfo: '',
+      tuple_data: [],
       newRateVisible: false,
       searchCurrencyVisible: false,
       deleteCurrencyVisible: false,
@@ -203,6 +205,7 @@ export default {
       this.operationInfo.fc_name = currency.currency_name
       this.operationInfo.data_operator_id = Cookies.get('storePersonId');
       this.operationInfo.opid = 0
+      this.tuple_data = currency.currency_rate
     },
     handleEdit(currency, currency_rate) {
       console.log(currency)
@@ -301,6 +304,37 @@ export default {
               ElMessage.error(response.data.err)
             }
           })
+    },
+    predictNextExchangeRate(exchangeRates) {
+      // 计算数据长度
+      const n = exchangeRates.length;
+      if(n<=1){
+        ElMessage.error("数据过少，无法预测");
+        return 0;
+      }
+  
+      // 计算时间序列（这里简化为1, 2, 3...）
+      const timeSeries = Array.from({length: n}, (_, i) => i + 1);
+  
+      // 计算汇率和时间序列的平均值
+      const avgRate = exchangeRates.reduce((sum, rateObj) => sum + rateObj.fc_rate, 0) / n;
+      const avgTime = timeSeries.reduce((sum, time) => sum + time, 0) / n;
+  
+      // 计算斜率（即日均变化率）
+      let numerator = 0;
+      let denominator = 0;
+      for (let i = 0; i < n; i++) {
+        numerator += (exchangeRates[i].fc_rate - avgRate) * (timeSeries[i] - avgTime);
+        denominator += Math.pow(timeSeries[i] - avgTime, 2);
+      }
+      const slope = numerator / denominator; // 预测模型
+  
+      // 使用最后一个汇率和斜率预测下一个汇率
+      const lastRate = exchangeRates[n - 1].fc_rate;
+      const nextDay = timeSeries[n - 1] + 1;
+      const predictedRate = lastRate + slope * (nextDay - timeSeries[n - 1]);
+  
+      return predictedRate;
     }
   },
   mounted() {
