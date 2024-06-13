@@ -63,6 +63,7 @@ export default {
             pageSize: this.pageSize
           }
         });
+        //this.officersData = response.data.records;
         this.officersData = response.data.records;
         this.totalOfficers = response.data.total;
         // Log the total number of officers
@@ -79,7 +80,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         });
-        await axiosInstance.delete(`/delete-officer/${id}`);
+        await axiosInstance.delete(`/admin/delete-officer/${id}`);
         this.fetchOfficers();
         ElMessage.success('删除成功！');
       } catch (error) {

@@ -68,6 +68,7 @@ export default {
               this.$message.success('提醒设置已保存');
               this.queryLoanHistory(this.reminderData.time);
             }
+            this.getReminder();
           })
           .catch(error => {
             console.error('保存提醒设置失败:', error);
