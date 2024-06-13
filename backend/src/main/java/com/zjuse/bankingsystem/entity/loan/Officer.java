@@ -1,55 +1,53 @@
 package com.zjuse.bankingsystem.entity.loan;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @TableName("officer")
 public class Officer {
 
-    @TableId(value = "officer_id", type = IdType.AUTO)
-    private int officer_id;
+    @JsonProperty("officer_id")
+    private int officerId;
 
-    @TableField("officer_name")
-    private String officer_name;
+    @JsonProperty("officer_name")
+    private String officerName;
 
-    @TableField("phone_number")
-    private String phone_number;
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 
-    @TableField("username")
+    @JsonProperty("username")
     private String username;
 
-    @TableField("password")
+    @JsonProperty("password")
     private String password;
 
-    @TableField("permissions")
+    @JsonProperty("permissions")
     private Permissions permissions;
 
 
     // Getters and setters
-    public int getOfficer_id() {
-        return officer_id;
+    public int getOfficerId() {
+        return officerId;
     }
 
-    public void setOfficer_id(int officer_id) {
-        this.officer_id = officer_id;
+    public void setOfficerId(int officerId) {
+        this.officerId = officerId;
     }
 
-    public String getOfficer_name() {
-        return officer_name;
+    public String getOfficerName() {
+        return officerName;
     }
 
-    public void setOfficer_name(String officer_name) {
-        this.officer_name = officer_name;
+    public void setOfficerName(String officerName) {
+        this.officerName = officerName;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getUsername() {
@@ -79,9 +77,9 @@ public class Officer {
     @Override
     public String toString() {
         return "Officer{" +
-                "officer_id=" + officer_id +
-                ", officer_name='" + officer_name + '\'' +
-                ", phone_number='" + phone_number + '\'' +
+                "officer_id=" + officerId +
+                ", officer_name='" + officerName + '\'' +
+                ", phone_number='" + phoneNumber + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", permissions=" + permissions +

@@ -19,7 +19,7 @@ public class LoanApprovalService {
     @Autowired
     private LoanMapper loanMapper;
     @Autowired
-    private UserAndCardService userAndCardService; 
+    private UserAndCardService userAndCardService;
 
     public IPage<Loan> getLoan(Page<Loan> loanPage, int officer_id){
         return loanMapper.selectPage(loanPage, new QueryWrapper<Loan>().eq("status", "application").eq("officer_id", officer_id));

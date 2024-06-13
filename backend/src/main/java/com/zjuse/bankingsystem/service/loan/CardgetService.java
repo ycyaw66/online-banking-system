@@ -19,12 +19,12 @@ public class CardgetService {
     @Autowired
     private CardService cardService;
     @Autowired
-    private CurrentUserService currentUserService; 
+    private CurrentUserService currentUserService;
 
     public List<String> getUserBankCards(Long userId) {
         List<Card> cards = (List<Card>)cardService.getAllCardbyUserId(userId).payload;
-        User user = (User)currentUserService.getCurrentUser().payload; 
-        List<String> infos = new ArrayList<>(); 
+        User user = (User)currentUserService.getCurrentUser().payload;
+        List<String> infos = new ArrayList<>();
         for(Card card:cards){
             //获取相应的卡后，我们希望为用户展示    66025 - 张三 - 135****（身份证号） 的字符串形式显示在下拉列表中以便用户选卡还款
             //当用户选择后，前端发送还款申请我们会在后端将字符串提取卡号，进而更新卡内金额，详细见RepayController
@@ -32,6 +32,6 @@ public class CardgetService {
         }
         return infos;
     }
-    
-    
+
+
 }

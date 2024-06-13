@@ -19,17 +19,17 @@ public class QueryLoanController {
     @Autowired
     private LoanQueryService loanQueryService;
     @Autowired
-    private CurrentUserService currentUserService; 
+    private CurrentUserService currentUserService;
 
     @PostMapping("/loan-history")
     public Map<String, Object> getLoanHistory(@RequestBody LoanQueryRequest filter,
                                               @RequestParam(defaultValue = "1") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         QueryWrapper<Loan> queryWrapper = new QueryWrapper<>();
-                                                                                 
+
         Long userId = (Long) currentUserService.getCurrentUserId().payload;
         queryWrapper.eq("borrow_id", userId);
-        
+
         if (filter.getAmount() != null) {
             queryWrapper.eq("amount", filter.getAmount());
         }
@@ -59,7 +59,7 @@ public class QueryLoanController {
 
         return response;
     }
-    
+
 
     // �ڲ������ڽ���ǰ�˴��ݵĲ�ѯ����
     static class LoanQueryRequest {

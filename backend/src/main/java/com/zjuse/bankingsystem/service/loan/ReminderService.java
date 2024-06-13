@@ -20,13 +20,13 @@ public class ReminderService {
     private LoanQueryMapper loanQueryMapper;
 
     public void saveOrUpdateReminder(Reminder reminder) {
-        Integer existingReminderTime = reminderMapper.getReminderTime(reminder.getUser_id());
+        Integer existingReminderTime = reminderMapper.getReminderTime(reminder.getUserId());
         if (existingReminderTime == null) {
             // 插入新的提醒设置
-            reminderMapper.insertReminder(reminder.getUser_id(), reminder.getTime());
+            reminderMapper.insertReminder(reminder.getUserId(), reminder.getTime());
         } else {
             // 更新现有的提醒设置
-            reminderMapper.updateReminder(reminder.getUser_id(), reminder.getTime());
+            reminderMapper.updateReminder(reminder.getUserId(), reminder.getTime());
         }
     }
 

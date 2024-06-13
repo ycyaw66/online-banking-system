@@ -57,7 +57,7 @@ public class OfficerService {
     }
 
     public String deleteOfficer(int officerId) {
-        int result = officerMapper.deleteById(officerId);
+        int result = officerMapper.deleteOfficer(officerId);
         if (result > 0) {
             return "Officer deleted successfully!";
         } else {

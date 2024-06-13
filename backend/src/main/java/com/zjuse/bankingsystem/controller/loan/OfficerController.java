@@ -27,14 +27,14 @@ public class OfficerController {
     @Autowired
     private OfficerLoginService loginService;
     @Autowired
-    private CurrentUserService currentUserService; 
+    private CurrentUserService currentUserService;
 
     @PutMapping("/officer-main/update-officer-password-by-officer")
     public String updateOfficerPasswordByOfficer(@RequestParam String currentPassword, @RequestParam String newPassword) {
         String officerUsername;
         officerUsername = (String)currentUserService.getCurrentUsername().payload;
         Officer officer = loginService.findOfficerByUsername(officerUsername);
-        int officer_id = officer.getOfficer_id();
+        int officer_id = officer.getOfficerId();
 
         UpdateWrapper<Officer> updateWrapper = new UpdateWrapper<>();
         updateWrapper.and(wrapper->wrapper.eq("officer_id",officer_id).eq("Password", currentPassword)).set("password", newPassword);

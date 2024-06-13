@@ -34,14 +34,14 @@ public class PrivilegeController {
     @Autowired
     UserPrivilegeService userPrivilegeService;
     @Autowired
-    UserService userService; 
+    UserService userService;
 
     @PostMapping("/update")
     public RespResult updatePrivilege(@RequestBody UserPrivilege userPrivilege) {
         ApiResult apiResult = userPrivilegeService.modifyUserPrivilege(userPrivilege);
         if (apiResult.ok) {
             return RespResult.success(null);
-        } 
+        }
         else {
             return RespResult.fail(apiResult.message);
         }
@@ -49,9 +49,9 @@ public class PrivilegeController {
 
     static class RespUser {
         @JsonProperty("user_id")
-        Long userId; 
-        String username; 
-        List<Map<String, String>> permissions; 
+        Long userId;
+        String username;
+        List<Map<String, String>> permissions;
     }
 
     @GetMapping("/get")
@@ -60,8 +60,8 @@ public class PrivilegeController {
         if (!apiResult.ok) {
             return RespResult.fail(apiResult.message);
         }
-        List<UserPrivilege> privilegeList = (List<UserPrivilege>)apiResult.payload; 
-        List<Object> RespList = new ArrayList<>(); 
+        List<UserPrivilege> privilegeList = (List<UserPrivilege>)apiResult.payload;
+        List<Object> RespList = new ArrayList<>();
         for (UserPrivilege privilege : privilegeList) {
             User user = (User) userService.getUserById(privilege.getUserId()).payload;
             RespList.add(new HashMap<String, Object>(){{
@@ -81,7 +81,7 @@ public class PrivilegeController {
                         put("enabled", privilege.isReceive());
                     }});
                 }});
-            }}); 
+            }});
         }
         return RespResult.success(RespList);
     }

@@ -10,5 +10,5 @@ import org.apache.ibatis.annotations.Select;
 public interface ReportMapper extends BaseMapper<Report> {
     @Select("SELECT credit_limit FROM report WHERE user_id = #{user_id}")
     Double getCreditLimit(@Param("user_id") int user_id);
-    
+
 }

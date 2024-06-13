@@ -17,6 +17,6 @@ public class LoanQueryService {
     }
 
     public double getrate(int loan_id){ return loanQueryMapper.getrate(loan_id);}
-    public int updatestatus(int loan_id) {return loanQueryMapper.updatestatus(loan_id);}
+    public int updatestatus(int loan_id) {return loanQueryMapper.updatestatusover(loan_id);}
     public double getamount(int loan_id){ return loanQueryMapper.getAmount(loan_id);}
 }
