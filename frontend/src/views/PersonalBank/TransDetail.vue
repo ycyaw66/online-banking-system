@@ -77,7 +77,7 @@ export default {
     async QueryCond(){
       this.Data = []
       try {
-        const tg = this.Cond.target_card_id ? Number(this.Cond.target_card_id) : this.Cond.target_card_id ;
+        const tg = this.Cond.target_id ? Number(this.Cond.target_id) : this.Cond.target_id ;
         const cd = this.Cond.cardID ? Number(this.Cond.cardID) : this.Cond.cardID ;
         const ia = this.Cond.MinAmount ? Number(this.Cond.MinAmount) : this.Cond.MinAmount ;
         const xa = this.Cond.MaxAmount ? Number(this.Cond.MaxAmount) : this.Cond.MaxAmount ;
